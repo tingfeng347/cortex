@@ -13,13 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { QUESTIONS, QUESTION_TIME } from "@/lib/questions";
-import {
-  calculateResult,
-  generateShareText,
-  type ResultTier,
-  type TestResult,
-} from "@/lib/scoring";
+import { selectQuestions, QUESTIONS_PER_TEST, QUESTION_TIME } from "@/lib/questions";
+import { calculateResult, generateShareText, type TestResult } from "@/lib/scoring";
+import type { Question } from "@/lib/questions";
 
 type Phase = "landing" | "declaration" | "testing" | "result";
 
@@ -49,7 +45,7 @@ function QuestionTimer({
         : "text-red-600";
 
   return (
-    <div className="relative h-20 w-20 shrink-0">
+    <div className="relative h-16 w-16 shrink-0 sm:h-20 sm:w-20">
       <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
         <circle
           cx="50"
@@ -73,7 +69,7 @@ function QuestionTimer({
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className={`text-xl font-bold tabular-nums ${textColor}`}>
+        <span className={`text-base font-bold tabular-nums sm:text-xl ${textColor}`}>
           {remaining}
         </span>
       </div>
@@ -146,9 +142,10 @@ export default function TestFlow() {
     timestamp: number;
   } | null>(null);
   const [showExplanations, setShowExplanations] = useState(false);
+  const [questions] = useState(() => selectQuestions(QUESTIONS_PER_TEST));
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const isLastQuestion = currentQ === QUESTIONS.length - 1;
+  const isLastQuestion = currentQ === questions.length - 1;
 
   /* ─── Timer Management ─── */
 
@@ -184,8 +181,8 @@ export default function TestFlow() {
 
   // Calculate result when all questions answered
   useEffect(() => {
-    if (answers.length !== QUESTIONS.length) return;
-    const r = calculateResult(answers, timeouts);
+    if (answers.length !== questions.length) return;
+    const r = calculateResult(answers, timeouts, questions);
     setResult(r);
     try {
       localStorage.setItem(
@@ -202,6 +199,23 @@ export default function TestFlow() {
     } catch {
       // ignore — storage full or unavailable
     }
+    // Submit result & events to API (fire-and-forget, no await)
+    const payload = {
+      degradationIndex: r.degradationIndex,
+      tierLabel: r.tier.label,
+      correctCount: r.correctCount,
+      totalQuestions: r.totalQuestions,
+    };
+    fetch("/api/results", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: "test_complete", tier: r.tier.label }),
+    }).catch(() => {});
     setPhase("result");
   }, [answers, timeouts]);
 
@@ -209,7 +223,7 @@ export default function TestFlow() {
   useEffect(() => {
     if (phase !== "testing") return;
     if (answers.length <= currentQ) return; // no new answer yet
-    if (answers.length >= QUESTIONS.length) return; // last — result effect handles
+    if (answers.length >= questions.length) return; // last — result effect handles
     setCurrentQ((prev) => prev + 1);
     startTimer();
   }, [answers, phase]);
@@ -272,6 +286,12 @@ export default function TestFlow() {
 
   function handleRestart() {
     stopTimer();
+    // Track retest event
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: "retest" }),
+    }).catch(() => {});
     setPhase("landing");
     setDeclared(false);
     setCurrentQ(0);
@@ -286,19 +306,32 @@ export default function TestFlow() {
   async function handleShare() {
     if (!result) return;
     const text = generateShareText(result);
+    const imageUrl = `/api/og?i=${result.degradationIndex}&t=${encodeURIComponent(result.tier.label)}&c=${result.correctCount}&n=${result.totalQuestions}`;
+    const pageUrl = window.location.origin;
+
+    // Track share event
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: "share_click", tier: result.tier.label }),
+    }).catch(() => {});
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: "认知防锈 · 基线测试", text });
+        await navigator.share({
+          title: "认知防锈 · 基线测试",
+          text,
+          url: pageUrl,
+        });
         return;
       } catch {
         // user cancelled or share failed — fall through to clipboard
       }
     }
 
-    // Clipboard fallback
+    // Clipboard fallback: text + URL
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(text + "\n" + pageUrl);
     } catch {
       // silently fail — not critical
     }
@@ -372,10 +405,13 @@ export default function TestFlow() {
             </div>
           )}
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex-col gap-2">
           <Button size="lg" className="w-full text-base" onClick={handleStart}>
             开始测试
           </Button>
+          <a href="/stats" className="text-xs text-muted-foreground underline-offset-4 hover:underline">
+            查看全平台统计
+          </a>
         </CardFooter>
       </Card>
     );
@@ -454,7 +490,7 @@ export default function TestFlow() {
   /* ─── Phase: Testing ─── */
 
   function renderQuestion() {
-    const question = QUESTIONS[currentQ];
+    const question = questions[currentQ];
     if (!question) return null;
 
     return (
@@ -463,7 +499,7 @@ export default function TestFlow() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="text-xs">
-                {currentQ + 1}/{QUESTIONS.length}
+                {currentQ + 1}/{questions.length}
               </Badge>
               <Badge variant="outline" className="text-xs">
                 {question.category}
@@ -474,7 +510,7 @@ export default function TestFlow() {
 
           {/* Progress bar */}
           <div className="mt-3 flex gap-1">
-            {QUESTIONS.map((_, i) => {
+            {questions.map((_, i) => {
               const isAnswered = answers[i] !== undefined;
               const isCurrent = i === currentQ;
               return (
@@ -511,7 +547,7 @@ export default function TestFlow() {
                 key={i}
                 disabled={answers[currentQ] !== undefined}
                 onClick={() => handleSelectOption(i)}
-                className={`w-full rounded-lg border-2 p-4 text-left text-sm transition-all ${showFeedback
+                className={`w-full rounded-lg border-2 p-4 text-left text-sm transition-all active:scale-[0.98] ${showFeedback
                     ? isCorrect
                       ? "border-green-500 bg-green-50 text-green-800"
                       : isWrong
@@ -604,7 +640,7 @@ export default function TestFlow() {
 
             {showExplanations && (
               <div className="mt-3 space-y-3">
-                {QUESTIONS.map((q, i) => {
+                {questions.map((q, i) => {
                   const userAnswer = result.answers[i];
                   const isCorrect = userAnswer === q.answer;
                   const timedOut = result.timeouts[i];
@@ -667,6 +703,9 @@ export default function TestFlow() {
               重新测试
             </Button>
           </div>
+          <a href="/stats" className="text-xs text-muted-foreground underline-offset-4 hover:underline">
+            查看全平台统计
+          </a>
           <p className="mt-2 text-center text-xs text-muted-foreground">
             认知能力就像肌肉——用进废退。定期测量，才能知道 AI
             在你身上留下了什么。

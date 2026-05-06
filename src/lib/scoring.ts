@@ -1,13 +1,13 @@
-import { QUESTIONS } from "./questions";
+import type { Question } from "./questions"
 
 export interface ResultTier {
-  min: number;
-  max: number;
-  label: string;
-  description: string;
-  advice: string;
-  color: string; // Tailwind color class
-  ringColor: string; // for the SVG ring
+  min: number
+  max: number
+  label: string
+  description: string
+  advice: string
+  color: string
+  ringColor: string
 }
 
 export const RESULT_TIERS: ResultTier[] = [
@@ -65,49 +65,50 @@ export const RESULT_TIERS: ResultTier[] = [
     color: "text-red-600",
     ringColor: "#dc2626",
   },
-];
+]
 
 export interface TestResult {
-  score: number; // 0-100
-  degradationIndex: number; // 0-100
-  correctCount: number;
-  totalQuestions: number;
-  tier: ResultTier;
-  answers: (number | null)[]; // user's selected option indices
-  timeouts: boolean[]; // which questions timed out
+  score: number
+  degradationIndex: number
+  correctCount: number
+  totalQuestions: number
+  tier: ResultTier
+  answers: (number | null)[]
+  timeouts: boolean[]
+  questions: Question[]
 }
 
 /**
  * Calculate test result from user's answers.
- * Each correct answer = 20 points. Wrong/skip/timeout = 0.
- * Degradation Index = 100 - score.
  */
 export function calculateResult(
   answers: (number | null)[],
   timeouts: boolean[],
+  questions: Question[],
 ): TestResult {
   const correctCount = answers.reduce<number>((count, answer, i) => {
-    if (answer === null) return count;
-    return count + (answer === QUESTIONS[i].answer ? 1 : 0);
-  }, 0);
+    if (answer === null) return count
+    return count + (answer === questions[i].answer ? 1 : 0)
+  }, 0)
 
-  const score = (correctCount / QUESTIONS.length) * 100;
-  const degradationIndex = 100 - score;
+  const score = (correctCount / questions.length) * 100
+  const degradationIndex = 100 - score
 
   const tier =
     RESULT_TIERS.find(
       (t) => degradationIndex >= t.min && degradationIndex <= t.max,
-    ) ?? RESULT_TIERS[0];
+    ) ?? RESULT_TIERS[0]
 
   return {
     score,
     degradationIndex,
     correctCount,
-    totalQuestions: QUESTIONS.length,
+    totalQuestions: questions.length,
     tier,
     answers,
     timeouts,
-  };
+    questions,
+  }
 }
 
 export function generateShareText(result: TestResult): string {
@@ -122,6 +123,6 @@ export function generateShareText(result: TestResult): string {
     result.tier.advice,
     "",
     "在 https://cortex.hydroroll.team 测试你的认知状态",
-  ];
-  return lines.join("\n");
+  ]
+  return lines.join("\n")
 }
