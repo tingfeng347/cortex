@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type ReactNode } from "react";
 import {
   Card,
   CardContent,
@@ -120,6 +120,23 @@ function DegradationGauge({
       </div>
     </div>
   );
+}
+
+/* ─── Render text with **emphasis** markers ─── */
+
+function renderEmphasized(text: string): ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      const ch = part.slice(2, -2);
+      return (
+        <span key={i} className="[text-emphasis:dot] [text-emphasis-position:over]">
+          {ch}
+        </span>
+      );
+    }
+    return part;
+  });
 }
 
 /* ─── Main TestFlow Component ─── */
@@ -546,7 +563,7 @@ export default function TestFlow() {
                 <span className="font-medium">
                   {String.fromCharCode(65 + i)}.
                 </span>{" "}
-                {option}
+                {renderEmphasized(option)}
               </button>
             );
           })}
