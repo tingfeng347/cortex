@@ -5,6 +5,9 @@ import { ThemeToggle } from "@/components/theme-toggle"
 export const metadata: Metadata = {
   title: "认知防锈 | 你的认知状态怎么样？",
   description: "5 道题给你的认知能力拍一张快照。定期测量，看清趋势——认知能力就像肌肉，用进废退。",
+  icons: {
+    icon: "/favicon.svg",
+  },
 }
 
 export default function RootLayout({
