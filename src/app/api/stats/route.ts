@@ -11,6 +11,7 @@ export async function GET() {
       avgDegradation: stats.avgDegradation,
       distribution: stats.distribution,
       tierCounts: stats.tierCounts,
+      aiUsageCounts: stats.aiUsageCounts,
     })
   } catch {
     return NextResponse.json({ error: "internal error" }, { status: 500 })

@@ -443,6 +443,40 @@ export default function TestFlow() {
     });
   }
 
+  function handleDownloadImage() {
+    if (!result) return;
+    const url =
+      "/api/og?i=" +
+      result.degradationIndex +
+      "&t=" +
+      encodeURIComponent(result.tier.label) +
+      "&c=" +
+      result.correctCount +
+      "&n=" +
+      result.totalQuestions;
+
+    // Fetch the image and trigger download
+    fetch(url)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "cognitive-rust-result.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+        setToast("结果图已保存 ✓");
+        setTimeout(() => setToast(null), 2000);
+      })
+      .catch(() => {
+        // Fallback: open in new tab
+        window.open(url, "_blank");
+        setToast("图片已打开，可右键保存");
+        setTimeout(() => setToast(null), 2000);
+      });
+  }
+
   /* ─── Phase: Landing ─── */
 
   function renderLanding() {
@@ -929,12 +963,21 @@ export default function TestFlow() {
               重新测试
             </Button>
           </div>
-          <a
-            href={"/stats?latest=" + result.degradationIndex}
-            className="text-xs text-muted-foreground underline-offset-4 hover:underline"
-          >
-            查看全平台统计
-          </a>
+          <div className="flex w-full items-center justify-center gap-3">
+            <a
+              href={"/stats?latest=" + result.degradationIndex}
+              className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+            >
+              查看全平台统计
+            </a>
+            <span className="text-muted-foreground/40">|</span>
+            <button
+              onClick={handleDownloadImage}
+              className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+            >
+              保存结果图
+            </button>
+          </div>
           <p className="mt-2 text-center text-xs text-muted-foreground">
             认知能力就像肌肉——用进废退。定期测量，才能知道 AI
             在你身上留下了什么。

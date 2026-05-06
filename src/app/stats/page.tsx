@@ -13,6 +13,7 @@ interface StatsData {
   avgDegradation: number | null
   distribution: number[]
   tierCounts: Record<string, number>
+  aiUsageCounts: Record<string, number>
 }
 
 interface HistoryEntry {
@@ -174,6 +175,36 @@ export default function StatsPage() {
                 />
               </CardContent>
             </Card>
+
+            {/* AI Usage breakdown */}
+            {data.aiUsageCounts && Object.keys(data.aiUsageCounts).length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">按 AI 使用量分组</CardTitle>
+                  <CardDescription>
+                    不同使用习惯用户的测试人数
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {Object.entries(data.aiUsageCounts).map(([label, count]) => (
+                      <div key={label} className="flex items-center gap-3 text-sm">
+                        <span className="w-36 shrink-0 text-muted-foreground">{label}</span>
+                        <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                          <div
+                            className="h-full rounded-full bg-primary/60 transition-all"
+                            style={{
+                              width: `${(count / data.totalTests) * 100}%`,
+                            }}
+                          />
+                        </div>
+                        <span className="w-10 text-right font-medium tabular-nums">{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Tier breakdown */}
             <Card>

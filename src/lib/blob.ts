@@ -19,6 +19,8 @@ export interface StatsData {
   tierCounts: Record<string, number>
   /** running sum of degradationIndex for avg calculation */
   sumDegradation: number
+  /** counts per AI usage level */
+  aiUsageCounts: Record<string, number>
 }
 
 function emptyStats(): StatsData {
@@ -28,6 +30,7 @@ function emptyStats(): StatsData {
     distribution: Array(10).fill(0),
     tierCounts: {},
     sumDegradation: 0,
+    aiUsageCounts: {},
   }
 }
 
@@ -65,6 +68,11 @@ export async function saveResultAndUpdateStats(result: ResultData): Promise<void
   stats.avgDegradation = Math.round((stats.sumDegradation / stats.totalTests) * 10) / 10
 
   stats.tierCounts[result.tierLabel] = (stats.tierCounts[result.tierLabel] ?? 0) + 1
+
+  // Track AI usage level
+  if (result.aiUsageLevel) {
+    stats.aiUsageCounts[result.aiUsageLevel] = (stats.aiUsageCounts[result.aiUsageLevel] ?? 0) + 1
+  }
 
   const bucket = Math.min(Math.floor(result.degradationIndex / 10), 9)
   stats.distribution[bucket]++
