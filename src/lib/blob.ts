@@ -71,5 +71,6 @@ export async function saveResultAndUpdateStats(result: ResultData): Promise<void
   await put(STATS_KEY, JSON.stringify(stats), {
     contentType: "application/json",
     access: "private",
+    allowOverwrite: true,
   })
 }
