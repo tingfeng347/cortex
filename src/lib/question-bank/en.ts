@@ -758,4 +758,1795 @@ export const bank: Question[] = [
     explanation:
       '"Ambiguous" describes something that can be understood or interpreted in more than one way, making its meaning unclear or uncertain. It is commonly used to describe language, statements, or situations that are open to multiple interpretations.\n\nFor example: "The ending of the film was ambiguous, leaving viewers to decide what really happened."',
   },
+
+  // ════════════════════════════════════════════
+  //  LLM 批量生成 · 2026-05-07
+  //  Math 32 题、Vocabulary 33 题、Logic 29 题
+  // ════════════════════════════════════════════
+  {
+    id: 55,
+    type: "math",
+    category: "math",
+    question:
+      "A jacket originally costs $80. It is now on sale for 25% off. What is the sale price?",
+    options: [
+      "$60",
+      "$55",
+      "$20",
+      "$65"
+    ],
+    answer: 0,
+    explanation:
+      "25% of $80 is $20 (since 80 × 0.25 = 20). Subtract the discount from the original price: $80 - $20 = $60.",
+    difficulty: -1.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 56,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "In Shakespeare's Romeo and Juliet, when Juliet says 'O Romeo, Romeo! wherefore art thou Romeo?' what does 'wherefore' mean?",
+    options: [
+      "why",
+      "where",
+      "how",
+      "when"
+    ],
+    answer: 0,
+    explanation:
+      "In early modern English, 'wherefore' means 'why' or 'for what reason', not 'where'. Juliet is lamenting the reason Romeo is a Montague, not asking his location. This is a common misconception.",
+    difficulty: 0.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 57,
+    type: "math",
+    category: "math",
+    question:
+      "You have a dinner bill of $45.60 and want to leave a 15% tip. Approximately how much is the tip?",
+    options: [
+      "$6.80",
+      "$6.84",
+      "$7.00",
+      "$5.60"
+    ],
+    answer: 1,
+    explanation:
+      "To find 15% of $45.60, multiply by 0.15: 45.60 × 0.15 = 6.84. So the tip is $6.84.",
+    difficulty: -1.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 58,
+    type: "math",
+    category: "math",
+    question:
+      "You invest $10,000 in a bond that pays 4% annual interest compounded quarterly. After 3 years, you sell the bond and pay a 1% commission on the sale proceeds. What is your net profit (in dollars)?",
+    options: [
+      "$1,155.57",
+      "$1,126.83",
+      "$1,268.25",
+      "$1,000.00"
+    ],
+    answer: 0,
+    explanation:
+      "First, calculate the account balance after 3 years of quarterly compounding: Principal P = $10,000, annual rate r = 0.04, compounding periods per year n = 4, time t = 3 years. The amount A = P(1 + r/n)^(nt) = 10000 * (1 + 0.04/4)^(4*3) = 10000 * (1.01)^12. Using (1.01)^12 ≈ 1.126825, A ≈ 10000 * 1.126825 = $11,268.25. Then, a 1% commission on the sale reduces the proceeds to 99% of A: 11268.25 * 0.99 = $11,155.57. The net profit is the final amount minus the initial investment: 11155.57 - 10000 = $1,155.57.",
+    difficulty: 2.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 59,
+    type: "math",
+    category: "math",
+    question:
+      "A television originally costs $600. The store offers a 20% discount, and you have a coupon for an additional 15% off the discounted price. What is the final price?",
+    options: [
+      "$390",
+      "$408",
+      "$480",
+      "$510"
+    ],
+    answer: 1,
+    explanation:
+      "First, apply the 20% discount: 100% - 20% = 80% of $600 = $480. Then apply the additional 15% off the discounted price: 100% - 15% = 85% of $480 = $408. Alternatively, multiply the original price by (0.8 × 0.85) = 0.68, giving $600 × 0.68 = $408. A common mistake is to add the percentages (20% + 15% = 35%) and apply a single 35% discount, resulting in $600 × 0.65 = $390. The other options represent applying only one of the discounts: $480 (only the 20% off) and $510 (only the 15% off).",
+    difficulty: 0.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 60,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the Latin phrase 'ad hoc' most commonly mean in English?",
+    options: [
+      "For this specific purpose",
+      "In the middle of",
+      "At first sight",
+      "Without end"
+    ],
+    answer: 0,
+    explanation:
+      "'Ad hoc' is a Latin phrase meaning 'to this' or 'for this purpose'. In English, it is used to describe something created or done for a specific, often temporary, situation, rather than as a general solution. The other options are incorrect: 'in the middle of' refers to 'in medias res', 'at first sight' is 'prima facie', and 'without end' is 'ad infinitum'.",
+    difficulty: -1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 61,
+    type: "math",
+    category: "math",
+    question:
+      "You drive 240 miles. For the first 120 miles, you travel at 60 mph, and for the remaining 120 miles, you travel at 40 mph. What is your average speed for the entire trip?",
+    options: [
+      "48 mph",
+      "50 mph",
+      "52 mph",
+      "45 mph"
+    ],
+    answer: 0,
+    explanation:
+      "Average speed is total distance divided by total time. Time for first 120 miles at 60 mph: 120/60 = 2 hours. Time for next 120 miles at 40 mph: 120/40 = 3 hours. Total time = 5 hours. Total distance = 240 miles. Average speed = 240/5 = 48 mph. Note that averaging the speeds (60 and 40) to get 50 mph is incorrect because time spent at each speed differs.",
+    difficulty: -0.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 62,
+    type: "math",
+    category: "math",
+    question:
+      "Your garden is 12 feet by 15 feet. You want to add a 6-inch layer of topsoil. The topsoil costs $2.50 per cubic foot. How much will the topsoil cost?",
+    options: [
+      "$225",
+      "$270",
+      "$180",
+      "$300"
+    ],
+    answer: 0,
+    explanation:
+      "First, find the area: 12 ft × 15 ft = 180 sq ft. Convert depth to feet: 6 inches = 0.5 ft. Volume = 180 × 0.5 = 90 cubic ft. Cost = 90 × $2.50 = $225.",
+    difficulty: 0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 63,
+    type: "logic",
+    category: "logic",
+    question:
+      "At a company, all managers have a company car. Lisa has a company car. Which of the following can be logically concluded?",
+    options: [
+      "Lisa is a manager.",
+      "Lisa is not a manager.",
+      "Some managers do not have a company car.",
+      "None of the above."
+    ],
+    answer: 3,
+    explanation:
+      "The statement 'all managers have a company car' does not prevent non-managers from having company cars. Therefore, from 'Lisa has a company car' we cannot conclude whether she is a manager or not. Option C contradicts the premise. Thus, no conclusion can be drawn, so 'None of the above' is correct.",
+    difficulty: -2.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 64,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Choose the correct word to complete the sentence: 'The detective tried to _____ a confession from the suspect.'",
+    options: [
+      "illicit",
+      "elicit",
+      "explicit",
+      "implicate"
+    ],
+    answer: 1,
+    explanation:
+      "'Elicit' means to draw out or evoke, often information or a response. 'Illicit' means illegal or forbidden. 'Explicit' means clearly stated. 'Implicate' means to show someone is involved in a crime. Only 'elicit' fits the context of obtaining a confession.",
+    difficulty: 1.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 65,
+    type: "math",
+    category: "math",
+    question:
+      "You deposit $800 in a savings account that earns 2.5% simple interest per year. How much interest will you earn after 3 years?",
+    options: [
+      "$20",
+      "$50",
+      "$60",
+      "$80"
+    ],
+    answer: 2,
+    explanation:
+      "Simple interest is calculated as principal × rate × time. Here, principal = $800, rate = 2.5% = 0.025, time = 3 years. Interest = 800 × 0.025 × 3 = $60. The correct answer is $60.",
+    difficulty: -1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 66,
+    type: "logic",
+    category: "logic",
+    question:
+      "On an island where every inhabitant is either a knight (always tells the truth) or a knave (always lies), you meet two inhabitants, Alice and Bob. Alice says, \"Bob is a knight.\" Bob says, \"We are of different types.\" What can you conclude?",
+    options: [
+      "Both are knights.",
+      "Both are knaves.",
+      "Alice is a knight and Bob is a knave.",
+      "Alice is a knave and Bob is a knight."
+    ],
+    answer: 1,
+    explanation:
+      "If Alice were a knight, then Bob would be a knight (since Alice tells the truth). But then Bob would say they are different types, which would be false because they are both knights, contradicting Bob being a knight. So Alice cannot be a knight; she must be a knave. Therefore, her statement is false, meaning Bob is not a knight; Bob is a knave. Then Bob's statement that they are different types is false because they are both knaves, consistent with Bob being a knave. So both are knaves.",
+    difficulty: -0.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 67,
+    type: "math",
+    category: "math",
+    question:
+      "You drive 150 miles at 60 mph, stop for 30 minutes, then drive 120 miles at 50 mph. What is your average speed for the entire trip?",
+    options: [
+      "50 mph",
+      "52 mph",
+      "55 mph",
+      "48 mph"
+    ],
+    answer: 0,
+    explanation:
+      "Total distance = 150 + 120 = 270 miles. First leg time = 150/60 = 2.5 hours. Stop = 0.5 hours. Second leg time = 120/50 = 2.4 hours. Total time = 2.5 + 0.5 + 2.4 = 5.4 hours. Average speed = 270 / 5.4 = 50 mph.",
+    difficulty: -0.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 68,
+    type: "math",
+    category: "math",
+    question:
+      "An item originally costs $50. The store offers a 30% discount on all items. You also have a coupon for an additional 10% off the discounted price. What is the final price you pay?",
+    options: [
+      "$30.00",
+      "$31.50",
+      "$35.00",
+      "$32.50"
+    ],
+    answer: 1,
+    explanation:
+      "First apply the 30% discount: 50 * 0.7 = 35. Then apply the additional 10% off: 35 * 0.9 = 31.5. So the final price is $31.50. A common mistake is to add the discounts (40% off) leading to $30, or only applying the first discount.",
+    difficulty: 0,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 69,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the Latin phrase 'bona fide' mean in English?",
+    options: [
+      "In good faith",
+      "One-time",
+      "Without payment",
+      "After the fact"
+    ],
+    answer: 0,
+    explanation:
+      "'Bona fide' is Latin for 'in good faith.' It is used to describe something genuine or sincere, as in 'a bona fide offer.' The other options are incorrect: 'one-time' is 'ad hoc,' 'without payment' is 'pro bono,' and 'after the fact' is 'post hoc.'",
+    difficulty: -0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 70,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What is the meaning of the word 'garrulous'?",
+    options: [
+      "talkative",
+      "secretive",
+      "quarrelsome",
+      "sleepy"
+    ],
+    answer: 0,
+    explanation:
+      "'Garrulous' means excessively talkative, especially on trivial matters. It comes from the Latin 'garrire' (to chatter). The other options are common distractors: 'secretive' is opposite, 'quarrelsome' is confused with 'pugnacious', and 'sleepy' is unrelated.",
+    difficulty: 1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 71,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "In literary criticism, what does the term 'deus ex machina' refer to?",
+    options: [
+      "A sudden introduction of a new character or event to resolve a seemingly impossible situation",
+      "A tragic flaw in the protagonist that leads to their downfall",
+      "A symbolic representation of a deity or divine intervention",
+      "An unexpected twist that reveals a hidden identity"
+    ],
+    answer: 0,
+    explanation:
+      "'Deus ex machina' is Latin for 'god from the machine.' It originated from ancient Greek theater where a crane (machina) would lower a god onto the stage to resolve a complex plot. In literary criticism, it refers to an implausible or unexpected introduction of a new character or event used to resolve a difficult situation, often seen as a weak plot device.",
+    difficulty: 0.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 72,
+    type: "math",
+    category: "math",
+    question:
+      "You drive a car that gets 28 miles per gallon on the highway and 22 miles per gallon in the city. On a 200-mile trip, 40% of the distance is on the highway and 60% in the city. If gas costs $3.80 per gallon, what is the total cost of gas for the trip?",
+    options: [
+      "$31.58",
+      "$31.15",
+      "$30.40",
+      "$27.14"
+    ],
+    answer: 0,
+    explanation:
+      "Highway distance = 0.4 × 200 = 80 miles. City distance = 0.6 × 200 = 120 miles. Gallons used on highway = 80/28 ≈ 2.8571. Gallons used in city = 120/22 ≈ 5.4545. Total gallons = 2.8571 + 5.4545 = 8.3116. Cost = 8.3116 × $3.80 = $31.584, rounded to $31.58. Alternatively, effective mpg = 1/(0.4/28 + 0.6/22) ≈ 24.06 mpg, gallons = 200/24.06 ≈ 8.312, cost = $31.58.",
+    difficulty: 0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 73,
+    type: "logic",
+    category: "logic",
+    question:
+      "All dogs are mammals. Buddy is a dog. Therefore, which of the following must be true?",
+    options: [
+      "Buddy is a mammal.",
+      "Buddy is not a mammal.",
+      "All mammals are dogs.",
+      "Some mammals are dogs."
+    ],
+    answer: 0,
+    explanation:
+      "The first premise states that all dogs belong to the set of mammals. The second premise states that Buddy is a dog. Therefore, Buddy must belong to the set of mammals. Option A correctly concludes that Buddy is a mammal. Option B contradicts the deduction. Options C and D are not necessarily true based only on the given statements.",
+    difficulty: -1.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 74,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Choose the correct meaning of the word 'ostensible'.",
+    options: [
+      "genuine",
+      "apparent",
+      "secret",
+      "ambiguous"
+    ],
+    answer: 1,
+    explanation:
+      "'Ostensible' means seeming or appearing to be true, but not necessarily so. It is derived from Latin 'ostendere' (to show). The correct meaning is 'apparent' or 'seeming', not genuine, secret, or ambiguous.",
+    difficulty: 0,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 75,
+    type: "math",
+    category: "math",
+    question:
+      "You drive 120 miles at 40 mph, then 180 miles at 60 mph. What must your speed be for the next 100 miles to have an overall average speed of 55 mph for the entire trip? Round to the nearest whole number.",
+    options: [
+      "68 mph",
+      "72 mph",
+      "79 mph",
+      "82 mph"
+    ],
+    answer: 2,
+    explanation:
+      "First leg: time = 120/40 = 3 hours. Second leg: time = 180/60 = 3 hours. Total distance so far = 300 miles, total time = 6 hours. Desired average speed 55 mph for 400 miles (adding 100 miles) gives total time = 400/55 ≈ 7.2727 hours. Remaining time for last 100 miles = 7.2727 - 6 = 1.2727 hours. Required speed = 100/1.2727 ≈ 78.57 mph, rounded to 79 mph.",
+    difficulty: 2.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 76,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Choose the correct word to complete the sentence: 'The professor was completely _____ in the outcome of the debate, as she had no personal stake.'",
+    options: [
+      "disinterested",
+      "uninterested",
+      "biased",
+      "apathetic"
+    ],
+    answer: 0,
+    explanation:
+      "'Disinterested' means impartial or unbiased, which fits the context of having no personal stake. 'Uninterested' means not interested or bored. 'Biased' is the opposite of impartial. 'Apathetic' means lacking emotion or concern, but it does not specifically imply impartiality.",
+    difficulty: 0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 77,
+    type: "logic",
+    category: "logic",
+    question:
+      "You meet three people on an island: X, Y, and Z. Each is either a knight (always tells the truth) or a knave (always lies). They make the following statements:\nX says: 'Y is a knight.'\nY says: 'Z is a knave.'\nZ says: 'X is a knave.'\nIf exactly one of them is a knight, who is the knight?",
+    options: [
+      "X",
+      "Y",
+      "Z",
+      "None of them"
+    ],
+    answer: 2,
+    explanation:
+      "Assume X is the knight. Then Y is a knight (since X tells truth), but that gives two knights, contradicting exactly one knight. So X is not a knight.\n\nAssume Y is the knight. Then Z is a knave (since Y tells truth). Z says 'X is a knave'. If Z is a knave, that statement is false, so X is actually a knight. That gives two knights (Y and X), contradiction. So Y is not a knight.\n\nAssume Z is the knight. Then X is a knave (since Z tells truth). X says 'Y is a knight'. Since X is a knave, that statement is false, so Y is a knave. Y says 'Z is a knave'. Since Y is a knave, that statement is false, so Z is a knight, consistent. Thus, only Z is a knight.\n\nTherefore, Z is the knight.",
+    difficulty: 1.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 78,
+    type: "math",
+    category: "math",
+    question:
+      "You buy a meal that costs $45. You want to leave a 15% tip. How much is the tip?",
+    options: [
+      "$6.75",
+      "$5.75",
+      "$7.50",
+      "$6.00"
+    ],
+    answer: 0,
+    explanation:
+      "To find 15% of $45, multiply 45 by 0.15: 45 × 0.15 = 6.75. So the tip is $6.75.",
+    difficulty: -2.6,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 79,
+    type: "logic",
+    category: "logic",
+    question:
+      "You meet two people, Alice and Bob, who are either always truthful or always liars. Alice says: 'If Bob is a liar, then I am a liar.' Bob says: 'If Alice is a truth-teller, then I am a truth-teller.' What can you conclude?",
+    options: [
+      "Both are truth-tellers.",
+      "Both are liars.",
+      "Alice is a truth-teller and Bob is a liar.",
+      "Alice is a liar and Bob is a truth-teller."
+    ],
+    answer: 0,
+    explanation:
+      "Assume Alice is a truth-teller. Then her conditional statement must be true: 'If Bob is a liar, then I am a liar.' Since Alice is truthful, the consequent 'I am a liar' is false, so the antecedent 'Bob is a liar' must be false. Thus Bob is truthful. Bob's statement is 'If Alice is a truth-teller, then I am a truth-teller.' Since Alice is truthful, the antecedent is true, and Bob is truthful, so the consequent is true, making the conditional true. Consistency holds. Now assume Alice is a liar. Then her conditional statement is false. A conditional is false only when the antecedent is true and the consequent is false. Antecedent: 'Bob is a liar' must be true, so Bob is a liar. Consequent: 'I am a liar' must be false, but Alice is a liar, so the consequent is true, not false. Contradiction. Therefore Alice cannot be a liar, so both are truth-tellers.",
+    difficulty: -0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 80,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four friends—Alice, Bob, Carol, and Dave—each study a different subject: Math, English, History, and Science. They make the following statements:\n\n- Alice says: \"Bob studies History.\"\n- Bob says: \"Carol does not study Math.\"\n- Carol says: \"Dave studies Science.\"\n- Dave says: \"Alice does not study English.\"\n\nOnly one of them is telling the truth. Which subject does Alice study?",
+    options: [
+      "Math",
+      "English",
+      "History",
+      "Science"
+    ],
+    answer: 1,
+    explanation:
+      "Assume each statement is false because only one is true. Then:\n- Alice's statement false => Bob does NOT study History.\n- Bob's false => Carol studies Math.\n- Carol's false => Dave does NOT study Science.\n- Dave's false => Alice studies English.\n\nSince Carol studies Math, and Alice studies English, the remaining subjects (History and Science) go to Bob and Dave. But Bob does not study History (from Alice's false), so Bob must study Science, and Dave studies History. This assignment satisfies all false statements, and no contradictions arise. Therefore Alice studies English.",
+    difficulty: 1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 81,
+    type: "logic",
+    category: "logic",
+    question:
+      "On an island where knights always tell the truth and knaves always lie, you meet two inhabitants: Alex and Blake. Alex says: 'Blake is a knave.' Blake says: 'We are both knights.' Which of the following is correct?",
+    options: [
+      "Alex is a knight, Blake is a knave.",
+      "Alex is a knave, Blake is a knight.",
+      "Both are knights.",
+      "Both are knaves."
+    ],
+    answer: 0,
+    explanation:
+      "If Blake were a knight, his statement 'We are both knights' would be true, meaning Alex is also a knight. But then Alex's statement 'Blake is a knave' would be false, contradicting that Alex is a knight. Therefore, Blake cannot be a knight, so he must be a knave. Blake's statement is then false, so they are not both knights. Since Blake is a knave, Alex's statement 'Blake is a knave' is true, making Alex a knight. Thus Alex is a knight and Blake is a knave.",
+    difficulty: -1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 82,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Choose the correct word to complete the sentence: 'Based on the data, economists ____ that the market will recover within the next quarter.'",
+    options: [
+      "infer",
+      "imply",
+      "allude",
+      "elude"
+    ],
+    answer: 0,
+    explanation:
+      "'Infer' means to deduce or conclude from evidence, which fits the context of economists making a conclusion from data. 'Imply' means to suggest indirectly, which is what the data might do, but the subject is the economists, not the data. 'Allude' means to refer indirectly, and 'elude' means to evade or escape. Therefore, 'infer' is correct.",
+    difficulty: 0.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 83,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four teachers—Mr. Smith, Mrs. Jones, Ms. Brown, and Dr. Lee—each teach a different subject: Math, English, Physics, and Chemistry. Dr. Lee teaches Physics. Additionally, the following conditions hold:\n- If Mr. Smith teaches Math, then Mrs. Jones teaches English.\n- If Mrs. Jones teaches English, then Ms. Brown does not teach Chemistry.\n- Exactly one of the following statements is true: Mr. Smith teaches Math or Mrs. Jones teaches English.\n\nWhich subject does Ms. Brown teach?",
+    options: [
+      "Math",
+      "English",
+      "Physics",
+      "Chemistry"
+    ],
+    answer: 0,
+    explanation:
+      "Let S, J, B represent the subjects taught by Smith, Jones, Brown respectively. Given Lee teaches Physics. The conditions: (1) S=Math → J=English; (2) J=English → B≠Chemistry; (3) Exactly one of S=Math or J=English is true. If S=Math were true, then from (1) J=English must be true, contradicting exactly one true. Therefore S=Math is false and J=English is true. From (2), since J=English, B≠Chemistry. With J=English and Lee=Physics, remaining subjects are Math and Chemistry for Smith and Brown. Since S≠Math, Smith must take Chemistry, so Brown takes Math. Thus Ms. Brown teaches Math.",
+    difficulty: -0.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 84,
+    type: "math",
+    category: "math",
+    question:
+      "A store offers a 'buy two, get one free' promotion on items priced at $15 each. You buy 5 items. You have a coupon for 15% off your total purchase after the promotion. Sales tax is 7%. How much do you pay in total? (Round to the nearest cent.)",
+    options: [
+      "$38.25",
+      "$40.93",
+      "$42.75",
+      "$45.00"
+    ],
+    answer: 1,
+    explanation:
+      "The 'buy two, get one free' promotion means for every 2 items you pay for, you get 1 free. With 5 items, you pay for 3 (since 2 paid give 1 free, and the remaining 2 also give 1 free, but you only need 1 more, so you effectively pay for 3). Cost before coupon: 3 × $15 = $45. Coupon gives 15% off: $45 × 0.85 = $38.25. Sales tax of 7%: $38.25 × 1.07 = $40.9275, rounded to $40.93.",
+    difficulty: 2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 85,
+    type: "math",
+    category: "math",
+    question:
+      "You buy a pair of shoes for $85. The store offers a 20% discount, and then you must pay 6% sales tax on the discounted price. How much do you pay in total?",
+    options: [
+      "$68.00",
+      "$72.08",
+      "$71.60",
+      "$74.80"
+    ],
+    answer: 1,
+    explanation:
+      "First, calculate the discounted price: 20% off $85 = 0.20 × 85 = $17 off, so discounted price = $85 - $17 = $68. Then add 6% sales tax on $68: 0.06 × 68 = $4.08. Total = $68 + $4.08 = $72.08.",
+    difficulty: -1.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 86,
+    type: "logic",
+    category: "logic",
+    question:
+      "In a race, five runners—Tom, Jerry, Spike, Tyke, and Nibbles—completed the course. The following facts are known:\n1. Spike finished ahead of Tom but behind Jerry.\n2. Tyke finished ahead of Jerry.\n3. Nibbles finished behind Tom.\nAssuming no ties, who finished first?",
+    options: [
+      "Tom",
+      "Jerry",
+      "Spike",
+      "Tyke"
+    ],
+    answer: 3,
+    explanation:
+      "From clue 1: Jerry > Spike > Tom. From clue 2: Tyke > Jerry. So Tyke > Jerry > Spike > Tom. From clue 3: Tom > Nibbles. Thus the complete order is Tyke > Jerry > Spike > Tom > Nibbles. Therefore Tyke finished first.",
+    difficulty: 0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 87,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four friends—Alice, Bob, Carol, and Dave—sit in a row of four chairs from left to right. Alice sits to the left of Bob. Carol sits to the right of Bob. Dave sits to the left of Alice. Who sits in the third chair?",
+    options: [
+      "Alice",
+      "Bob",
+      "Carol",
+      "Dave"
+    ],
+    answer: 1,
+    explanation:
+      "From the conditions, we deduce the order: Dave is left of Alice, Alice left of Bob, Bob left of Carol. So the order from left to right is Dave, Alice, Bob, Carol. Therefore, Bob sits in the third chair.",
+    difficulty: -1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 88,
+    type: "logic",
+    category: "logic",
+    question:
+      "A crime has been committed. Four suspects—Alice, Bob, Carol, and Dave—are questioned. Only one of them is guilty. They make the following statements:\n\nAlice: \"Bob is guilty.\"\nBob: \"Dave is guilty.\"\nCarol: \"I am not guilty.\"\nDave: \"Alice is lying.\"\n\nOnly one statement is true. Who is guilty?",
+    options: [
+      "Alice",
+      "Bob",
+      "Carol",
+      "Dave"
+    ],
+    answer: 2,
+    explanation:
+      "Assume each person is guilty and count the true statements. Only one statement should be true.\n- If Alice is guilty: Alice's statement is false (Bob not guilty), Bob's false (Dave not guilty), Carol's true (she is not guilty), Dave's true (Alice lying). Two truths, contradiction.\n- If Bob is guilty: Alice's true, Bob's false, Carol's true (she is not guilty), Dave's false (Alice told truth). Two truths, contradiction.\n- If Carol is guilty: Alice's false, Bob's false, Carol's false (she is guilty), Dave's true (Alice lying). Exactly one truth, works.\n- If Dave is guilty: Alice's false, Bob's true, Carol's true (she is not guilty), Dave's true (Alice lying). Three truths, contradiction.\nThus Carol is guilty.",
+    difficulty: -0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 89,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four friends—Alex, Beth, Chris, and Dana—each have a different favorite season: spring, summer, fall, winter. Alex does not like summer or winter. Beth likes fall. Chris does not like spring. Dana likes winter. What is Alex's favorite season?",
+    options: [
+      "spring",
+      "summer",
+      "fall",
+      "winter"
+    ],
+    answer: 0,
+    explanation:
+      "Beth likes fall, Dana likes winter. Chris does not like spring, so Chris must like summer (the only remaining season after assigning fall and winter). Then Alex, who does not like summer or winter, must like spring.",
+    difficulty: -1.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 90,
+    type: "logic",
+    category: "logic",
+    question:
+      "Three employees—Alex, Bailey, and Casey—each work on a different floor: 1st, 2nd, or 3rd. They each have a different job title: Analyst, Coordinator, or Manager. It is known that: 1. The Manager works on the 2nd floor. 2. Bailey is not the Coordinator. 3. Casey works on the 1st floor. 4. The Analyst works on the 3rd floor. Who is the Coordinator?",
+    options: [
+      "Alex",
+      "Bailey",
+      "Casey",
+      "Cannot be determined"
+    ],
+    answer: 2,
+    explanation:
+      "From clue 1, Manager is on floor 2. From clue 4, Analyst is on floor 3. So the remaining floor 1 must be the Coordinator. Clue 3 says Casey works on floor 1, so Casey is the Coordinator. Clue 2 (Bailey is not the Coordinator) is consistent but doesn't affect the deduction.",
+    difficulty: -0.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 91,
+    type: "logic",
+    category: "logic",
+    question:
+      "Five students—Amy, Ben, Carl, Dana, and Eric—line up for a photo. Amy is not first. Ben is somewhere before Carl. Dana is immediately after Eric. Carl is third. Who is first?",
+    options: [
+      "Amy",
+      "Ben",
+      "Carl",
+      "Dana"
+    ],
+    answer: 1,
+    explanation:
+      "Carl is third. Ben is before Carl, so Ben could be first or second. Dana is immediately after Eric, so they form a consecutive pair. If Eric were first, then Dana second, leaving no position before Carl for Ben (since Carl is third). Thus Eric cannot be first. Therefore Ben must be first. The only consistent order is Ben (first), Amy (second), Carl (third), Eric (fourth), Dana (fifth), satisfying all conditions.",
+    difficulty: 0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 92,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four friends—John, Mary, Paul, and Susan—each have a different favorite color (red, blue, green, yellow) and a different favorite number from 1 to 4. They give the following statements:\n1. The person who likes red has the favorite number 2.\n2. Mary's favorite number is not 1, and she does not like blue.\n3. Paul's favorite color is either yellow or green.\n4. The person who likes green has the favorite number 3.\n5. The person who likes yellow does not have the favorite number 4.\n6. John's favorite number is not 2.\nBased on this information, which of the following must be true?",
+    options: [
+      "Mary's favorite color is green.",
+      "Paul's favorite number is 3.",
+      "John's favorite color is yellow.",
+      "Susan's favorite number is 1."
+    ],
+    answer: 0,
+    explanation:
+      "From clues 1, 4, and 5, we deduce the color-number mapping: red=2, green=3, blue=4, yellow=1. From clue 2, Mary is not blue and not number 1 (yellow), so Mary must be red or green. From clue 3, Paul is yellow or green. Clue 6 says John is not number 2 (red). Now consider cases: if Mary were red (2), then Paul could be yellow (1) or green (3), leading to multiple possibilities. But if Mary is green (3), then Paul must be yellow (1) because green is taken. Then John cannot be red, so John is blue (4), and Susan is red (2). This yields a unique assignment: Mary: green/3, Paul: yellow/1, John: blue/4, Susan: red/2. Thus Mary's favorite color is green must be true. The other options are false.",
+    difficulty: 3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 93,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What is the meaning of the word 'perspicacious'?",
+    options: [
+      "Easily deceived or fooled",
+      "Having a keen mental perception or understanding",
+      "Tending to be overly critical or harsh",
+      "Lacking energy or enthusiasm"
+    ],
+    answer: 1,
+    explanation:
+      "'Perspicacious' comes from Latin 'perspicax' meaning 'sharp-sighted'. It describes someone who has a penetrating insight or acute understanding. Option B is the correct definition. Option A is the opposite (credulous), option C is 'censorious', and option D is 'listless' or 'enervated'.",
+    difficulty: 0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 94,
+    type: "math",
+    category: "math",
+    question:
+      "A shirt costs $25, and it's on sale for 20% off. What is the sale price?",
+    options: [
+      "$20",
+      "$18",
+      "$22",
+      "$24"
+    ],
+    answer: 0,
+    explanation:
+      "20% of $25 is $5 (since 0.20 × 25 = 5). Subtract $5 from $25 to get the sale price of $20.",
+    difficulty: -2.6,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 95,
+    type: "math",
+    category: "math",
+    question:
+      "A water tank holds 30 gallons. It is currently 40% full. How many gallons of water are in the tank?",
+    options: [
+      "12 gallons",
+      "10 gallons",
+      "15 gallons",
+      "18 gallons"
+    ],
+    answer: 0,
+    explanation:
+      "40% of 30 gallons is calculated as 0.4 × 30 = 12 gallons.",
+    difficulty: -1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 96,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four colleagues—Alex, Bailey, Casey, and Dana—each work in a different department: Marketing, Sales, IT, and HR. Each also has a different preferred drink: coffee, tea, water, and soda. Given:\n(1) The person from IT does not drink coffee.\n(2) Bailey works in Sales and prefers tea.\n(3) The person who prefers water works in Marketing.\n(4) Alex does not work in IT and does not drink soda.\n(5) Casey prefers coffee.\n\nWhich department does Alex work in?",
+    options: [
+      "Marketing",
+      "Sales",
+      "IT",
+      "HR"
+    ],
+    answer: 0,
+    explanation:
+      "From (2), Bailey works in Sales and prefers tea. From (5), Casey prefers coffee. From (4), Alex does not drink soda and does not work in IT, so Alex's drink must be water (since tea and coffee are taken). From (3), the person who prefers water works in Marketing, so Alex works in Marketing. The remaining people: Dana works in IT and drinks soda (only drink left), which satisfies (1) since soda is not coffee. Casey works in HR (only department left) and drinks coffee. Thus, Alex is in Marketing.",
+    difficulty: 1.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 97,
+    type: "logic",
+    category: "logic",
+    question:
+      "If it rains, then the outdoor concert will be canceled. The concert was not canceled. Based on this information, which of the following must be true?",
+    options: [
+      "It did not rain.",
+      "The weather was sunny.",
+      "The concert was held indoors.",
+      "It rained but the concert was not canceled."
+    ],
+    answer: 0,
+    explanation:
+      "The conditional statement 'If it rains, then the concert will be canceled' means that rain is a sufficient condition for cancellation. Given that the concert was not canceled, we can conclude that it did not rain (modus tollens). Option B is not necessarily true because it could have been cloudy without rain. Option C is not stated; the concert could have been canceled or not, regardless of location. Option D contradicts the conditional because if it rained, the concert should have been canceled, but it was not.",
+    difficulty: -1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 98,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Choose the correct word to complete the sentence: 'The long, tedious meeting seemed to ____ the entire staff, leaving them drained and listless.'",
+    options: [
+      "invigorate",
+      "enervate",
+      "stimulate",
+      "energize"
+    ],
+    answer: 1,
+    explanation:
+      "'Enervate' means to weaken or drain of energy, which fits the context of leaving the staff drained and listless. The other options all mean to give energy or vitality, which is the opposite of what the sentence describes.",
+    difficulty: 0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 99,
+    type: "math",
+    category: "math",
+    question:
+      "Jessica invested $5,000 in a stock that appreciated by 12% in the first year. In the second year, the stock lost 8% of its value. She then sold the stock and had to pay a 15% capital gains tax on the profit (the increase from her original investment). How much profit did she make after taxes?",
+    options: [
+      "$152.00",
+      "$129.20",
+      "$22.80",
+      "$120.40"
+    ],
+    answer: 1,
+    explanation:
+      "After first year: $5,000 * 1.12 = $5,600. After second year: $5,600 * 0.92 = $5,152. Profit before tax: $5,152 - $5,000 = $152. Tax: 15% of $152 = $22.80. After-tax profit: $152 - $22.80 = $129.20.",
+    difficulty: 1.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 100,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four families—the Smiths, Joneses, Browns, and Davises—each own a different pet: a dog, a cat, a bird, or a fish. The Smiths own the dog. The Joneses do not own the cat. The Browns own the bird. The family that owns the fish is not the Davises. Which family owns the cat?",
+    options: [
+      "The Smiths",
+      "The Joneses",
+      "The Browns",
+      "The Davises"
+    ],
+    answer: 3,
+    explanation:
+      "We know Smiths own dog and Browns own bird. So cat and fish remain for Joneses and Davises. Joneses do not own cat, so they must own fish. Then Davises own cat. Thus, the Davises own the cat.",
+    difficulty: 0.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 101,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the word 'enervate' mean?",
+    options: [
+      "to invigorate",
+      "to weaken",
+      "to energize",
+      "to stimulate"
+    ],
+    answer: 1,
+    explanation:
+      "The word 'enervate' means to weaken or drain of energy, often confused with 'energize' which means to invigorate. It comes from Latin 'enervare' (to remove sinew). Many incorrectly think it means to energize due to similarity with 'energize'.",
+    difficulty: 0,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 102,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "In Shakespeare's 'Hamlet', what does Hamlet mean by 'the slings and arrows of outrageous fortune'?",
+    options: [
+      "The unfairness of life's hardships",
+      "Weapons used in battle",
+      "The cruelty of his uncle",
+      "The inevitability of death"
+    ],
+    answer: 0,
+    explanation:
+      "In this line from Hamlet's 'To be, or not to be' soliloquy, 'slings and arrows' are metaphors for the various hardships and misfortunes that life throws at a person. Hamlet is contemplating whether it is better to endure these difficulties or to fight against them. The phrase 'outrageous fortune' emphasizes the unfairness and randomness of suffering. The correct interpretation is that Hamlet is referring to the general hardships of life, not literal weapons, specific characters, or death itself.",
+    difficulty: -0.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 103,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "In standard English usage, what does the word 'disinterested' mean?",
+    options: [
+      "Uninterested",
+      "Impartial",
+      "Bored",
+      "Confused"
+    ],
+    answer: 1,
+    explanation:
+      "Although 'disinterested' is sometimes used informally to mean 'uninterested,' its traditional and formal meaning is 'impartial' or 'neutral.' It refers to someone who has no personal stake or bias in a situation. For example, a judge should be disinterested in the case they are presiding over. The other options are incorrect: 'uninterested' and 'bored' imply a lack of interest or engagement, while 'confused' implies mental disarray.",
+    difficulty: 0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 104,
+    type: "math",
+    category: "math",
+    question:
+      "A smartphone is priced at $600. The store has a 20% off sale. After the discount, a 6% sales tax is added. What is the total cost?",
+    options: [
+      "$508.80",
+      "$480.00",
+      "$496.80",
+      "$504.00"
+    ],
+    answer: 0,
+    explanation:
+      "First, calculate the discount: 20% of $600 is $120, so the sale price is $600 - $120 = $480. Then, add 6% sales tax: 6% of $480 is $28.80. The total cost is $480 + $28.80 = $508.80.",
+    difficulty: -0.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 105,
+    type: "logic",
+    category: "logic",
+    question:
+      "On an island, every inhabitant is either a knight (always tells the truth) or a knave (always lies). Three inhabitants—Alex, Bailey, and Casey—make the following statements:\n- Alex says: 'Bailey is a knave.'\n- Bailey says: 'Alex and Casey are of the same type.'\n- Casey says: 'Bailey is a knave.'\nHow many knights are there?",
+    options: [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    answer: 1,
+    explanation:
+      "We test possibilities. Assume Alex is a knight. Then his statement is true, so Bailey is a knave. Bailey's statement must be false, so Alex and Casey are not of the same type. Since Alex is a knight, Casey must be a knave. Then Casey's statement 'Bailey is a knave' is true, but as a knave she must lie, contradiction. Thus Alex cannot be a knight. So Alex is a knave. Then his statement 'Bailey is a knave' is false, so Bailey is a knight. Bailey's statement is true, so Alex and Casey are of the same type. Since Alex is a knave, Casey must also be a knave. Then Casey's statement 'Bailey is a knave' is false (Bailey is a knight), and as a knave she lies, consistent. So we have Alex (knave), Bailey (knight), Casey (knave) — exactly one knight.",
+    difficulty: 2.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 106,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What is the correct meaning of the word 'nonplussed'?",
+    options: [
+      "calm and unbothered",
+      "confused and puzzled",
+      "indifferent",
+      "angry"
+    ],
+    answer: 1,
+    explanation:
+      "The word 'nonplussed' is commonly misused to mean 'unfazed' or 'unbothered', but its actual meaning is 'confused or perplexed'. It comes from Latin 'non plus' meaning 'no more', so being 'nonplussed' means being at a loss or unable to proceed. Option B is correct.",
+    difficulty: 0.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 107,
+    type: "math",
+    category: "math",
+    question:
+      "You buy 100 shares of a stock at $42 per share, paying a 2% commission on the purchase. Later, you sell all 100 shares at $48 per share, paying a 1.5% commission on the sale. What is your total profit from this transaction?",
+    options: [
+      "$444",
+      "$600",
+      "$528",
+      "$396"
+    ],
+    answer: 0,
+    explanation:
+      "Purchase cost: 100 shares × $42 = $4200. Commission on purchase: 2% of $4200 = $84. Total purchase cost: $4200 + $84 = $4284. Sale proceeds: 100 shares × $48 = $4800. Commission on sale: 1.5% of $4800 = $72. Net sale proceeds: $4800 - $72 = $4728. Profit = net sale proceeds - total purchase cost = $4728 - $4284 = $444.",
+    difficulty: 2.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 108,
+    type: "math",
+    category: "math",
+    question:
+      "A car travels 240 miles on a full tank of 15 gallons. If gas costs $3.50 per gallon, how much does it cost per mile to drive this car?",
+    options: [
+      "$0.22",
+      "$0.35",
+      "$0.19",
+      "$0.28"
+    ],
+    answer: 0,
+    explanation:
+      "First, find fuel consumption per mile: 15 gallons / 240 miles = 0.0625 gallons per mile. Then multiply by cost per gallon: 0.0625 * $3.50 = $0.21875, which rounds to $0.22 per mile.",
+    difficulty: 0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 109,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which of the following best defines the word 'enormity'?",
+    options: [
+      "Great size or magnitude",
+      "A monstrous or evil act",
+      "A huge building",
+      "A measure of mass"
+    ],
+    answer: 1,
+    explanation:
+      "Enormity is often misused to mean largeness, but its primary meaning is extreme evil or wickedness. It derives from Latin 'enormitas' meaning 'irregularity, deviation from normal', and in English, it has come to refer to something monstrously evil.",
+    difficulty: 2.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 110,
+    type: "math",
+    category: "math",
+    question:
+      "A laptop is priced at $800. During a sale, the price is reduced by 20%. After the sale, an additional 10% discount is applied to the sale price. Then 8% sales tax is added. What is the final price paid?",
+    options: [
+      "$576.00",
+      "$622.08",
+      "$640.00",
+      "$691.20"
+    ],
+    answer: 1,
+    explanation:
+      "First, apply the 20% discount: $800 × 0.80 = $640. Then apply the additional 10% discount on the sale price: $640 × 0.90 = $576. Finally, add 8% sales tax: $576 × 1.08 = $622.08. Option B is correct. Option A is the price before tax, option C is only the first discount, and option D results from applying tax to the original price after a 20% discount (i.e., $800 × 0.80 × 1.08 = $691.20).",
+    difficulty: 0.6,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 111,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which word best completes the sentence? 'She felt ___ about accepting the job offer, as it had both advantages and drawbacks.'",
+    options: [
+      "ambivalent",
+      "ambiguous",
+      "ambidextrous",
+      "ambulatory"
+    ],
+    answer: 0,
+    explanation:
+      "'Ambivalent' means having mixed or contradictory feelings about something, which fits the context of both advantages and drawbacks. 'Ambiguous' means unclear or open to interpretation, not appropriate for describing feelings. 'Ambidextrous' refers to using both hands equally well, and 'ambulatory' relates to walking, both unrelated.",
+    difficulty: -0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 112,
+    type: "math",
+    category: "math",
+    question:
+      "A recipe requires 3 cups of sugar to make 24 cupcakes. How many cups of sugar are needed to make 40 cupcakes?",
+    options: [
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    answer: 1,
+    explanation:
+      "Set up a proportion: 3 cups / 24 cupcakes = x cups / 40 cupcakes. Cross-multiply: 3 * 40 = 24 * x → 120 = 24x → x = 5. So 5 cups of sugar are needed.",
+    difficulty: -1.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 113,
+    type: "math",
+    category: "math",
+    question:
+      "If a train travels at 60 miles per hour, how far does it travel in 30 minutes?",
+    options: [
+      "30 miles",
+      "60 miles",
+      "90 miles",
+      "120 miles"
+    ],
+    answer: 0,
+    explanation:
+      "Since speed is 60 miles per hour, and 30 minutes is half an hour, the distance is 60 × 0.5 = 30 miles.",
+    difficulty: -3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 114,
+    type: "logic",
+    category: "logic",
+    question:
+      "On an island where every inhabitant is either a knight (always tells the truth) or a knave (always lies), you meet two people: Alex and Bailey. Alex says: 'Bailey is a knave.' Bailey says: 'We are both knights.' Which of the following is correct?",
+    options: [
+      "Alex is a knight, Bailey is a knave.",
+      "Alex is a knave, Bailey is a knight.",
+      "Both are knights.",
+      "Both are knaves."
+    ],
+    answer: 0,
+    explanation:
+      "Assume Alex is a knight. Then his statement is true, so Bailey is a knave. Bailey's claim (we are both knights) would be false, which is consistent with Bailey being a knave. Now assume Alex is a knave. Then his statement is false, so Bailey is not a knave, i.e., Bailey is a knight. Then Bailey's claim (both knights) would be true, but Alex is a knave, so the claim is false. This is a contradiction. Therefore, Alex must be a knight and Bailey a knave.",
+    difficulty: -0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 115,
+    type: "logic",
+    category: "logic",
+    question:
+      "Three statements are made: A, B, and C. Exactly one of them is true. A says: 'B is false.' B says: 'C is false.' C says: 'A and B are both false.' Which statement is true?",
+    options: [
+      "A",
+      "B",
+      "C",
+      "None"
+    ],
+    answer: 1,
+    explanation:
+      "Assume A is true. Then B is false. Since B is false, its statement 'C is false' is false, so C is true. Then C says 'A and B are both false', but A is true, contradiction. So A cannot be true.\n\nAssume B is true. Then C is false, so C's statement is false, meaning it is not the case that both A and B are false, i.e., at least one of A or B is true. Since B is true, that condition holds. Also, A says 'B is false', which is false because B is true, so A is false. All conditions are satisfied: only B is true.\n\nAssume C is true. Then A and B are both false. But if A is false, its statement 'B is false' is false, meaning B is actually true, which contradicts B being false. So C cannot be true.\n\nThus, only B is true.",
+    difficulty: 0.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 116,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the idiom 'to bite the bullet' mean?",
+    options: [
+      "to show bravery",
+      "to endure a painful or unpleasant situation",
+      "to take a risk",
+      "to make a quick decision"
+    ],
+    answer: 1,
+    explanation:
+      "The idiom 'to bite the bullet' means to face and endure a difficult or painful situation with courage. It originates from historical battlefield medical procedures where soldiers would literally bite on a bullet to cope with the pain of surgery without anesthesia.",
+    difficulty: -1.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 117,
+    type: "math",
+    category: "math",
+    question:
+      "A jacket is on sale for 30% off. After the discount, an 8% sales tax is applied, and the final price is $75.60. What was the original price?",
+    options: [
+      "$90",
+      "$100",
+      "$110",
+      "$120"
+    ],
+    answer: 1,
+    explanation:
+      "Let the original price be x. After a 30% discount, the price is 0.7x. Then 8% sales tax means multiplying by 1.08, so final price = 0.7x * 1.08 = 0.756x. Set equal to $75.60: 0.756x = 75.60, so x = 75.60 / 0.756 = 100. Thus original price is $100.",
+    difficulty: 0.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 118,
+    type: "math",
+    category: "math",
+    question:
+      "John deposits $5,000 into a savings account that earns 4% annual interest compounded annually. How much will be in the account after 2 years?",
+    options: [
+      "$5,400",
+      "$5,408",
+      "$5,420",
+      "$5,200"
+    ],
+    answer: 1,
+    explanation:
+      "The formula for compound interest is A = P(1 + r)^t, where P = $5,000, r = 0.04, and t = 2. So A = 5000 * (1.04)^2 = 5000 * 1.0816 = $5,408. Option A is simple interest ($5,400), option C is a common miscalculation (either using 1.04*1.04 incorrectly as 1.084 or adding 1.04 twice), and option D only applies one year of interest.",
+    difficulty: 0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 119,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the word 'ameliorate' mean?",
+    options: [
+      "to worsen",
+      "to improve",
+      "to complicate",
+      "to simplify"
+    ],
+    answer: 1,
+    explanation:
+      "'Ameliorate' comes from the Latin 'melior' meaning 'better'. It means to make something bad or unsatisfactory better. Thus, the correct definition is 'to improve'. The other options are plausible but incorrect: 'to worsen' is an antonym, while 'to complicate' and 'to simplify' are unrelated actions.",
+    difficulty: 0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 120,
+    type: "logic",
+    category: "logic",
+    question:
+      "Three friends, Amy, Brian, and Claire, each have a different favorite among the following types of music: jazz, rock, classical. They make the following statements:\n- Amy says: \"Brian's favorite is not rock.\"\n- Brian says: \"Claire's favorite is classical.\"\n- Claire says: \"Amy's favorite is jazz.\"\nIf exactly one of them is telling the truth, what is Brian's favorite music?",
+    options: [
+      "jazz",
+      "rock",
+      "classical",
+      "cannot be determined"
+    ],
+    answer: 3,
+    explanation:
+      "Assume exactly one statement is true. Test each possibility.\n\nCase 1: Amy is truthful. Then Brian's favorite is not rock. Brian lies, so Claire's favorite is not classical. Claire lies, so Amy's favorite is not jazz. The remaining assignments: If Brian is jazz, then Amy must be classical and Claire rock (since not classical). Check: Amy true (Brian not rock), Brian false (Claire not classical), Claire false (Amy not jazz). Consistent. If Brian is classical, then Amy must be rock and Claire jazz. Check: Amy true (Brian not rock), Brian false (Claire not classical), Claire false (Amy not jazz). Also consistent. So Brian could be jazz or classical.\n\nCase 2: Brian is truthful. Then Claire's favorite is classical. Amy lies, so Brian's favorite is rock. Claire lies, so Amy's favorite is not jazz. Then Amy's favorite must be jazz? No, remaining is jazz but Claire's lie says Amy not jazz. Contradiction.\n\nCase 3: Claire is truthful. Then Amy's favorite is jazz. Amy lies, so Brian's favorite is rock. Brian lies, so Claire's favorite is not classical. Then Claire's favorite must be jazz or rock? But Amy has jazz, Brian has rock, so Claire must be classical, contradicting Brian's lie. \n\nThus only Case 1 yields consistent scenarios, but Brian's favorite is not uniquely determined; it could be jazz or classical. Therefore, the answer is \"cannot be determined.\"",
+    difficulty: 1.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 121,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which word means 'something that completes or brings to perfection'?",
+    options: [
+      "Compliment",
+      "Complement",
+      "Implement",
+      "Supplement"
+    ],
+    answer: 1,
+    explanation:
+      "'Complement' refers to something that completes or makes perfect, whereas 'compliment' is a polite expression of praise. 'Implement' means to put into effect or a tool, and 'supplement' is something added to complete or enhance. Therefore, 'complement' is the correct choice.",
+    difficulty: -1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 122,
+    type: "math",
+    category: "math",
+    question:
+      "You are planning a road trip. The distance is 1,200 miles. Your car gets 25 miles per gallon on the highway and 18 miles per gallon in the city. You estimate that 80% of the trip is highway and 20% is city. Gas costs $3.20 per gallon. How much will you spend on gas? (Round to the nearest cent.)",
+    options: [
+      "$160.00",
+      "$165.55",
+      "$170.00",
+      "$175.50"
+    ],
+    answer: 1,
+    explanation:
+      "First, compute highway miles: 1200 * 0.8 = 960 miles. Highway gallons: 960 / 25 = 38.4 gallons. City miles: 1200 * 0.2 = 240 miles. City gallons: 240 / 18 = 13.333... gallons. Total gallons: 38.4 + 13.333... = 51.7333... gallons. Total cost: 51.7333... * 3.20 = 165.54666..., which rounds to $165.55.",
+    difficulty: 1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 123,
+    type: "logic",
+    category: "logic",
+    question:
+      "Three people, Alice, Bob, and Charlie, are each either always truthful or always lying. They make the following statements:\n\nAlice says, 'Bob is a liar.'\nBob says, 'Charlie is a liar.'\nCharlie says, 'Alice and Bob are both liars.'\n\nWho is telling the truth?",
+    options: [
+      "Alice",
+      "Bob",
+      "Charlie",
+      "None of them"
+    ],
+    answer: 1,
+    explanation:
+      "Assume Alice is truthful. Then Bob is a liar. Since Bob lies, his statement 'Charlie is a liar' is false, so Charlie is truthful. Then Charlie's statement 'Alice and Bob are both liars' would be false because Alice is truthful, contradiction. So Alice must be a liar. Then Bob is truthful (since Alice's lie implies the opposite). Bob truthful means Charlie is a liar. Charlie's statement 'Alice and Bob are both liars' is false because Bob is truthful, so consistent. Thus only Bob tells the truth.",
+    difficulty: 0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 124,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which of the following best defines the word 'inchoate'?",
+    options: [
+      "Partially developed or just begun",
+      "Completely finished and perfect",
+      "Chaotic and disorderly",
+      "Repeated many times"
+    ],
+    answer: 0,
+    explanation:
+      "'Inchoate' comes from Latin 'inchoatus', past participle of 'inchoare' meaning 'to begin'. It describes something that is just beginning or not fully formed, synonymous with 'incipient' or 'rudimentary'. Option A is correct. Option B is the opposite (complete). Option C confuses with 'chaotic', which is unrelated. Option D confuses with 'iterate' (to repeat).",
+    difficulty: 2.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 125,
+    type: "logic",
+    category: "logic",
+    question:
+      "Three friends, Alex, Bailey, and Casey, are each taking a different elective: Art, Biology, and Chemistry. They each have a favorite color: red, blue, and green. We know: 1. The person who takes Art does not have favorite color red. 2. Bailey does not take Biology. 3. The person who takes Chemistry has favorite color blue. Which of the following must be true?",
+    options: [
+      "Alex takes Art",
+      "Bailey's favorite is green",
+      "Casey takes Biology",
+      "The person taking Art has favorite color green"
+    ],
+    answer: 3,
+    explanation:
+      "From clue 3, Chemistry has blue. From clue 1, Art cannot be red, so Art must be green (since blue is taken). Therefore, the person taking Art has favorite color green. This is a necessary conclusion. The other options are not necessarily true: Alex could take any elective, Bailey's favorite could be blue or green, and Casey could take Biology or something else.",
+    difficulty: 0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 126,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the word 'ambiguous' mean?",
+    options: [
+      "Having multiple possible meanings",
+      "Indifferent or unconcerned",
+      "Unclear or vague",
+      "Contradictory"
+    ],
+    answer: 0,
+    explanation:
+      "The word 'ambiguous' refers to something that can be interpreted in more than one way, often leading to uncertainty. Option A correctly captures this meaning. Option B describes 'ambivalent' or 'indifferent'. Option C (unclear or vague) is a related but less precise synonym; ambiguity specifically involves multiple interpretations. Option D (contradictory) implies conflict between two things, not openness to interpretation.",
+    difficulty: -1.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 127,
+    type: "math",
+    category: "math",
+    question:
+      "You are driving a total of 450 miles. Your car gets 30 miles per gallon on the highway and 20 miles per gallon in the city. If you drive two-thirds of the distance on the highway and the rest in the city, how many gallons of gas will you use?",
+    options: [
+      "15 gallons",
+      "17.5 gallons",
+      "18 gallons",
+      "20 gallons"
+    ],
+    answer: 1,
+    explanation:
+      "Highway distance: 2/3 × 450 = 300 miles. City distance: 450 - 300 = 150 miles. Gallons on highway: 300/30 = 10. Gallons in city: 150/20 = 7.5. Total: 10 + 7.5 = 17.5 gallons.",
+    difficulty: 0,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 128,
+    type: "math",
+    category: "math",
+    question:
+      "A television is on sale for 25% off. The sale price is $375. What was the original price?",
+    options: [
+      "$500",
+      "$450",
+      "$400",
+      "$425"
+    ],
+    answer: 0,
+    explanation:
+      "The sale price is 75% of the original price (100% - 25% = 75%). So original price = sale price / 0.75 = 375 / 0.75 = 500.",
+    difficulty: -1.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 129,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four friends - Emily, Jack, Olivia, and Ryan - are sitting in a row. Their ages are 22, 25, 28, and 31, but not necessarily in that order. Given the following clues: (1) Emily is not the youngest. (2) Jack is older than Olivia. (3) Ryan is younger than Jack but older than Emily. Who is 28 years old?",
+    options: [
+      "Emily",
+      "Jack",
+      "Olivia",
+      "Ryan"
+    ],
+    answer: 3,
+    explanation:
+      "From clue (3), Jack is older than Ryan, and Ryan is older than Emily, so the age order among these three is Jack > Ryan > Emily. Since Emily is not the youngest (clue 1), the youngest person (22) must be Olivia. Then Emily can be 25, Ryan 28, and Jack 31, satisfying all clues. Thus Ryan is 28.",
+    difficulty: 0,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 130,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which of the following words means 'impartial' or 'unbiased'?",
+    options: [
+      "disinterested",
+      "uninterested",
+      "indifferent",
+      "bored"
+    ],
+    answer: 0,
+    explanation:
+      "'Disinterested' means impartial or unbiased, often used in contexts requiring fairness. 'Uninterested' means lacking interest or not engaged. 'Indifferent' means having no particular interest or concern. 'Bored' means feeling weary due to lack of stimulation. Only 'disinterested' carries the sense of neutrality.",
+    difficulty: 0.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 131,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which word means 'to examine or inspect closely and thoroughly'?",
+    options: [
+      "Scrutinize",
+      "Ignore",
+      "Neglect",
+      "Admire"
+    ],
+    answer: 0,
+    explanation:
+      "'Scrutinize' comes from the Latin 'scrutari' meaning 'to search' and means to examine very carefully. 'Ignore' means to refuse to take notice, 'neglect' means to fail to care for properly, and 'admire' means to regard with respect or warm approval. Only 'scrutinize' matches the definition of close examination.",
+    difficulty: -1.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 132,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "The word 'egregious' originally meant 'remarkably good' but is now used to mean 'outstandingly bad.' What is this type of semantic change called?",
+    options: [
+      "Pejoration",
+      "Amelioration",
+      "Semantic shift",
+      "Synecdoche"
+    ],
+    answer: 0,
+    explanation:
+      "Pejoration is the process by which a word's meaning shifts to a less favorable sense, as with 'egregious' (from Latin 'egregius' meaning 'distinguished' to its modern negative sense). Amelioration is the opposite (e.g., 'nice' from 'foolish' to 'pleasant'). Semantic shift is a broader term encompassing all meaning changes, while synecdoche is a figure of speech where a part represents the whole or vice versa.",
+    difficulty: 1.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 133,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the idiom 'to take something with a grain of salt' mean?",
+    options: [
+      "To accept something with skepticism or doubt",
+      "To add flavor to food",
+      "To agree enthusiastically",
+      "To ignore completely"
+    ],
+    answer: 0,
+    explanation:
+      "The idiom 'to take something with a grain of salt' means to view something with skepticism, not taking it literally or too seriously. It originates from the ancient practice of using salt as a preservative or antidote, suggesting that a pinch of salt makes information easier to swallow, implying that one should be cautious about accepting it as true.",
+    difficulty: -0.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 134,
+    type: "math",
+    category: "math",
+    question:
+      "A driver travels the first 60 miles of a trip at 40 miles per hour, and the next 60 miles at 60 miles per hour. What is the average speed for the entire 120-mile trip?",
+    options: [
+      "48 mph",
+      "50 mph",
+      "45 mph",
+      "52 mph"
+    ],
+    answer: 0,
+    explanation:
+      "The time for the first 60 miles is 60/40 = 1.5 hours. The time for the next 60 miles is 60/60 = 1 hour. Total time = 2.5 hours. Total distance = 120 miles. Average speed = 120/2.5 = 48 mph. The common mistake is to average 40 and 60, giving 50 mph, but that ignores the different times spent at each speed.",
+    difficulty: 0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 135,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which sentence uses 'infer' correctly?",
+    options: [
+      "The speaker inferred that the audience was bored.",
+      "The data infers a strong correlation.",
+      "I inferred from his tone that he was angry.",
+      "She inferred her opinion in the debate."
+    ],
+    answer: 2,
+    explanation:
+      "The verb 'infer' means to deduce or conclude from evidence, not to hint or suggest. The speaker implies; the listener infers. In option C, the subject is the listener drawing a conclusion from tone, which is correct. Option A uses 'inferred' where 'implied' would be correct. Option B uses 'infers' for data, which is incorrect because data does not imply; it suggests. Option D uses 'inferred' to mean 'stated indirectly,' which is incorrect; she should have 'implied' her opinion.",
+    difficulty: -0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 136,
+    type: "logic",
+    category: "logic",
+    question:
+      "Three friends—Alice, Ben, and Carol—each have a different favorite subject among Math, Science, and History. They also each have a different favorite sport among Tennis, Basketball, and Soccer. We know that:\n1. Alice's favorite subject is not Math.\n2. The person who likes Science also likes Tennis.\n3. Ben's favorite sport is not Basketball.\n4. Carol's favorite subject is History.\nWhat is Ben's favorite sport?",
+    options: [
+      "Tennis",
+      "Basketball",
+      "Soccer",
+      "None of the above"
+    ],
+    answer: 2,
+    explanation:
+      "From clue 4, Carol's favorite subject is History. Therefore, the remaining subjects (Math and Science) are for Alice and Ben. Clue 1 says Alice does not like Math, so Alice must like Science, and consequently Ben likes Math. Clue 2 states that the person who likes Science (Alice) also likes Tennis, so Alice's favorite sport is Tennis. The remaining sports are Basketball and Soccer for Ben and Carol. Clue 3 says Ben's favorite sport is not Basketball, so Ben's favorite sport must be Soccer.",
+    difficulty: -0.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 137,
+    type: "math",
+    category: "math",
+    question:
+      "The temperature in a city is 68°F. If it rises by 10°C, what is the new temperature in Fahrenheit?",
+    options: [
+      "78°F",
+      "86°F",
+      "54°F",
+      "118°F"
+    ],
+    answer: 1,
+    explanation:
+      "First, convert 68°F to Celsius: C = (68 - 32) × 5/9 = 36 × 5/9 = 20°C. Adding 10°C gives 30°C. Then convert back to Fahrenheit: F = 30 × 9/5 + 32 = 54 + 32 = 86°F. Option A (78°F) results from simply adding 10 without conversion. Option C (54°F) comes from converting 30°C to Fahrenheit but forgetting to add 32. Option D (118°F) occurs if one fails to subtract 32 in the initial conversion.",
+    difficulty: 0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 138,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which of the following best defines the word 'meticulous'?",
+    options: [
+      "Careful and precise",
+      "Careless and sloppy",
+      "Quick and energetic",
+      "Loud and forceful"
+    ],
+    answer: 0,
+    explanation:
+      "The word 'meticulous' means showing great attention to detail, being very careful and precise. Therefore, option A is correct. The other options are opposite or unrelated in meaning.",
+    difficulty: -1.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 139,
+    type: "logic",
+    category: "logic",
+    question:
+      "You meet two people: Alice and Bob. Alice says, 'Bob is a liar.' Bob says, 'Alice is truthful.' If one of them always tells the truth and the other always lies, who is the truth-teller?",
+    options: [
+      "Alice is the truth-teller.",
+      "Bob is the truth-teller.",
+      "Both are truth-tellers.",
+      "Both are liars."
+    ],
+    answer: 0,
+    explanation:
+      "Assume Alice is truthful. Then her statement 'Bob is a liar' is true, so Bob lies. Bob's statement 'Alice is truthful' would then be false, which is consistent because Alice is actually truthful. Now assume Alice is a liar. Then her statement 'Bob is a liar' is false, meaning Bob is truthful. Then Bob's statement 'Alice is truthful' would be true, but that contradicts that Alice is a liar. So the only consistent scenario is that Alice is truthful and Bob lies.",
+    difficulty: -1.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 140,
+    type: "math",
+    category: "math",
+    question:
+      "A store is having a 20% off sale. After the discount, an additional 5% is taken off the sale price. What is the final price of an item originally priced at $200?",
+    options: [
+      "$150",
+      "$152",
+      "$154",
+      "$156"
+    ],
+    answer: 1,
+    explanation:
+      "First, apply the 20% discount: 20% of $200 = $40, so the sale price is $200 - $40 = $160. Then apply the additional 5% discount on the sale price: 5% of $160 = $8, so the final price is $160 - $8 = $152.",
+    difficulty: 0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 141,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which word best fits the sentence: 'Despite his reputation as a talkative person, he was surprisingly _____ about his childhood.'",
+    options: [
+      "reluctant",
+      "reticent",
+      "redundant",
+      "irrelevant"
+    ],
+    answer: 1,
+    explanation:
+      "'Reticent' means inclined to be silent or uncommunicative, which matches the context of being reserved about one's childhood. 'Reluctant' implies unwillingness to act, which is close but less precise for describing speech. 'Redundant' and 'irrelevant' do not fit the intended meaning.",
+    difficulty: 0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 142,
+    type: "math",
+    category: "math",
+    question:
+      "A furniture store increases the price of a sofa by 20%. Later, during a sale, they decrease the new price by 20%. If the original price was $500, what is the final price?",
+    options: [
+      "$480",
+      "$500",
+      "$520",
+      "$460"
+    ],
+    answer: 0,
+    explanation:
+      "A 20% increase multiplies the original price by 1.2, resulting in $600. Then a 20% decrease multiplies that by 0.8, giving $480. Note that the two percentage changes do not cancel because the decrease is applied to the increased price.",
+    difficulty: -0.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 143,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which of the following best defines the word 'enervate'?",
+    options: [
+      "To weaken or drain of energy",
+      "To invigorate or energize",
+      "To provoke or annoy",
+      "To refine or purify"
+    ],
+    answer: 0,
+    explanation:
+      "The word 'enervate' comes from the Latin 'enervare' meaning 'to cut the sinews of,' and it means to weaken or drain of vitality. It is often confused with 'energize,' which has the opposite meaning. The other options are incorrect: invigorate is an antonym, provoke is unrelated, and refine is not a synonym.",
+    difficulty: 1.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 144,
+    type: "logic",
+    category: "logic",
+    question:
+      "Four employees—Tom, Jerry, Spike, and Tyke—each take a different day off from Monday to Thursday. Tom does not take Monday off. Jerry takes off the day before Spike. Tyke takes off the day after Tom. Which day does Tom take off?",
+    options: [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday"
+    ],
+    answer: 2,
+    explanation:
+      "Let Monday=1, Tuesday=2, Wednesday=3, Thursday=4. Tom ≠1. Tyke = Tom +1. Jerry = Spike -1. All days distinct. If Tom=2, then Tyke=3. Then Jerry and Spike must be 1 and 4, but Jerry = Spike-1: if Spike=4, Jerry=3 (taken); if Spike=1, Jerry=0 (invalid). So Tom=2 fails. If Tom=3, then Tyke=4. Then Jerry and Spike are 1 and 2: if Spike=2, Jerry=1 works. If Tom=4, Tyke=5 invalid. Thus Tom=3 (Wednesday).",
+    difficulty: -0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 145,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "Which word best describes a person who is exceedingly idealistic, unrealistic, and motivated by lofty but impractical ideals?",
+    options: [
+      "Utopian",
+      "Quixotic",
+      "Romantic",
+      "Fanciful"
+    ],
+    answer: 1,
+    explanation:
+      "The word 'quixotic' derives from the character Don Quixote in Cervantes' novel, known for his impractical chivalrous pursuits. While 'utopian' refers to an idealized society, 'romantic' emphasizes emotion and imagination, and 'fanciful' suggests whimsy, only 'quixotic' specifically captures the blend of idealism and impracticality in a person's actions or ideas.",
+    difficulty: 0.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 146,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What is the meaning of the word 'bemused'?",
+    options: [
+      "Amused",
+      "Confused",
+      "Bored",
+      "Annoyed"
+    ],
+    answer: 1,
+    explanation:
+      "Bemused means bewildered, confused, or lost in thought, not amused. It is a common error to think it means 'amused' because of the similarity in sound, but the prefix 'be-' intensifies 'muse' (to ponder), leading to a state of confusion or puzzlement.",
+    difficulty: -0.7,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 147,
+    type: "logic",
+    category: "logic",
+    question:
+      "John is taller than Mary. Mary is taller than Sue. Who is the tallest?",
+    options: [
+      "John",
+      "Mary",
+      "Sue",
+      "Cannot be determined"
+    ],
+    answer: 0,
+    explanation:
+      "Since John is taller than Mary, and Mary is taller than Sue, we can deduce that John is taller than Sue as well. Therefore, John is the tallest among the three.",
+    difficulty: -2.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 148,
+    type: "vocab",
+    category: "vocab",
+    question:
+      "What does the idiom 'hit the nail on the head' mean?",
+    options: [
+      "to be exactly correct",
+      "to make a loud noise",
+      "to injure oneself",
+      "to work very hard"
+    ],
+    answer: 0,
+    explanation:
+      "The idiom 'hit the nail on the head' means to be exactly right or to describe the precise nature of something. It originates from carpentry, where hitting the nail directly on its head ensures it goes in straight. The distractors are plausible misinterpretations: 'to make a loud noise' relates to the sound, 'to injure oneself' to missing the nail, and 'to work very hard' to the effort involved.",
+    difficulty: -2.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
 ];
