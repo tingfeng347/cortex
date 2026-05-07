@@ -109,7 +109,7 @@ export function useTestState() {
 
   // Calculate result when all questions answered
   useEffect(() => {
-    if (answers.length !== questions.length) return;
+    if (answers.length === 0 || answers.length !== questions.length) return;
 
     setPhase("processing");
 

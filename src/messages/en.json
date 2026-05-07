@@ -167,10 +167,15 @@
       "Language switcher",
       "Multi-dimensional cognitive radar chart",
       "Home page \"?\" animation",
-      "Error Boundary global error handling"
+      "Error Boundary global error handling",
+      "IRT adaptive assessment engine (EAP estimation + max Fisher selection)",
+      "Adaptive test coordinator (dimension rotation + theta tracking)",
+      "Difficulty calibration on all questions",
+      "Monolithic test-flow refactored into modular components",
+      "Fixed: Redis browser errors, hydration mismatch, language switch not updating questions"
     ],
     "roadmapNearItems": [
-      "Phase 1: Dynamic Assessment Engine—IRT adaptive testing + LLM item generation, single-Agent precision measurement"
+      "Phase 1 Week 3: LLM Item Generation—AI Gateway + structured generation + caching + rate limiting"
     ],
     "roadmapLongItems": [
       "Phase 2: Micro-Intervention Engine—dual Agent (assessment + coaching) for personalized training",
