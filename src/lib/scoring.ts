@@ -22,6 +22,23 @@ export interface ResultTier {
   ringColor: string
 }
 
+export const TIER_LABELS = ["认知巅峰", "轻度退化", "中度退化", "明显退化", "严重退化"] as const
+
+export const TIER_COLORS = ["#16a34a", "#65a30d", "#d97706", "#ea580c", "#dc2626"] as const
+
+// Map from Chinese tier label → color (for legacy Redis data lookup)
+export const TIER_COLOR_MAP: Record<string, string> = {
+  认知巅峰: "#16a34a",
+  轻度退化: "#65a30d",
+  中度退化: "#d97706",
+  明显退化: "#ea580c",
+  严重退化: "#dc2626",
+}
+
+export function getTierByIndex(index: number): ResultTier {
+  return RESULT_TIERS.find((t) => index >= t.min && index <= t.max) ?? RESULT_TIERS[0]
+}
+
 export const RESULT_TIERS: ResultTier[] = [
   {
     min: 0,

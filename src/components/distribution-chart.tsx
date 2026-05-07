@@ -1,16 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
+import { TIER_LABELS, TIER_COLORS } from "@/lib/scoring"
 
 interface ChartProps {
   distribution: number[]
   avgDegradation: number | null
 }
 
-const TIER_COLORS = ["#16a34a", "#65a30d", "#d97706", "#ea580c", "#dc2626"]
-const TIER_LABELS = ["认知巅峰", "轻度退化", "中度退化", "明显退化", "严重退化"]
-
 export default function DistributionChart({ distribution, avgDegradation }: ChartProps) {
+  const t = useTranslations("distribution")
   const [userScore, setUserScore] = useState<number | null>(null)
   const [userTier, setUserTier] = useState<string | null>(null)
 
@@ -39,7 +39,7 @@ export default function DistributionChart({ distribution, avgDegradation }: Char
           viewBox="0 0 600 280"
           className="w-full h-auto"
           role="img"
-          aria-label="退化指数分布直方图"
+          aria-label={t("ariaLabel")}
         >
           {/* Y axis labels */}
           {[0, 1, 2, 3, 4].map((i) => {
@@ -114,7 +114,7 @@ export default function DistributionChart({ distribution, avgDegradation }: Char
 
           {/* X axis full range */}
           <text x="310" y="278" textAnchor="middle" fontSize="11" className="fill-muted-foreground">
-            退化指数
+            {t("xAxis")}
           </text>
 
           {/* User marker */}
@@ -145,7 +145,7 @@ export default function DistributionChart({ distribution, avgDegradation }: Char
                 fill="#dc2626"
                 fontWeight="bold"
               >
-                你在这里
+                {t("userMarker")}
               </text>
             </g>
           )}
@@ -168,7 +168,7 @@ export default function DistributionChart({ distribution, avgDegradation }: Char
       {/* User result summary */}
       {userScore !== null && total > 0 && (
         <div className="mt-4 rounded-lg border bg-card p-3 text-sm">
-          <div className="font-medium text-foreground">你的结果</div>
+          <div className="font-medium text-foreground">{t("yourResult")}</div>
           <div className="mt-1 text-muted-foreground">
             退化指数 <span className="font-semibold text-foreground">{userScore}</span>
             {userTier && (
@@ -178,9 +178,8 @@ export default function DistributionChart({ distribution, avgDegradation }: Char
               </>
             )}
             {" · "}
-            超过{" "}
-            <span className="font-semibold text-foreground">
-              {total > 0
+            {t("exceeds", {
+              pct: total > 0
                 ? Math.round(
                     (distribution
                       .slice(0, Math.ceil(userScore / 10))
@@ -188,10 +187,8 @@ export default function DistributionChart({ distribution, avgDegradation }: Char
                       total) *
                       100,
                   )
-                : 0}
-              %
-            </span>{" "}
-            的参与者
+                : 0,
+            })}
           </div>
         </div>
       )}

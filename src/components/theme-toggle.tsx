@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react"
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 
 export function ThemeToggle() {
+  const t = useTranslations()
   const [mounted, setMounted] = useState(false)
   const [isDark, setIsDark] = useState(false)
 
@@ -23,7 +25,7 @@ export function ThemeToggle() {
   if (!mounted) return <div className="h-9 w-9" />
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label="切换主题">
+    <Button variant="ghost" size="icon" onClick={toggle} aria-label={t("theme.toggleLabel")}>
       {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
   )

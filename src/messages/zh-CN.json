@@ -1,0 +1,216 @@
+{
+  "site": {
+    "title": "认知防锈",
+    "tagline": "你的认知状态怎么样？",
+    "subtitle": "基线测试",
+    "description": "{count} 道题给你的认知能力拍一张快照。定期测量，看清趋势——认知能力就像肌肉，用进废退。"
+  },
+  "error": {
+    "heading": "出了点问题",
+    "message": "页面加载出错，请尝试刷新。如果问题持续，数据不会丢失——你的历史记录已保存在本地。",
+    "retry": "重试"
+  },
+  "theme": {
+    "toggleLabel": "切换主题"
+  },
+  "radar": {
+    "ariaLabel": "认知维度雷达图",
+    "logic": "逻辑推理",
+    "math": "速算",
+    "vocab": "词汇语义"
+  },
+  "landing": {
+    "title": "认知防锈 · 基线测试",
+    "challengePrefix": "你的朋友测得",
+    "challengeSuffix": "的退化指数。\n你觉得你能比 TA 强吗？",
+    "defaultSubtitle": "你的认知状态怎么样？{count} 道题拍一张快照。\n定期测量，看看趋势怎么说。",
+    "questionsCount": "{count} 道混合题型",
+    "timeEstimate": "~{minutes} 分钟完成",
+    "noAiLabel": "不使用 AI 辅助",
+    "noAiSubtext": "——测的是你，不是 AI",
+    "lastTestLabel": "上次测试",
+    "lastTestDegradation": "退化指数 · ",
+    "resumeButton": "继续上次测试",
+    "resumeProgress": "（已完成 {done}/{total} 题）",
+    "restartButton": "重新开始",
+    "ctaButton": "开始测试",
+    "retakeButton": "再测一次",
+    "viewStats": "查看全平台统计",
+    "footerTagline": "认知能力就像肌肉——用进废退。定期测量，才能知道 AI\n在你身上留下了什么。"
+  },
+  "declaration": {
+    "title": "做好准备",
+    "subtitle": "为确保测试结果准确，请确认以下几点：",
+    "quietEnv": "你在一个安静、不受打扰的环境中",
+    "fullTime": "你有连续 {minutes} 分钟的完整时间",
+    "timeLimit": "每道题限时 {seconds} 秒，超时将自动跳过",
+    "aiUsageLabel": "你每天花多少时间使用 AI 工具？",
+    "aiUsageHint": "ChatGPT、Claude、Copilot、Gemini 等都算",
+    "aiLevels": ["< 30 分钟", "30 分钟 - 2 小时", "2 - 5 小时", "> 5 小时"],
+    "pledge": "我承诺在本次测试中不使用任何 AI 辅助工具",
+    "startButton": "开始答题",
+    "selectAiFirst": "请先选择 AI 使用量",
+    "backButton": "返回"
+  },
+  "testing": {
+    "nextButton": "下一题",
+    "finishButton": "完成测试"
+  },
+  "processing": {
+    "title": "测试完成",
+    "subtitle": "正在分析你的认知表现",
+    "message": "正在计算你的认知画像…"
+  },
+  "result": {
+    "title": "测试完成",
+    "subtitle": "你的基线认知状态",
+    "aiUsageLabel": "每日 AI 使用量",
+    "description": "这是你当前的认知活跃度基线。定期复测才能看出趋势——\n趋势比单次分数更有意义。",
+    "radarLabel": "认知画像",
+    "adviceTitle": "针对性训练建议",
+    "adviceWeakest": "你的 {dimension} 维度相对较弱。",
+    "adviceDefault": "持续练习会带来改善。",
+    "adviceTips": {
+      "logic": "每天做一道逻辑题（比如数独或推理题），逐步提升分析能力。",
+      "math": "在心算之前不要立刻掏出计算器——先自己算一遍，哪怕慢一点。",
+      "vocab": "每天读 10 分钟纸质书或长文章，留意用词和表达方式。"
+    },
+    "retestPrompt": "7 天后复测，追踪你的变化",
+    "retestDesc": "认知能力就像肌肉——定期测量才能看到趋势。我们会在本地保存你的历史记录。",
+    "comparisonTitle": "与上次测试对比",
+    "lastLabel": "上次",
+    "currentLabel": "本次",
+    "improved": "相比上次你的认知活跃度有所提升 ↑",
+    "worsened": "相比上次退化指数有所上升，留意趋势",
+    "unchanged": "与上次持平，保持关注",
+    "dimensionCompare": "各维度对比",
+    "reviewTitle": "逐题回顾",
+    "reviewToggle": "展开",
+    "reviewToggleClose": "收起",
+    "reviewQuestion": "第 {i} 题 · {category}",
+    "reviewCorrect": "正确",
+    "reviewWrong": "错误",
+    "reviewTimeout": "超时",
+    "reviewYourAnswer": "你的答案：",
+    "reviewUnanswered": "未作答",
+    "reviewCorrectAnswer": "正确答案：{answer}",
+    "shareButton": "分享结果",
+    "remindButton": "7 天后提醒我",
+    "retestButton": "重新测试",
+    "viewStatsButton": "查看全平台统计",
+    "downloadButton": "保存结果图",
+    "author": "简律纯",
+    "aboutLink": "关于",
+    "otherGame": "另一个游戏"
+  },
+  "stats": {
+    "pageTitle": "全平台统计",
+    "pageSubtitle": "认知防锈 · 基线测试",
+    "loading": "加载中...",
+    "errorTitle": "暂时无法获取统计数据",
+    "emptyTitle": "还没有数据",
+    "emptyDesc": "成为第一个完成测试的人吧！",
+    "emptyCta": "开始测试",
+    "totalTests": "总测试数",
+    "avgDegradation": "平均退化指数",
+    "yourRank": "你的排名",
+    "ranking": "超过 {count} 人",
+    "distributionTitle": "退化指数分布",
+    "distributionDesc": "大部分人的得分集中在哪个区间",
+    "aiGroupTitle": "按 AI 使用量分组",
+    "aiGroupDesc": "各组人数与平均退化指数",
+    "tierTitle": "等级分布",
+    "trendTitle": "个人趋势",
+    "trendDesc": "你的 {count} 次测试记录",
+    "trendOverall": "综合",
+    "trendLogic": "逻辑",
+    "trendMath": "速算",
+    "trendVocab": "词汇",
+    "trendFirst": "首次",
+    "trendLatest": "最新",
+    "trendFlat": "→ 持平",
+    "trendAxis": "测试次数",
+    "privacyNote": "所有数据匿名收集，仅用于生成统计分布",
+    "aiLevelSuffix": "人"
+  },
+  "about": {
+    "title": "关于",
+    "subtitle": "认知防锈 · 项目起源",
+    "originTitle": "为什么做这个项目",
+    "originP1": "2024 年以来，我发现自己越来越习惯把问题直接丢给 AI，而不是先自己想一想。遇到难题的第一反应从\"让我想想\"变成了\"让我问问\"。这种变化很舒服——但也让人不安。",
+    "originP2": "\"认知防锈\"不是要否定 AI 工具的价值，而是提供一个简单的工具，让你能定期给自己的认知状态拍一张快照。不是为了证明什么，只是让趋势变得可见——因为看不见的东西，你不会在意。",
+    "usageTitle": "怎么用",
+    "usageP1": "完成 {count} 道混合题型（逻辑推理 / 速算 / 词汇语义），每道题限时 {seconds} 秒。完成后你会得到一个认知活跃度评分（0-100）。分数越低越活跃。",
+    "usageP2": "单次测试的分数意义有限——真正的价值在于复测。两次测试之间隔 7 天以上，把分数连起来看趋势。",
+    "privacyTitle": "数据与隐私",
+    "privacyP1": "我们不收集任何个人身份信息（没有 Cookie、没有用户 ID）。每次测试结果以匿名方式存储，仅用于生成全平台的统计分布图。你的个人历史记录保存在浏览器本地，不会上传。",
+    "roadmapTitle": "后续计划",
+    "roadmapDone": "已上线",
+    "roadmapNear": "近期",
+    "roadmapLong": "长期",
+    "roadmapDoneItems": [
+      "个人趋势折线图（统计页查看）",
+      "挑战分享——朋友点开链接能看到对比",
+      "按 AI 使用量分组的统计数据",
+      "浅色/深色主题切换",
+      "浏览器通知提醒（7 天后复测）",
+      "PWA 支持（可安装到桌面）",
+      "动态 OG 分享卡片",
+      "题库 44 题，每测 20 题随机抽取",
+      "倒计时最后 10 秒紧迫感提示",
+      "测试完成过渡动画"
+    ],
+    "roadmapNearItems": [
+      "中途保存/恢复——14 分钟测试可暂停继续",
+      "自适应出题（IRT + LLM 动态生成题目）",
+      "题库扩展与新题型维度"
+    ],
+    "roadmapLongItems": [
+      "认知趋势预警——持续退化时提供早期提醒",
+      "社区基准——按行业、年龄段等维度对比"
+    ],
+    "signature": "2026 年 5 月 7 日\n简律纯",
+    "footerBack": "返回测试"
+  },
+  "share": {
+    "loading": "正在跳转...",
+    "clickHere": "点击这里"
+  },
+  "distribution": {
+    "ariaLabel": "退化指数分布直方图",
+    "xAxis": "退化指数",
+    "userMarker": "你在这里",
+    "yourResult": "你的结果",
+    "exceeds": "超过 {pct}% 的参与者"
+  },
+  "tier": {
+    "cognitivePeak": "认知巅峰",
+    "mildDecline": "轻度退化",
+    "moderateDecline": "中度退化",
+    "significantDecline": "明显退化",
+    "severeDecline": "严重退化"
+  },
+  "question": {
+    "category": {
+      "logic": "逻辑推理",
+      "sequence": "数列推理",
+      "math": "速算",
+      "vocab": "词汇语义"
+    }
+  },
+  "lockedSelection": "不允许更改，毕竟真正的笨蛋就是没有后悔机会的",
+  "toast": {
+    "resumeRestored": "已恢复上次进度",
+    "resultCopied": "结果已复制 ✓",
+    "notificationUnsupported": "您的浏览器不支持通知功能",
+    "notificationSet": "7 天后将提醒你 ✓",
+    "reminderBody": "上次测得 {tier}，7 天过去了，你的认知状态有变化吗？",
+    "reminderTitle": "认知防锈 · 该复测了",
+    "notificationDenied": "需要允许通知权限才能提醒你",
+    "downloadStarted": "正在生成图片…",
+    "downloadSuccess": "结果图已保存 ✓",
+    "downloadFailed": "生成图片失败",
+    "notifConfirmTitle": "通知已设定",
+    "notifConfirmBody": "7 天后我们会提醒你回来复测"
+  }
+}

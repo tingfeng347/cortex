@@ -1,0 +1,216 @@
+{
+  "site": {
+    "title": "認知防錆",
+    "tagline": "あなたの認知状態はどうですか？",
+    "subtitle": "ベースラインテスト",
+    "description": "{count} 問の質問で認知能力のスナップショットを撮ります。定期的に測定して、傾向を把握しましょう——認知能力は筋肉と同じで、使わなければ衰えます。"
+  },
+  "error": {
+    "heading": "問題が発生しました",
+    "message": "ページの読み込みに失敗しました。更新してください。問題が続く場合でも、データは失われません——履歴はローカルに保存されています。",
+    "retry": "再試行"
+  },
+  "theme": {
+    "toggleLabel": "テーマ切替"
+  },
+  "radar": {
+    "ariaLabel": "認知次元レーダーチャート",
+    "logic": "論理推論",
+    "math": "暗算",
+    "vocab": "語彙意味"
+  },
+  "landing": {
+    "title": "認知防錆 · ベースラインテスト",
+    "challengePrefix": "あなたの友達の",
+    "challengeSuffix": "の退化指数です。\nあなたは彼らより強いと思いますか？",
+    "defaultSubtitle": "あなたの認知状態はどうですか？{count} 問の質問でスナップショットを撮ります。\n定期的に測定して、傾向を見てみましょう。",
+    "questionsCount": "{count} 問混合問題",
+    "timeEstimate": "約{minutes}分",
+    "noAiLabel": "AI補助なし",
+    "noAiSubtext": "——測定するのはあなた、AIではありません",
+    "lastTestLabel": "前回のテスト",
+    "lastTestDegradation": "退化指数 · ",
+    "resumeButton": "前回の続きから",
+    "resumeProgress": "（{done}/{total} 問完了）",
+    "restartButton": "最初から",
+    "ctaButton": "テスト開始",
+    "retakeButton": "もう一度測定",
+    "viewStats": "全体統計を見る",
+    "footerTagline": "認知能力は筋肉と同じ——使わなければ衰えます。定期的に測定して、AIがあなたに何を残したのかを知りましょう。"
+  },
+  "declaration": {
+    "title": "準備をしましょう",
+    "subtitle": "テスト結果の正確性を確保するため、以下を確認してください：",
+    "quietEnv": "静かで邪魔の入らない環境にいる",
+    "fullTime": "連続して{minutes}分の十分な時間がある",
+    "timeLimit": "各問題{seconds}秒の制限時間、超過すると自動スキップ",
+    "aiUsageLabel": "AIツールの1日の使用時間は？",
+    "aiUsageHint": "ChatGPT、Claude、Copilot、Geminiなどを含む",
+    "aiLevels": ["30分未満", "30分〜2時間", "2〜5時間", "5時間以上"],
+    "pledge": "本テストでは一切のAI補助ツールを使用しないことを誓います",
+    "startButton": "回答を開始",
+    "selectAiFirst": "AI使用量を選択してください",
+    "backButton": "戻る"
+  },
+  "testing": {
+    "nextButton": "次の問題",
+    "finishButton": "テスト完了"
+  },
+  "processing": {
+    "title": "テスト完了",
+    "subtitle": "認知パフォーマンスを分析中",
+    "message": "認知プロファイルを計算中…"
+  },
+  "result": {
+    "title": "テスト完了",
+    "subtitle": "あなたのベースライン認知状態",
+    "aiUsageLabel": "1日のAI使用量",
+    "description": "これが現在の認知活性度ベースラインです。定期的な再測定で傾向が見えてきます——\n傾向は単発のスコアよりはるかに意味があります。",
+    "radarLabel": "認知プロファイル",
+    "adviceTitle": "トレーニング提案",
+    "adviceWeakest": "{dimension}次元が比較的弱いです。",
+    "adviceDefault": "継続的な練習が改善をもたらします。",
+    "adviceTips": {
+      "logic": "毎日1問ロジック問題（数独や推理問題など）を解き、分析力を段階的に向上させましょう。",
+      "math": "暗算する前にすぐに電卓を出さないで——自分で計算してみて、たとえ遅くても。",
+      "vocab": "毎日10分間、紙の本や長文記事を読み、語彙や表現に注意を払いましょう。"
+    },
+    "retestPrompt": "7日後に再測定し、変化を追跡",
+    "retestDesc": "認知能力は筋肉と同じ——定期的な測定で傾向が見えてきます。履歴はローカルに保存されます。",
+    "comparisonTitle": "前回のテストとの比較",
+    "lastLabel": "前回",
+    "currentLabel": "今回",
+    "improved": "前回より認知活性度が向上しました ↑",
+    "worsened": "前回より退化指数が上昇しました、傾向に注意",
+    "unchanged": "前回と変わらず、引き続き注目",
+    "dimensionCompare": "各次元の比較",
+    "reviewTitle": "問題ごとの振り返り",
+    "reviewToggle": "展開",
+    "reviewToggleClose": "折りたたむ",
+    "reviewQuestion": "第{i}問 · {category}",
+    "reviewCorrect": "正解",
+    "reviewWrong": "不正解",
+    "reviewTimeout": "時間切れ",
+    "reviewYourAnswer": "あなたの回答：",
+    "reviewUnanswered": "未回答",
+    "reviewCorrectAnswer": "正解：{answer}",
+    "shareButton": "結果を共有",
+    "remindButton": "7日後に通知",
+    "retestButton": "再テスト",
+    "viewStatsButton": "全体統計を見る",
+    "downloadButton": "結果画像を保存",
+    "author": "簡律純",
+    "aboutLink": "このアプリについて",
+    "otherGame": "別のゲーム"
+  },
+  "stats": {
+    "pageTitle": "全体統計",
+    "pageSubtitle": "認知防錆 · ベースラインテスト",
+    "loading": "読み込み中...",
+    "errorTitle": "統計データを取得できません",
+    "emptyTitle": "まだデータがありません",
+    "emptyDesc": "最初のテスターになりましょう！",
+    "emptyCta": "テスト開始",
+    "totalTests": "総テスト数",
+    "avgDegradation": "平均退化指数",
+    "yourRank": "あなたの順位",
+    "ranking": "{count}人以上",
+    "distributionTitle": "退化指数分布",
+    "distributionDesc": "ほとんどの人のスコアが集中する範囲",
+    "aiGroupTitle": "AI使用量別グループ",
+    "aiGroupDesc": "各グループの人数と平均退化指数",
+    "tierTitle": "階級分布",
+    "trendTitle": "個人の傾向",
+    "trendDesc": "あなたの{count}回のテスト記録",
+    "trendOverall": "総合",
+    "trendLogic": "論理",
+    "trendMath": "暗算",
+    "trendVocab": "語彙",
+    "trendFirst": "初回",
+    "trendLatest": "最新",
+    "trendFlat": "→ 横ばい",
+    "trendAxis": "テスト回数",
+    "privacyNote": "すべてのデータは匿名で収集され、統計分布の生成のみに使用されます",
+    "aiLevelSuffix": "人"
+  },
+  "about": {
+    "title": "このアプリについて",
+    "subtitle": "認知防錆 · プロジェクトの起源",
+    "originTitle": "このプロジェクトの理由",
+    "originP1": "2024年以降、自分が問題をまず考えるよりも、直接AIに任せる習慣がついていることに気づきました。難しい問題に直面した時の最初の反応が「考えさせて」から「聞かせて」に変わりました。この変化は快適ですが——不安も感じさせます。",
+    "originP2": "「認知防錆」はAIツールの価値を否定するものではなく、定期的に自分の認知状態のスナップショットを撮るためのシンプルなツールを提供するものです。何かを証明するためではなく、傾向を見えるようにするためです——見えないものには、人は関心を持てません。",
+    "usageTitle": "使い方",
+    "usageP1": "{count}問の混合問題（論理推論 / 暗算 / 語彙意味）を完了し、各問題{seconds}秒の制限時間があります。完了すると認知活性度スコア（0-100）が表示されます。スコアが低いほど活性度が高いことを示します。",
+    "usageP2": "1回のテストのスコアには限界があります——本当の価値は再測定にあります。テスト間隔は7日以上空けて、スコアを連続してみることで傾向がわかります。",
+    "privacyTitle": "データとプライバシー",
+    "privacyP1": "個人を特定する情報は一切収集しません（Cookieなし、ユーザーIDなし）。各テスト結果は匿名で保存され、全体の統計分布図の生成のみに使用されます。個人の履歴はブラウザのローカルに保存され、アップロードされることはありません。",
+    "roadmapTitle": "今後の計画",
+    "roadmapDone": "実装済み",
+    "roadmapNear": "近々",
+    "roadmapLong": "長期的",
+    "roadmapDoneItems": [
+      "個人傾向の折れ線グラフ（統計ページで表示）",
+      "チャレンジ共有——友達がリンクを開くと比較を表示",
+      "AI使用量別の統計データ",
+      "ライト/ダークテーマ切替",
+      "ブラウザ通知リマインダー（7日後の再測定）",
+      "PWA対応（デスクトップにインストール可能）",
+      "動的OG共有カード",
+      "問題集44問、毎テスト20問をランダム出題",
+      "カウントダウン最後10秒の切迫感通知",
+      "テスト完了のトランジションアニメーション"
+    ],
+    "roadmapNearItems": [
+      "途中保存/復元——14分のテストを一時停止・再開可能",
+      "適応型出題（IRT + LLMによる動的問題生成）",
+      "問題集の拡張と新しい問題タイプの次元"
+    ],
+    "roadmapLongItems": [
+      "認知傾向アラート——継続的な劣化時に早期通知",
+      "コミュニティベンチマーク——業種、年齢層などの次元で比較"
+    ],
+    "signature": "2026年5月7日\n簡律純",
+    "footerBack": "テストに戻る"
+  },
+  "share": {
+    "loading": "リダイレクト中...",
+    "clickHere": "ここをクリック"
+  },
+  "distribution": {
+    "ariaLabel": "退化指数分布ヒストグラム",
+    "xAxis": "退化指数",
+    "userMarker": "あなたの位置",
+    "yourResult": "あなたの結果",
+    "exceeds": "参加者の{pct}%以上"
+  },
+  "tier": {
+    "cognitivePeak": "認知の頂点",
+    "mildDecline": "軽度退化",
+    "moderateDecline": "中度退化",
+    "significantDecline": "顕著な退化",
+    "severeDecline": "重度退化"
+  },
+  "question": {
+    "category": {
+      "logic": "論理推論",
+      "sequence": "数列推論",
+      "math": "暗算",
+      "vocab": "語彙意味"
+    }
+  },
+  "lockedSelection": "変更はできません。本当のバカには後悔するチャンスすらないのですから",
+  "toast": {
+    "resumeRestored": "前回の進行状況を復元しました",
+    "resultCopied": "結果をコピーしました ✓",
+    "notificationUnsupported": "お使いのブラウザは通知機能に対応していません",
+    "notificationSet": "7日後に通知します ✓",
+    "reminderBody": "前回は{tier}でした。7日が経ちましたが、認知状態に変化はありますか？",
+    "reminderTitle": "認知防錆 · 再測定の時期です",
+    "notificationDenied": "通知するには通知権限を許可する必要があります",
+    "downloadStarted": "画像を生成中…",
+    "downloadSuccess": "結果画像を保存しました ✓",
+    "downloadFailed": "画像の生成に失敗しました",
+    "notifConfirmTitle": "通知を設定しました",
+    "notifConfirmBody": "7日後に再測定をお知らせします"
+  }
+}

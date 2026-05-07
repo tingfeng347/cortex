@@ -1,6 +1,7 @@
 "use client"
 
-import { DIMENSION_LABELS, type DimensionScores } from "@/lib/scoring"
+import { useTranslations } from "next-intl"
+import { type DimensionScores } from "@/lib/scoring"
 
 interface RadarChartProps {
   userScores: DimensionScores
@@ -8,12 +9,6 @@ interface RadarChartProps {
   avgScores?: DimensionScores
   size?: number
 }
-
-const AXIS_LABELS = [
-  { key: "logic" as const, label: "逻辑推理" },
-  { key: "math" as const, label: "速算" },
-  { key: "vocab" as const, label: "词汇语义" },
-]
 
 const COLORS = {
   user: "#2563eb",
@@ -27,9 +22,16 @@ export default function RadarChart({
   avgScores,
   size = 220,
 }: RadarChartProps) {
+  const t = useTranslations("radar")
   const cx = size / 2
   const cy = size / 2
   const radius = size * 0.38
+
+  const AXIS_LABELS = [
+    { key: "logic" as const, label: t("logic") },
+    { key: "math" as const, label: t("math") },
+    { key: "vocab" as const, label: t("vocab") },
+  ]
 
   // Three axes at 120° intervals, starting at top-center (-90°)
   function point(index: number, value: number): { x: number; y: number } {
@@ -69,7 +71,7 @@ export default function RadarChart({
       viewBox={`0 0 ${size} ${size}`}
       className="h-auto w-full"
       role="img"
-      aria-label="认知维度雷达图"
+      aria-label={t("ariaLabel")}
     >
       {/* Grid levels */}
       {levels.map((level) => {

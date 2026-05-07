@@ -1,0 +1,216 @@
+{
+  "site": {
+    "title": "Cognitive Rustproof",
+    "tagline": "How is your cognitive state?",
+    "subtitle": "Baseline Test",
+    "description": "{count} questions to take a snapshot of your cognitive abilities. Measure regularly to see the trend—cognitive ability is like a muscle, use it or lose it."
+  },
+  "error": {
+    "heading": "Something went wrong",
+    "message": "The page failed to load. Please try refreshing. If the problem persists, your data is safe—your history is saved locally.",
+    "retry": "Retry"
+  },
+  "theme": {
+    "toggleLabel": "Toggle theme"
+  },
+  "radar": {
+    "ariaLabel": "Cognitive dimension radar chart",
+    "logic": "Logic",
+    "math": "Mental Math",
+    "vocab": "Vocabulary"
+  },
+  "landing": {
+    "title": "Cognitive Rustproof · Baseline Test",
+    "challengePrefix": "Your friend scored",
+    "challengeSuffix": "on the degradation index.\nThink you can beat them?",
+    "defaultSubtitle": "How is your cognitive state? {count} questions take a snapshot.\nMeasure regularly and see what the trend says.",
+    "questionsCount": "{count} mixed questions",
+    "timeEstimate": "~{minutes} min to complete",
+    "noAiLabel": "No AI assistance",
+    "noAiSubtext": "—it's measuring you, not AI",
+    "lastTestLabel": "Last test",
+    "lastTestDegradation": "Degradation index · ",
+    "resumeButton": "Resume last test",
+    "resumeProgress": "({done}/{total} completed)",
+    "restartButton": "Restart",
+    "ctaButton": "Start Test",
+    "retakeButton": "Test Again",
+    "viewStats": "View platform-wide stats",
+    "footerTagline": "Cognitive ability is like a muscle—use it or lose it. Measure regularly\nto see what AI has left on you."
+  },
+  "declaration": {
+    "title": "Get Ready",
+    "subtitle": "To ensure accurate test results, please confirm the following:",
+    "quietEnv": "You are in a quiet, distraction-free environment",
+    "fullTime": "You have a full {minutes} minutes of uninterrupted time",
+    "timeLimit": "Each question has a {seconds}-second limit, auto-skip on timeout",
+    "aiUsageLabel": "How much time do you spend using AI tools daily?",
+    "aiUsageHint": "ChatGPT, Claude, Copilot, Gemini, etc. all count",
+    "aiLevels": ["< 30 min", "30 min - 2 hr", "2 - 5 hr", "> 5 hr"],
+    "pledge": "I pledge not to use any AI assistance during this test",
+    "startButton": "Start Quiz",
+    "selectAiFirst": "Please select your AI usage first",
+    "backButton": "Back"
+  },
+  "testing": {
+    "nextButton": "Next Question",
+    "finishButton": "Finish Test"
+  },
+  "processing": {
+    "title": "Test Complete",
+    "subtitle": "Analyzing your cognitive performance",
+    "message": "Calculating your cognitive profile..."
+  },
+  "result": {
+    "title": "Test Complete",
+    "subtitle": "Your Baseline Cognitive State",
+    "aiUsageLabel": "Daily AI Usage",
+    "description": "This is your current cognitive activity baseline. Retest regularly to see the trend—\ntrends matter more than a single score.",
+    "radarLabel": "Cognitive Profile",
+    "adviceTitle": "Targeted Training Suggestions",
+    "adviceWeakest": "Your {dimension} dimension is relatively weaker.",
+    "adviceDefault": "Consistent practice will lead to improvement.",
+    "adviceTips": {
+      "logic": "Do one logic puzzle a day (e.g., Sudoku or reasoning puzzles) to gradually improve analytical skills.",
+      "math": "Don't reach for a calculator right away when doing mental math—try calculating it yourself first, even if it's slow.",
+      "vocab": "Read 10 minutes of a physical book or long-form article daily, paying attention to word choices and expressions."
+    },
+    "retestPrompt": "Retest in 7 days to track your changes",
+    "retestDesc": "Cognitive ability is like a muscle—measure regularly to see the trend. Your history is saved locally.",
+    "comparisonTitle": "Comparison with Last Test",
+    "lastLabel": "Previous",
+    "currentLabel": "Current",
+    "improved": "Your cognitive activity has improved since last time ↑",
+    "worsened": "The degradation index has increased since last time, keep an eye on the trend",
+    "unchanged": "Same as last time, stay attentive",
+    "dimensionCompare": "Dimension Comparison",
+    "reviewTitle": "Question Review",
+    "reviewToggle": "Expand",
+    "reviewToggleClose": "Collapse",
+    "reviewQuestion": "Q{i} · {category}",
+    "reviewCorrect": "Correct",
+    "reviewWrong": "Wrong",
+    "reviewTimeout": "Timed Out",
+    "reviewYourAnswer": "Your answer:",
+    "reviewUnanswered": "Unanswered",
+    "reviewCorrectAnswer": "Correct answer: {answer}",
+    "shareButton": "Share Results",
+    "remindButton": "Remind me in 7 days",
+    "retestButton": "Test Again",
+    "viewStatsButton": "View Platform-wide Stats",
+    "downloadButton": "Save Result Image",
+    "author": "Jian Lüchun",
+    "aboutLink": "About",
+    "otherGame": "Another Game"
+  },
+  "stats": {
+    "pageTitle": "Platform-wide Statistics",
+    "pageSubtitle": "Cognitive Rustproof · Baseline Test",
+    "loading": "Loading...",
+    "errorTitle": "Unable to fetch statistics at this time",
+    "emptyTitle": "No data yet",
+    "emptyDesc": "Be the first to complete the test!",
+    "emptyCta": "Start Test",
+    "totalTests": "Total Tests",
+    "avgDegradation": "Avg Degradation Index",
+    "yourRank": "Your Rank",
+    "ranking": "Ahead of {count} people",
+    "distributionTitle": "Degradation Index Distribution",
+    "distributionDesc": "Where most people's scores cluster",
+    "aiGroupTitle": "Grouped by AI Usage",
+    "aiGroupDesc": "Group sizes and average degradation index",
+    "tierTitle": "Tier Distribution",
+    "trendTitle": "Personal Trend",
+    "trendDesc": "Your {count} test records",
+    "trendOverall": "Overall",
+    "trendLogic": "Logic",
+    "trendMath": "Mental Math",
+    "trendVocab": "Vocabulary",
+    "trendFirst": "First",
+    "trendLatest": "Latest",
+    "trendFlat": "→ Flat",
+    "trendAxis": "Test Number",
+    "privacyNote": "All data is collected anonymously and only used to generate statistical distributions",
+    "aiLevelSuffix": "people"
+  },
+  "about": {
+    "title": "About",
+    "subtitle": "Cognitive Rustproof · Project Origins",
+    "originTitle": "Why This Project",
+    "originP1": "Since 2024, I've noticed myself increasingly throwing questions straight to AI instead of thinking them through first. My first reaction to a tough problem shifted from \"let me think\" to \"let me ask.\" This shift is comfortable—but also unsettling.",
+    "originP2": "\"Cognitive Rustproof\" isn't about denying the value of AI tools. It's about providing a simple way to regularly take a snapshot of your cognitive state. Not to prove anything, just to make the trend visible—because what you can't see, you won't care about.",
+    "usageTitle": "How to Use",
+    "usageP1": "Complete {count} mixed-format questions (Logic / Mental Math / Vocabulary), each with a {seconds}-second time limit. After completion, you'll receive a cognitive activity score (0-100). The lower the score, the more active.",
+    "usageP2": "A single test score has limited meaning—the real value lies in retesting. Leave at least 7 days between tests and connect the dots to see the trend.",
+    "privacyTitle": "Data & Privacy",
+    "privacyP1": "We do not collect any personally identifiable information (no cookies, no user IDs). Each test result is stored anonymously and only used to generate platform-wide statistical distributions. Your personal history is saved in your browser locally and is not uploaded.",
+    "roadmapTitle": "Roadmap",
+    "roadmapDone": "Live",
+    "roadmapNear": "Upcoming",
+    "roadmapLong": "Long-term",
+    "roadmapDoneItems": [
+      "Personal trend line chart (view on stats page)",
+      "Challenge sharing—friends opening the link can see comparisons",
+      "Statistics grouped by AI usage",
+      "Light/dark theme toggle",
+      "Browser notification reminder (retest in 7 days)",
+      "PWA support (installable to desktop)",
+      "Dynamic OG share cards",
+      "44 questions in the bank, 20 randomly selected per test",
+      "Urgency prompt during the last 10 seconds of countdown",
+      "Test completion transition animation"
+    ],
+    "roadmapNearItems": [
+      "Mid-test save/resume—pause and continue a 14-minute test",
+      "Adaptive question selection (IRT + LLM dynamic generation)",
+      "Question bank expansion and new question type dimensions"
+    ],
+    "roadmapLongItems": [
+      "Cognitive trend alerts—early warnings when sustained degradation is detected",
+      "Community benchmarks—comparison by industry, age group, etc."
+    ],
+    "signature": "May 7, 2026\nJian Lüchun",
+    "footerBack": "Back to Test"
+  },
+  "share": {
+    "loading": "Redirecting...",
+    "clickHere": "Click here"
+  },
+  "distribution": {
+    "ariaLabel": "Degradation index distribution histogram",
+    "xAxis": "Degradation Index",
+    "userMarker": "You are here",
+    "yourResult": "Your Result",
+    "exceeds": "Exceeds {pct}% of participants"
+  },
+  "tier": {
+    "cognitivePeak": "Cognitive Peak",
+    "mildDecline": "Mild Decline",
+    "moderateDecline": "Moderate Decline",
+    "significantDecline": "Significant Decline",
+    "severeDecline": "Severe Decline"
+  },
+  "question": {
+    "category": {
+      "logic": "Logic Reasoning",
+      "sequence": "Sequence Reasoning",
+      "math": "Mental Math",
+      "vocab": "Vocabulary"
+    }
+  },
+  "lockedSelection": "No changing your answer—after all, real fools don't get do-overs.",
+  "toast": {
+    "resumeRestored": "Previous progress restored",
+    "resultCopied": "Result copied ✓",
+    "notificationUnsupported": "Your browser does not support notifications",
+    "notificationSet": "You will be reminded in 7 days ✓",
+    "reminderBody": "Last time you scored {tier}, 7 days have passed—has your cognitive state changed?",
+    "reminderTitle": "Cognitive Rustproof · Time for Retest",
+    "notificationDenied": "Notification permission is required to remind you",
+    "downloadStarted": "Generating image...",
+    "downloadSuccess": "Result image saved ✓",
+    "downloadFailed": "Failed to generate image",
+    "notifConfirmTitle": "Notification Set",
+    "notifConfirmBody": "We'll remind you to retest in 7 days"
+  }
+}

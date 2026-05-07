@@ -1,14 +1,12 @@
 import { ImageResponse } from "@vercel/og"
 import { QUESTIONS_PER_TEST } from "@/lib/questions"
+import { RESULT_TIERS } from "@/lib/scoring"
 
 export const runtime = "edge"
 
-const TIER_CONFIG: Record<string, { label: string; color: string }> = {
-  认知巅峰: { label: "认知巅峰", color: "#16a34a" },
-  轻度退化: { label: "轻度退化", color: "#65a30d" },
-  中度退化: { label: "中度退化", color: "#d97706" },
-  明显退化: { label: "明显退化", color: "#ea580c" },
-  严重退化: { label: "严重退化", color: "#dc2626" },
+const TIER_CONFIG: Record<string, { label: string; color: string }> = {}
+for (const t of RESULT_TIERS) {
+  TIER_CONFIG[t.label] = { label: t.label, color: t.ringColor }
 }
 
 export async function GET(request: Request) {

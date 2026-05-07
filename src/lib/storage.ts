@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis"
+import { TIER_LABELS } from "./scoring"
 
 const redis = Redis.fromEnv()
 
@@ -12,8 +13,6 @@ export interface StatsData {
   aiUsageCounts: Record<string, number>
   sumDegradation: number
 }
-
-const TIER_LABELS = ["认知巅峰", "轻度退化", "中度退化", "明显退化", "严重退化"]
 
 const AI_LEVELS = ["< 30 分钟", "30 分钟 - 2 小时", "2 - 5 小时", "> 5 小时"]
 

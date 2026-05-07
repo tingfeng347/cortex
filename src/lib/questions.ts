@@ -8,6 +8,6 @@ export interface Question {
   explanation: string;
 }
 
-export { selectQuestions } from "./question-bank";
+export { selectQuestions } from "./question-bank/index";
 export const QUESTION_TIME = 40; // seconds per question
 export const QUESTIONS_PER_TEST = 20;

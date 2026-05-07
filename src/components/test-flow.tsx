@@ -7,7 +7,8 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   Card,
   CardContent,
@@ -36,8 +37,6 @@ import type { Question } from "@/lib/questions";
 import RadarChart from "@/components/radar-chart";
 
 type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
-
-const LOCKED_SELECTION_MESSAGE = "不允许更改，毕竟真正的笨蛋就是没有后悔机会的";
 
 /* ─── Progress persistence (mid‑test save/resume) ─── */
 
@@ -211,6 +210,7 @@ function renderEmphasized(text: string): ReactNode {
 /* ─── Main TestFlow Component ─── */
 
 export default function TestFlow() {
+  const n = useTranslations();
   const [phase, setPhase] = useState<Phase>("landing");
   const [declared, setDeclared] = useState(false);
   const [currentQ, setCurrentQ] = useState(0);
@@ -268,7 +268,6 @@ export default function TestFlow() {
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // Timeout — treat as skip
           return 0;
         }
         return prev - 1;
@@ -280,22 +279,20 @@ export default function TestFlow() {
   useEffect(() => {
     if (phase !== "testing") return;
     if (timeLeft > 0) return;
-    if (answers.length > currentQ) return; // already submitted for this question
-    submitAnswer(selected); // submits selected answer or null (timeout)
+    if (answers.length > currentQ) return;
+    submitAnswer(selected);
   }, [timeLeft, phase, selected, answers.length, currentQ]);
 
   // Calculate result when all questions answered
   useEffect(() => {
     if (answers.length !== questions.length) return;
 
-    // Immediately show the processing screen
     setPhase("processing");
 
     const r = calculateResult(answers, timeouts, questions);
     setResult(r);
 
     try {
-      // Save previous result before overwriting
       const prevRaw = localStorage.getItem("cognitive-rust-result");
       if (prevRaw) {
         setPrevResult(JSON.parse(prevRaw));
@@ -312,16 +309,14 @@ export default function TestFlow() {
         timestamp: Date.now(),
       };
       localStorage.setItem("cognitive-rust-result", JSON.stringify(entry));
-      // Append to history array (cap at 20)
       const raw = localStorage.getItem("cognitive-rust-history");
       const history = raw ? JSON.parse(raw) : [];
       history.push(entry);
       if (history.length > 20) history.shift();
       localStorage.setItem("cognitive-rust-history", JSON.stringify(history));
     } catch {
-      // ignore — storage full or unavailable
+      // ignore
     }
-    // Submit result & events to API (fire-and-forget, no await)
     const payload = {
       degradationIndex: r.degradationIndex,
       tierLabel: r.tier.label,
@@ -338,7 +333,6 @@ export default function TestFlow() {
     clearProgress();
     setSavedProgress(null);
 
-    // Brief delay so user sees the processing state before results appear
     const timer = setTimeout(() => setPhase("result"), 600);
     return () => clearTimeout(timer);
   }, [answers, timeouts]);
@@ -346,13 +340,13 @@ export default function TestFlow() {
   // Auto-advance to next question after answer is recorded
   useEffect(() => {
     if (phase !== "testing") return;
-    if (answers.length <= currentQ) return; // no new answer yet
-    if (answers.length >= questions.length) return; // last — result effect handles
+    if (answers.length <= currentQ) return;
+    if (answers.length >= questions.length) return;
     setCurrentQ((prev) => prev + 1);
     startTimer();
   }, [answers, phase]);
 
-  // Save progress after each answer (checkpoint) + on tab hide
+  // Save progress after each answer
   useEffect(() => {
     if (phase !== "testing") return;
     if (answers.length === 0) return;
@@ -364,17 +358,16 @@ export default function TestFlow() {
       timeouts,
       declared,
       aiUsage: aiUsage,
-      timeLeft: QUESTION_TIME, // fresh timer for the current question on resume
+      timeLeft: QUESTION_TIME,
       timestamp: Date.now(),
     };
     progressRef.current = snapshot;
     saveProgress(snapshot);
-  }, [answers, phase]); // fires after auto‑advance, captures stable state
+  }, [answers, phase]);
 
   useEffect(() => {
     if (phase !== "testing") return;
 
-    // Keep ref up‑to‑date for the visibility handler
     const snapshot: SavedProgress = {
       questions,
       currentQ,
@@ -416,7 +409,7 @@ export default function TestFlow() {
         setSavedResult(JSON.parse(saved));
       }
     } catch {
-      // ignore — no previous result
+      // ignore
     }
     // Check pending reminder
     try {
@@ -426,8 +419,8 @@ export default function TestFlow() {
         if (Date.now() >= reminder.targetDate) {
           localStorage.removeItem("cognitive-rust-reminder");
           if ("Notification" in window && Notification.permission === "granted") {
-            new Notification("认知防锈 · 该复测了", {
-              body: `上次测得 ${reminder.tierLabel}，7 天过去了，你的认知状态有变化吗？`,
+            new Notification(n("toast.reminderTitle"), {
+              body: n("toast.reminderBody", { tier: reminder.tierLabel }),
               icon: "/favicon.ico",
             });
           }
@@ -437,13 +430,11 @@ export default function TestFlow() {
       /* ignore */
     }
 
-    // Read ?ref= from URL
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
     if (ref !== null) {
-      const n = parseInt(ref, 10);
-      if (!isNaN(n)) setChallengeRef(n);
-      // Clean URL without ref
+      const n_ = parseInt(ref, 10);
+      if (!isNaN(n_)) setChallengeRef(n_);
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
@@ -469,8 +460,8 @@ export default function TestFlow() {
     setSavedProgress(null);
     setPhase("testing");
     setSelected(null);
-    startTimer(); // full timer for the question they're resuming on
-    setToast("已恢复上次进度");
+    startTimer();
+    setToast(n("toast.resumeRestored"));
     setTimeout(() => setToast(null), 2000);
   }
 
@@ -489,7 +480,7 @@ export default function TestFlow() {
   function handleSelectOption(index: number) {
     if (selected !== null) {
       if (selected !== index) {
-        setToast(LOCKED_SELECTION_MESSAGE);
+        setToast(n("lockedSelection"));
         setTimeout(() => setToast(null), 2000);
       }
       return;
@@ -503,7 +494,6 @@ export default function TestFlow() {
     setAnswers((prev) => [...prev, answer]);
     setTimeouts((prev) => [...prev, timedOut]);
     setSelected(null);
-    // Auto-advance is handled by the answers.length effect above
   }
 
   function handleNext() {
@@ -536,29 +526,28 @@ export default function TestFlow() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "认知防锈 · 基线测试",
+          title: n("landing.title"),
           text,
           url: pageUrl,
         });
         return;
       } catch {
-        // user cancelled or share failed — fall through to clipboard
+        // user cancelled
       }
     }
 
-    // Clipboard fallback: text + URL
     try {
       await navigator.clipboard.writeText(text + "\n" + pageUrl);
-      setToast("结果已复制 ✓");
+      setToast(n("toast.resultCopied"));
       setTimeout(() => setToast(null), 2000);
     } catch {
-      // silently fail — not critical
+      // silently fail
     }
   }
 
   function handleSetReminder() {
     if (!("Notification" in window)) {
-      setToast("您的浏览器不支持通知功能");
+      setToast(n("toast.notificationUnsupported"));
       setTimeout(() => setToast(null), 2000);
       return;
     }
@@ -573,13 +562,13 @@ export default function TestFlow() {
             tierLabel: result?.tier.label,
           }),
         );
-        new Notification("通知已设定", {
-          body: "7 天后我们会提醒你回来复测",
+        new Notification(n("toast.notifConfirmTitle"), {
+          body: n("toast.notifConfirmBody"),
         });
-        setToast("7 天后将提醒你 ✓");
+        setToast(n("toast.notificationSet"));
         setTimeout(() => setToast(null), 2000);
       } else {
-        setToast("需要允许通知权限才能提醒你");
+        setToast(n("toast.notificationDenied"));
         setTimeout(() => setToast(null), 2000);
       }
     });
@@ -588,14 +577,13 @@ export default function TestFlow() {
   function handleDownloadImage() {
     if (!result || isDownloading) return;
     setIsDownloading(true);
-    setToast("正在生成图片…");
+    setToast(n("toast.downloadStarted"));
     setTimeout(() => setToast(null), 1500);
 
-    // Build SVG result card with dimensions
     const dimParts = [
-      result.dimensionScores.logic !== null ? `逻辑 ${result.dimensionScores.logic}%` : "",
-      result.dimensionScores.math !== null ? `速算 ${result.dimensionScores.math}%` : "",
-      result.dimensionScores.vocab !== null ? `词汇 ${result.dimensionScores.vocab}%` : "",
+      result.dimensionScores.logic !== null ? `${n("radar.logic")} ${result.dimensionScores.logic}%` : "",
+      result.dimensionScores.math !== null ? `${n("radar.math")} ${result.dimensionScores.math}%` : "",
+      result.dimensionScores.vocab !== null ? `${n("radar.vocab")} ${result.dimensionScores.vocab}%` : "",
     ].filter(Boolean).join("  ·  ");
 
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
@@ -606,13 +594,13 @@ export default function TestFlow() {
         </linearGradient>
       </defs>
       <rect width="1200" height="630" fill="url(#bg)" rx="0"/>
-      <text x="600" y="70" text-anchor="middle" font-family="system-ui,sans-serif" font-size="26" fill="#aaa" font-weight="500">认知防锈 · 基线测试</text>
+      <text x="600" y="70" text-anchor="middle" font-family="system-ui,sans-serif" font-size="26" fill="#aaa" font-weight="500">${n("landing.title")}</text>
       <circle cx="600" cy="260" r="112" fill="white" stroke="${result.tier.ringColor}" stroke-width="14"/>
       <text x="600" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="72" font-weight="800" fill="#111">${result.degradationIndex}</text>
       <text x="600" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#999">/ 100</text>
       <rect x="475" y="350" width="250" height="44" rx="22" fill="${result.tier.ringColor}"/>
       <text x="600" y="379" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="600" fill="white">${result.tier.label}</text>
-      <text x="600" y="435" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#666">${result.correctCount} / ${result.totalQuestions} 正确</text>
+      <text x="600" y="435" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#666">${result.correctCount} / ${result.totalQuestions}</text>
       ${dimParts ? `<text x="600" y="465" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" fill="#999">${dimParts}</text>` : ""}
       <text x="600" y="580" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#bbb">cortex.hydroroll.team</text>
     </svg>`;
@@ -632,7 +620,7 @@ export default function TestFlow() {
       canvas.toBlob((pngBlob) => {
         if (!pngBlob) {
           setIsDownloading(false);
-          setToast("生成图片失败");
+          setToast(n("toast.downloadFailed"));
           setTimeout(() => setToast(null), 2000);
           return;
         }
@@ -644,7 +632,7 @@ export default function TestFlow() {
         document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
         setIsDownloading(false);
-        setToast("结果图已保存 ✓");
+        setToast(n("toast.downloadSuccess"));
         setTimeout(() => setToast(null), 2000);
       }, "image/png");
     };
@@ -652,7 +640,7 @@ export default function TestFlow() {
     img.onerror = () => {
       URL.revokeObjectURL(url);
       setIsDownloading(false);
-      setToast("生成图片失败");
+      setToast(n("toast.downloadFailed"));
       setTimeout(() => setToast(null), 2000);
     };
 
@@ -670,24 +658,20 @@ export default function TestFlow() {
             <span className="text-2xl font-bold text-primary">?</span>
           </div>
           <CardTitle className="text-2xl tracking-tight">
-            认知防锈 · 基线测试
+            {n("landing.title")}
           </CardTitle>
           <CardDescription className="mt-3 text-base leading-relaxed">
             {isChallenge ? (
               <>
-                你的朋友测得{" "}
+                {n("landing.challengePrefix")}{" "}
                 <span className="font-bold text-foreground">
                   {challengeRef}
                 </span>{" "}
-                的退化指数。
-                <br />
-                你觉得你能比 TA 强吗？
+                {n("landing.challengeSuffix")}
               </>
             ) : (
               <>
-                你的认知状态怎么样？{QUESTIONS_PER_TEST} 道题拍一张快照。
-                <br />
-                定期测量，看看趋势怎么说。
+                {n("landing.defaultSubtitle", { count: QUESTIONS_PER_TEST })}
               </>
             )}
           </CardDescription>
@@ -695,16 +679,16 @@ export default function TestFlow() {
         <CardContent className="space-y-4">
           <div className="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-foreground">{QUESTIONS_PER_TEST}</span> 道混合题型
+              <span className="font-medium text-foreground">{QUESTIONS_PER_TEST}</span> {n("landing.questionsCount", { count: QUESTIONS_PER_TEST })}
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-medium text-foreground">~{Math.ceil(QUESTIONS_PER_TEST * QUESTION_TIME / 60)}</span> 分钟完成
+              <span className="font-medium text-foreground">~{Math.ceil(QUESTIONS_PER_TEST * QUESTION_TIME / 60)}</span> {n("landing.timeEstimate", { minutes: Math.ceil(QUESTIONS_PER_TEST * QUESTION_TIME / 60) })}
             </div>
             <div className="flex items-center gap-2">
               <span className="font-medium text-foreground">
-                不使用 AI 辅助
+                {n("landing.noAiLabel")}
               </span>{" "}
-              ——测的是你，不是 AI
+              {n("landing.noAiSubtext")}
             </div>
           </div>
 
@@ -717,9 +701,9 @@ export default function TestFlow() {
               }}
             >
               <div className="flex items-center justify-between">
-                <span className="font-medium text-foreground">上次测试</span>
+                <span className="font-medium text-foreground">{n("landing.lastTestLabel")}</span>
                 <span className="text-xs text-muted-foreground">
-                  {new Date(savedResult.timestamp).toLocaleDateString("zh-CN")}
+                  {new Date(savedResult.timestamp).toLocaleDateString()}
                 </span>
               </div>
               <div className="mt-1 flex items-center gap-2">
@@ -730,7 +714,7 @@ export default function TestFlow() {
                   {savedResult.degradationIndex}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  退化指数 ·{" "}
+                  {n("landing.lastTestDegradation")}
                 </span>
                 <span
                   className="rounded-full px-2 py-0.5 text-xs font-medium text-white"
@@ -746,9 +730,9 @@ export default function TestFlow() {
           {savedProgress && !isChallenge ? (
             <>
               <Button size="lg" className="w-full text-base" onClick={handleResume}>
-                继续上次测试
+                {n("landing.resumeButton")}
                 <span className="ml-2 text-sm opacity-70">
-                  （已完成 {savedProgress.answers.length}/{QUESTIONS_PER_TEST} 题）
+                  {n("landing.resumeProgress", { done: savedProgress.answers.length, total: QUESTIONS_PER_TEST })}
                 </span>
               </Button>
               <Button
@@ -757,19 +741,19 @@ export default function TestFlow() {
                 className="w-full text-sm text-muted-foreground"
                 onClick={handleStart}
               >
-                重新开始
+                {n("landing.restartButton")}
               </Button>
             </>
           ) : (
             <Button size="lg" className="w-full text-base" onClick={handleStart}>
-              {savedResult ? "再测一次" : "开始测试"}
+              {savedResult ? n("landing.retakeButton") : n("landing.ctaButton")}
             </Button>
           )}
           <a
             href="/stats"
             className="text-xs text-muted-foreground underline-offset-4 hover:underline"
           >
-            查看全平台统计
+            {n("landing.viewStats")}
           </a>
         </CardFooter>
       </Card>
@@ -782,42 +766,38 @@ export default function TestFlow() {
     return (
       <Card className="mx-auto w-full max-w-lg border-0 shadow-lg sm:border md:max-w-xl lg:max-w-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">做好准备</CardTitle>
+          <CardTitle className="text-xl">{n("declaration.title")}</CardTitle>
           <CardDescription className="mt-2 text-sm leading-relaxed">
-            为确保测试结果准确，请确认以下几点：
+            {n("declaration.subtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex gap-2">
               <span className="text-foreground">•</span>
-              你在一个安静、不受打扰的环境中
+              {n("declaration.quietEnv")}
             </li>
             <li className="flex gap-2">
               <span className="text-foreground">•</span>
-              你有连续 {Math.ceil(QUESTIONS_PER_TEST * QUESTION_TIME / 60)} 分钟的完整时间
+              {n("declaration.fullTime", { minutes: Math.ceil(QUESTIONS_PER_TEST * QUESTION_TIME / 60) })}
             </li>
             <li className="flex gap-2">
               <span className="text-foreground">•</span>
-              每道题限时{" "}
-              <span className="font-medium text-foreground">
-                {QUESTION_TIME} 秒
-              </span>
-              ，超时将自动跳过
+              {n("declaration.timeLimit", { seconds: QUESTION_TIME })}
             </li>
           </ul>
 
           {/* AI usage question */}
           <div className="rounded-lg border p-4">
             <p className="text-sm font-medium text-foreground">
-              你每天花多少时间使用 AI 工具？
+              {n("declaration.aiUsageLabel")}
             </p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              ChatGPT、Claude、Copilot、Gemini 等都算
+              {n("declaration.aiUsageHint")}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {["< 30 分钟", "30 分钟 - 2 小时", "2 - 5 小时", "> 5 小时"].map(
-                (opt) => (
+              {(n.raw("declaration.aiLevels") as string[]).map(
+                (opt: string) => (
                   <button
                     key={opt}
                     onClick={() => setAiUsage(opt)}
@@ -846,7 +826,7 @@ export default function TestFlow() {
               htmlFor="declaration"
               className="text-sm leading-relaxed cursor-pointer"
             >
-              我承诺在本次测试中不使用任何 AI 辅助工具
+              {n("declaration.pledge")}
             </label>
           </div>
         </CardContent>
@@ -857,7 +837,7 @@ export default function TestFlow() {
             disabled={!declared || !aiUsage}
             onClick={handleBeginTest}
           >
-            {aiUsage ? "开始答题" : "请先选择 AI 使用量"}
+            {aiUsage ? n("declaration.startButton") : n("declaration.selectAiFirst")}
           </Button>
           <Button
             variant="ghost"
@@ -865,7 +845,7 @@ export default function TestFlow() {
             className="text-muted-foreground"
             onClick={handleRestart}
           >
-            返回
+            {n("declaration.backButton")}
           </Button>
         </CardFooter>
       </Card>
@@ -887,7 +867,7 @@ export default function TestFlow() {
                 {currentQ + 1}/{questions.length}
               </Badge>
               <Badge variant="outline" className="text-xs">
-                {question.category}
+                {n("question.category." + question.category)}
               </Badge>
             </div>
             <QuestionTimer remaining={timeLeft} total={QUESTION_TIME} />
@@ -924,7 +904,6 @@ export default function TestFlow() {
               answers[currentQ] !== undefined && question.answer === i;
             const isWrong = answers[currentQ] === i && !isCorrect;
 
-            // Show feedback after answering
             const showFeedback = answers[currentQ] !== undefined;
 
             return (
@@ -959,7 +938,7 @@ export default function TestFlow() {
             disabled={selected === null}
             onClick={handleNext}
           >
-            {isLastQuestion ? "完成测试" : "下一题"}
+            {isLastQuestion ? n("testing.finishButton") : n("testing.nextButton")}
           </Button>
         </CardFooter>
       </Card>
@@ -972,13 +951,13 @@ export default function TestFlow() {
     return (
       <Card className="mx-auto w-full max-w-lg border-0 shadow-lg sm:border md:max-w-xl lg:max-w-2xl">
         <CardHeader className="pb-2 text-center">
-          <CardTitle className="text-2xl tracking-tight">测试完成</CardTitle>
-          <CardDescription>正在分析你的认知表现</CardDescription>
+          <CardTitle className="text-2xl tracking-tight">{n("processing.title")}</CardTitle>
+          <CardDescription>{n("processing.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-4 py-12">
           <div className="h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
           <p className="text-sm text-muted-foreground">
-            正在计算你的认知画像…
+            {n("processing.message")}
           </p>
         </CardContent>
       </Card>
@@ -993,8 +972,8 @@ export default function TestFlow() {
     return (
       <Card className="mx-auto w-full max-w-lg border-0 shadow-lg sm:border md:max-w-xl lg:max-w-2xl">
         <CardHeader className="pb-2 text-center">
-          <CardTitle className="text-2xl tracking-tight">测试完成</CardTitle>
-          <CardDescription>你的基线认知状态</CardDescription>
+          <CardTitle className="text-2xl tracking-tight">{n("result.title")}</CardTitle>
+          <CardDescription>{n("result.subtitle")}</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
@@ -1024,12 +1003,11 @@ export default function TestFlow() {
           {aiUsage && (
             <div className="rounded-lg bg-muted/50 p-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">每日 AI 使用量</span>
+                <span className="text-muted-foreground">{n("result.aiUsageLabel")}</span>
                 <span className="font-medium text-foreground">{aiUsage}</span>
               </div>
               <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-                这是你当前的认知活跃度基线。定期复测才能看出趋势——
-                趋势比单次分数更有意义。
+                {n("result.description")}
               </p>
             </div>
           )}
@@ -1038,7 +1016,7 @@ export default function TestFlow() {
 
           {/* Dimension scores - Radar chart */}
           <div>
-            <p className="mb-3 text-sm font-medium text-foreground">认知画像</p>
+            <p className="mb-3 text-sm font-medium text-foreground">{n("result.radarLabel")}</p>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
               <div className="w-48 shrink-0">
                 <RadarChart userScores={result.dimensionScores} size={200} />
@@ -1078,9 +1056,9 @@ export default function TestFlow() {
           {/* Personalized advice */}
           {(() => {
             const allDims: { key: string; label: string; score: number | null }[] = [
-              { key: "logic", label: "逻辑推理", score: result.dimensionScores.logic },
-              { key: "math", label: "速算", score: result.dimensionScores.math },
-              { key: "vocab", label: "词汇语义", score: result.dimensionScores.vocab },
+              { key: "logic", label: n("radar.logic"), score: result.dimensionScores.logic },
+              { key: "math", label: n("radar.math"), score: result.dimensionScores.math },
+              { key: "vocab", label: n("radar.vocab"), score: result.dimensionScores.vocab },
             ];
             const dims = allDims.filter((d): d is { key: string; label: string; score: number } =>
               d.score !== null
@@ -1089,19 +1067,14 @@ export default function TestFlow() {
 
             if (dims.length > 0 && dims[0].score < 60) {
               const weakest = dims[0];
-              const tips: Record<string, string> = {
-                logic: "每天做一道逻辑题（比如数独或推理题），逐步提升分析能力。",
-                math: "在心算之前不要立刻掏出计算器——先自己算一遍，哪怕慢一点。",
-                vocab: "每天读 10 分钟纸质书或长文章，留意用词和表达方式。",
-              };
               return (
                 <div className="rounded-lg bg-muted/50 p-4">
-                  <p className="text-sm font-medium">针对性训练建议</p>
+                  <p className="text-sm font-medium">{n("result.adviceTitle")}</p>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                    你的 <span className="font-medium text-foreground">{weakest.label}</span> 维度相对较弱。
+                    {n("result.adviceWeakest", { dimension: weakest.label })}
                   </p>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                    {tips[weakest.key] ?? "持续练习会带来改善。"}
+                    {n.raw("result.adviceTips")[weakest.key] ?? n("result.adviceDefault")}
                   </p>
                 </div>
               );
@@ -1112,10 +1085,10 @@ export default function TestFlow() {
           {/* 7-day retest reminder */}
           <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-4 text-center">
             <p className="text-sm font-medium text-foreground">
-              7 天后复测，追踪你的变化
+              {n("result.retestPrompt")}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              认知能力就像肌肉——定期测量才能看到趋势。我们会在本地保存你的历史记录。
+              {n("result.retestDesc")}
             </p>
           </div>
 
@@ -1123,11 +1096,11 @@ export default function TestFlow() {
           {prevResult && (
             <div className="rounded-lg border bg-card p-4">
               <p className="mb-2 text-xs font-medium text-muted-foreground">
-                与上次测试对比
+                {n("result.comparisonTitle")}
               </p>
               <div className="flex items-center gap-4">
                 <div className="flex-1 text-center">
-                  <p className="text-xs text-muted-foreground">上次</p>
+                  <p className="text-xs text-muted-foreground">{n("result.lastLabel")}</p>
                   <p
                     className="text-2xl font-bold"
                     style={{ color: prevResult.tierColor }}
@@ -1146,7 +1119,7 @@ export default function TestFlow() {
                       : "—"}
                 </div>
                 <div className="flex-1 text-center">
-                  <p className="text-xs text-muted-foreground">本次</p>
+                  <p className="text-xs text-muted-foreground">{n("result.currentLabel")}</p>
                   <p
                     className="text-2xl font-bold"
                     style={{ color: result.tier.ringColor }}
@@ -1160,15 +1133,15 @@ export default function TestFlow() {
               </div>
               <p className="mt-2 text-center text-xs text-muted-foreground">
                 {result.degradationIndex < prevResult.degradationIndex
-                  ? "相比上次你的认知活跃度有所提升 ↑"
+                  ? n("result.improved")
                   : result.degradationIndex > prevResult.degradationIndex
-                    ? "相比上次退化指数有所上升，留意趋势"
-                    : "与上次持平，保持关注"}
+                    ? n("result.worsened")
+                    : n("result.unchanged")}
               </p>
               {/* Per-dimension comparison if available */}
               {prevResult.dimensionScores && (
                 <div className="mt-3 space-y-1.5 border-t pt-3">
-                  <p className="text-xs font-medium text-muted-foreground">各维度对比</p>
+                  <p className="text-xs font-medium text-muted-foreground">{n("result.dimensionCompare")}</p>
                   {(["logic", "math", "vocab"] as const).map((key) => {
                     const prev = prevResult.dimensionScores?.[key];
                     const cur = result.dimensionScores[key];
@@ -1203,9 +1176,9 @@ export default function TestFlow() {
               onClick={() => setShowExplanations(!showExplanations)}
               className="flex w-full items-center justify-between text-sm font-medium"
             >
-              逐题回顾
+              {n("result.reviewTitle")}
               <span className="text-muted-foreground">
-                {showExplanations ? "收起" : "展开"}
+                {showExplanations ? n("result.reviewToggleClose") : n("result.reviewToggle")}
               </span>
             </button>
 
@@ -1220,7 +1193,7 @@ export default function TestFlow() {
                     <div key={i} className="rounded-lg border p-3 text-sm">
                       <div className="flex items-center justify-between">
                         <span className="font-medium">
-                          第 {i + 1} 题 · {q.category}
+                          {n("result.reviewQuestion", { i: i + 1, category: n("question.category." + q.category) })}
                         </span>
                         <span
                           className={`text-xs font-medium ${timedOut
@@ -1230,7 +1203,7 @@ export default function TestFlow() {
                                 : "text-red-600"
                             }`}
                         >
-                          {timedOut ? "超时" : isCorrect ? "正确" : "错误"}
+                          {timedOut ? n("result.reviewTimeout") : isCorrect ? n("result.reviewCorrect") : n("result.reviewWrong")}
                         </span>
                       </div>
                       <p className="mt-1 text-muted-foreground">
@@ -1238,20 +1211,20 @@ export default function TestFlow() {
                         {q.question.includes("\n") ? "…" : ""}
                       </p>
                       <div className="mt-2 text-xs text-muted-foreground">
-                        你的答案：
-                        {userAnswer !== null ? q.options[userAnswer] : "未作答"}
+                        {n("result.reviewYourAnswer")}
+                        {userAnswer !== null ? q.options[userAnswer] : n("result.reviewUnanswered")}
                         {!isCorrect && !timedOut && (
                           <>
                             {" · "}
                             <span className="text-green-600">
-                              正确答案：{q.options[q.answer]}
+                              {n("result.reviewCorrectAnswer", { answer: q.options[q.answer] })}
                             </span>
                           </>
                         )}
                       </div>
                       {timedOut && (
                         <div className="mt-1 text-xs text-green-600">
-                          正确答案：{q.options[q.answer]}
+                          {n("result.reviewCorrectAnswer", { answer: q.options[q.answer] })}
                         </div>
                       )}
                       <p className="mt-2 whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
@@ -1268,13 +1241,13 @@ export default function TestFlow() {
         <CardFooter className="flex-col gap-2">
           <div className="flex w-full gap-2">
             <Button variant="outline" className="flex-1" onClick={handleShare}>
-              分享结果
+              {n("result.shareButton")}
             </Button>
             <Button variant="outline" className="flex-1" onClick={handleSetReminder}>
-              7 天后提醒我
+              {n("result.remindButton")}
             </Button>
             <Button className="flex-1" onClick={handleRestart}>
-              重新测试
+              {n("result.retestButton")}
             </Button>
           </div>
           <div className="flex w-full items-center justify-center gap-3">
@@ -1282,19 +1255,18 @@ export default function TestFlow() {
               href={"/stats?latest=" + result.degradationIndex}
               className="text-xs text-muted-foreground underline-offset-4 hover:underline"
             >
-              查看全平台统计
+              {n("result.viewStatsButton")}
             </a>
             <span className="text-muted-foreground/40">|</span>
             <button
               onClick={handleDownloadImage}
               className="text-xs text-muted-foreground underline-offset-4 hover:underline"
             >
-              保存结果图
+              {n("result.downloadButton")}
             </button>
           </div>
           <p className="mt-2 text-center text-xs text-muted-foreground">
-            认知能力就像肌肉——用进废退。定期测量，才能知道 AI
-            在你身上留下了什么。
+            {n("landing.footerTagline")}
           </p>
         </CardFooter>
       </Card>
@@ -1331,14 +1303,14 @@ export default function TestFlow() {
           rel="noreferrer"
           className="transition-colors hover:text-foreground hover:underline underline-offset-4"
         >
-          简律纯
+          {n("result.author")}
         </a>
         <span className="text-muted-foreground/40">|</span>
         <Link
           href="/about"
           className="transition-colors hover:text-foreground hover:underline underline-offset-4"
         >
-          关于
+          {n("result.aboutLink")}
         </Link>
         <span className="text-muted-foreground/40">|</span>
         <a
@@ -1347,7 +1319,7 @@ export default function TestFlow() {
           rel="noreferrer"
           className="transition-colors hover:text-foreground hover:underline underline-offset-4"
         >
-          另一个游戏
+          {n("result.otherGame")}
         </a>
       </footer>
     </div>
