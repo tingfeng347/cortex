@@ -157,7 +157,7 @@ export function useTestState() {
 
       const entry = {
         degradationIndex: r.degradationIndex,
-        tierLabel: r.tier.label,
+        tierLabel: r.tier.tierKey,
         tierLabelKey: r.tier.tierKey,
         tierColor: r.tier.ringColor,
         correctCount: r.correctCount,
@@ -178,7 +178,7 @@ export function useTestState() {
     }
     const payload = {
       degradationIndex: r.degradationIndex,
-      tierLabel: r.tier.label,
+      tierLabel: r.tier.tierKey,
       correctCount: r.correctCount,
       totalQuestions: r.totalQuestions,
       aiUsageLevel: aiUsage !== null ? AI_CANONICAL_LEVELS[aiUsage] : null,

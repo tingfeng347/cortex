@@ -3,7 +3,6 @@ import { Link } from "@/i18n/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QUESTIONS_PER_TEST, QUESTION_TIME } from "@/lib/questions";
-import { TIER_LABELS } from "@/lib/scoring";
 
 export default async function AboutPage() {
   const t = await getTranslations("about");

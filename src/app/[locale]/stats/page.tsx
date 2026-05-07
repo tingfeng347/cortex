@@ -190,7 +190,9 @@ export default function StatsPage() {
                             className="mt-0.5 inline-block rounded-full px-1.5 py-0.5 text-[10px] font-medium text-white"
                             style={{ backgroundColor: c }}
                           >
-                            {userTier.label}
+                            {TIER_KEYS.includes(userTier.label as typeof TIER_KEYS[number])
+                              ? tierLabel(userTier.label)
+                              : userTier.label}
                           </span>
                         )}
                       </div>
@@ -245,9 +247,13 @@ export default function StatsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {Object.entries(data.tierCounts).map(([label, count]) => (
+                {Object.entries(data.tierCounts).map(([label, count]) => {
+                  const translatedLabel = TIER_KEYS.includes(label as typeof TIER_KEYS[number])
+                    ? tierLabel(label)
+                    : label;
+                  return (
                     <div key={label} className="flex items-center gap-3 text-sm">
-                      <span className="w-20 shrink-0 text-muted-foreground">{label}</span>
+                      <span className="w-20 shrink-0 text-muted-foreground">{translatedLabel}</span>
                       <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
                         <div
                           className="h-full rounded-full transition-all"
@@ -259,7 +265,8 @@ export default function StatsPage() {
                       </div>
                       <span className="w-10 text-right font-medium tabular-nums">{count}</span>
                     </div>
-                  ))}
+                  );
+                })}
                 </div>
               </CardContent>
             </Card>

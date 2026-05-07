@@ -6,18 +6,18 @@ export const runtime = "edge"
 
 const TIER_CONFIG: Record<string, { label: string; color: string }> = {}
 for (const t of RESULT_TIERS) {
-  TIER_CONFIG[t.label] = { label: t.label, color: t.ringColor }
+  TIER_CONFIG[t.tierKey] = { label: t.label, color: t.ringColor }
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
 
   const index = Math.min(100, Math.max(0, Number(searchParams.get("i") ?? 50)))
-  const tierLabel = searchParams.get("t") ?? "中度退化"
+  const tierLabel = searchParams.get("t") ?? "moderateDecline"
   const correct = searchParams.get("c") ?? "?"
   const total = searchParams.get("n") ?? String(QUESTIONS_PER_TEST)
 
-  const tier = TIER_CONFIG[tierLabel] ?? TIER_CONFIG["中度退化"]
+  const tier = TIER_CONFIG[tierLabel] ?? TIER_CONFIG["moderateDecline"]
 
   return new ImageResponse(
     (

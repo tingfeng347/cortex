@@ -18,7 +18,7 @@ export async function generateMetadata({
   const tier = getTierByIndex(index)
   const t = await getTranslations({ locale, namespace: "site" })
 
-  const ogUrl = `/api/og?i=${index}&t=${encodeURIComponent(tier.label)}&c=?&n=5`
+  const ogUrl = `/api/og?i=${index}&t=${encodeURIComponent(tier.tierKey)}&c=?&n=5`
 
   return {
     openGraph: {
