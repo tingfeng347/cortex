@@ -161,10 +161,15 @@
       "Dynamic OG share cards",
       "44 questions in the bank, 20 randomly selected per test",
       "Urgency prompt during the last 10 seconds of countdown",
-      "Test completion transition animation"
+      "Test completion transition animation",
+      "Mid-test save/resume—pause and continue a 14-minute test",
+      "Multi-language support (中文 / English / 日本語)",
+      "Language switcher",
+      "Multi-dimensional cognitive radar chart",
+      "Home page \"?\" animation",
+      "Error Boundary global error handling"
     ],
     "roadmapNearItems": [
-      "Mid-test save/resume—pause and continue a 14-minute test",
       "Adaptive question selection (IRT + LLM dynamic generation)",
       "Question bank expansion and new question type dimensions"
     ],
