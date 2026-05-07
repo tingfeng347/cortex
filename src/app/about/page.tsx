@@ -78,14 +78,17 @@ export default function AboutPage() {
                   <li>• 浏览器通知提醒（7 天后复测）</li>
                   <li>• PWA 支持（可安装到桌面）</li>
                   <li>• 动态 OG 分享卡片</li>
+                  <li>• 题库 44 题，每测 20 题随机抽取</li>
+                  <li>• 倒计时最后 10 秒紧迫感提示</li>
+                  <li>• 测试完成过渡动画</li>
                 </ul>
               </div>
               <div>
                 <p className="font-medium text-foreground">近期</p>
                 <ul className="mt-1 space-y-1 text-muted-foreground">
-                  <li>• 自适应出题——动态调整题目难度</li>
-                  <li>• 多维度认知画像（逻辑、速算、语义独立评分）</li>
-                  <li>• 个性化训练建议</li>
+                  <li>• 中途保存/恢复——14 分钟测试可暂停继续</li>
+                  <li>• 自适应出题（IRT + LLM 动态生成题目）</li>
+                  <li>• 题库扩展与新题型维度</li>
                 </ul>
               </div>
               <div>
@@ -101,7 +104,7 @@ export default function AboutPage() {
 
         {/* Signature */}
         <p className="mt-16 text-right text-xs text-muted-foreground">
-          2026 年 5 月 6 日<br />
+          2026 年 5 月 7 日<br />
           简律纯
         </p>
 
