@@ -33,6 +33,8 @@ export default function StatsPage() {
   const [error, setError] = useState(false)
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [trendDimension, setTrendDimension] = useState<string>("overall")
+  const [userScore, setUserScore] = useState<number | null>(null)
+  const [userTier, setUserTier] = useState<{ label: string; color: string } | null>(null)
 
   useEffect(() => {
     fetch("/api/stats")
@@ -49,10 +51,20 @@ export default function StatsPage() {
         setLoading(false)
       })
 
-    // Load personal history
+    // Load personal history & latest result
     try {
       const raw = localStorage.getItem("cognitive-rust-history")
       if (raw) setHistory(JSON.parse(raw))
+    } catch { /* ignore */ }
+    try {
+      const raw = localStorage.getItem("cognitive-rust-result")
+      if (raw) {
+        const r = JSON.parse(raw)
+        if (typeof r.degradationIndex === "number") {
+          setUserScore(r.degradationIndex)
+          if (r.tierLabel) setUserTier({ label: r.tierLabel, color: r.tierColor })
+        }
+      }
     } catch { /* ignore */ }
 
     // Read ?latest= from URL and persist to localStorage for chart marker
@@ -134,7 +146,7 @@ export default function StatsPage() {
         {data && !loading && data.totalTests > 0 && (
           <div className="space-y-6">
             {/* Summary cards */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <Card>
                 <CardContent className="flex items-center gap-3 p-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/5">
@@ -161,6 +173,48 @@ export default function StatsPage() {
                   </div>
                 </CardContent>
               </Card>
+              {/* User's percentile */}
+              {userScore !== null && (() => {
+                const total = data.distribution.reduce((a, b) => a + b, 0)
+                const below = data.distribution
+                  .slice(0, Math.ceil(userScore / 10))
+                  .reduce((a, b) => a + b, 0)
+                const pct = total > 0 ? Math.round((below / total) * 100) : 0
+                const tierColorMap: Record<string, string> = {
+                  "认知巅峰": "#16a34a", "轻度退化": "#65a30d",
+                  "中度退化": "#d97706", "明显退化": "#ea580c", "严重退化": "#dc2626",
+                }
+                const c = userTier?.color ?? tierColorMap[userTier?.label ?? ""] ?? "#888"
+                return (
+                  <Card>
+                    <CardContent className="flex items-center gap-3 p-4">
+                      <div
+                        className="flex h-10 w-10 items-center justify-center rounded-full"
+                        style={{ backgroundColor: c + "15" }}
+                      >
+                        <span className="text-sm font-bold" style={{ color: c }}>#</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-muted-foreground">你的排名</div>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-xl font-bold tracking-tight">{pct}%</span>
+                          <span className="text-xs text-muted-foreground truncate">
+                            超过 {below} 人
+                          </span>
+                        </div>
+                        {userTier && (
+                          <span
+                            className="mt-0.5 inline-block rounded-full px-1.5 py-0.5 text-[10px] font-medium text-white"
+                            style={{ backgroundColor: c }}
+                          >
+                            {userTier.label}
+                          </span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })()}
             </div>
 
             {/* Distribution chart */}
@@ -294,14 +348,39 @@ export default function StatsPage() {
             </CardHeader>
             <CardContent>
               <svg
-                viewBox="0 0 600 200"
+                viewBox="0 0 600 220"
                 className="h-auto w-full"
                 role="img"
                 aria-label="个人退化指数趋势"
               >
+                {/* Tier zone backgrounds */}
+                {[
+                  { y: 0, h: 44, fill: "#16a34a15" },
+                  { y: 44, h: 44, fill: "#65a30d15" },
+                  { y: 88, h: 44, fill: "#d9770615" },
+                  { y: 132, h: 44, fill: "#ea580c15" },
+                  { y: 176, h: 44, fill: "#dc262615" },
+                ].map((zone, zi) => (
+                  <rect key={zi} x="40" y={zone.y} width="520" height={zone.h} fill={zone.fill} />
+                ))}
+
+                {/* Tier zone labels */}
+                {["认知巅峰", "轻度退化", "中度退化", "明显退化", "严重退化"].map((label, i) => (
+                  <text
+                    key={label}
+                    x="38"
+                    y={22 + i * 44 + 22}
+                    textAnchor="end"
+                    fontSize="8"
+                    className="fill-muted-foreground/40"
+                  >
+                    {label}
+                  </text>
+                ))}
+
                 {/* Y axis */}
                 {[0, 25, 50, 75, 100].map((v) => {
-                  const y = 20 + ((100 - v) / 100) * 150;
+                  const y = 20 + ((100 - v) / 100) * 160;
                   return (
                     <g key={v}>
                       <text x="35" y={y + 4} textAnchor="end" fontSize="11" className="fill-muted-foreground">
@@ -315,12 +394,12 @@ export default function StatsPage() {
                 {/* Line + dots — overall */}
                 {trendDimension === "overall" && history.map((h, i) => {
                   const x = 45 + (i / Math.max(history.length - 1, 1)) * 515;
-                  const y = 20 + ((100 - h.degradationIndex) / 100) * 150;
+                  const y = 20 + ((100 - h.degradationIndex) / 100) * 160;
                   return (
                     <g key={i}>
                       {i > 0 && (() => {
                         const px = 45 + ((i - 1) / Math.max(history.length - 1, 1)) * 515;
-                        const py = 20 + ((100 - history[i - 1].degradationIndex) / 100) * 150;
+                        const py = 20 + ((100 - history[i - 1].degradationIndex) / 100) * 160;
                         return (
                           <line x1={px} y1={py} x2={x} y2={y} stroke="#888" strokeWidth="2" />
                         );
@@ -329,6 +408,18 @@ export default function StatsPage() {
                       <text x={x} y={y - 10} textAnchor="middle" fontSize="10" className="fill-muted-foreground">
                         {h.degradationIndex}
                       </text>
+                      {/* Date label — first, last, and every third */}
+                      {(i === 0 || i === history.length - 1 || i % 3 === 0) && (
+                        <text
+                          x={x}
+                          y={205}
+                          textAnchor={i === 0 ? "start" : i === history.length - 1 ? "end" : "middle"}
+                          fontSize="8"
+                          className="fill-muted-foreground/60"
+                        >
+                          {new Date(h.timestamp).toLocaleDateString("zh-CN", { month: "short", day: "numeric" })}
+                        </text>
+                      )}
                     </g>
                   );
                 })}
@@ -337,9 +428,9 @@ export default function StatsPage() {
                 {trendDimension !== "overall" && history.map((h, i) => {
                   const val = h.dimensionScores?.[trendDimension];
                   if (val === undefined || val === null) return null;
-                  const dimIndex = 100 - val; // convert correct% to degradation index
+                  const dimIndex = 100 - val;
                   const x = 45 + (i / Math.max(history.length - 1, 1)) * 515;
-                  const y = 20 + ((100 - dimIndex) / 100) * 150;
+                  const y = 20 + ((100 - dimIndex) / 100) * 160;
                   const dimColor = trendDimension === "logic" ? "#2563eb" : trendDimension === "math" ? "#d97706" : "#16a34a";
                   return (
                     <g key={i}>
@@ -348,7 +439,7 @@ export default function StatsPage() {
                         if (prevVal === undefined || prevVal === null) return null;
                         const prevDimIndex = 100 - prevVal;
                         const px = 45 + ((i - 1) / Math.max(history.length - 1, 1)) * 515;
-                        const py = 20 + ((100 - prevDimIndex) / 100) * 150;
+                        const py = 20 + ((100 - prevDimIndex) / 100) * 160;
                         return (
                           <line x1={px} y1={py} x2={x} y2={y} stroke={dimColor} strokeWidth="2" />
                         );
@@ -361,10 +452,32 @@ export default function StatsPage() {
                   );
                 })}
 
-                <text x="310" y="195" textAnchor="middle" fontSize="11" className="fill-muted-foreground">
+                <text x="310" y="215" textAnchor="middle" fontSize="11" className="fill-muted-foreground">
                   测试次数
                 </text>
               </svg>
+
+              {/* Trend summary */}
+              {history.length >= 2 && trendDimension === "overall" && (() => {
+                const first = history[0].degradationIndex
+                const last = history[history.length - 1].degradationIndex
+                const diff = last - first
+                const improved = diff < 0
+                return (
+                  <div className="mt-2 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                    <span>
+                      首次 <span className="font-medium text-foreground">{first}</span>
+                    </span>
+                    <span className="text-muted-foreground/40">→</span>
+                    <span>
+                      最新 <span className="font-medium text-foreground">{last}</span>
+                    </span>
+                    <span className={`${improved ? "text-green-600" : diff > 0 ? "text-red-600" : "text-muted-foreground"}`}>
+                      {diff === 0 ? "→ 持平" : `${improved ? "↓" : "↑"} ${Math.abs(diff)}`}
+                    </span>
+                  </div>
+                )
+              })()}
             </CardContent>
           </Card>
         )}

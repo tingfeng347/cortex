@@ -229,6 +229,7 @@ export default function TestFlow() {
     timestamp: number;
   } | null>(null);
   const [showExplanations, setShowExplanations] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [challengeRef, setChallengeRef] = useState<number | null>(null);
   const [prevResult, setPrevResult] = useState<{
@@ -585,9 +586,18 @@ export default function TestFlow() {
   }
 
   function handleDownloadImage() {
-    if (!result) return;
+    if (!result || isDownloading) return;
+    setIsDownloading(true);
+    setToast("正在生成图片…");
+    setTimeout(() => setToast(null), 1500);
 
-    // Build SVG result card
+    // Build SVG result card with dimensions
+    const dimParts = [
+      result.dimensionScores.logic !== null ? `逻辑 ${result.dimensionScores.logic}%` : "",
+      result.dimensionScores.math !== null ? `速算 ${result.dimensionScores.math}%` : "",
+      result.dimensionScores.vocab !== null ? `词汇 ${result.dimensionScores.vocab}%` : "",
+    ].filter(Boolean).join("  ·  ");
+
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
       <defs>
         <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
@@ -596,17 +606,17 @@ export default function TestFlow() {
         </linearGradient>
       </defs>
       <rect width="1200" height="630" fill="url(#bg)" rx="0"/>
-      <text x="600" y="80" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" fill="#888" font-weight="500">认知防锈 · 基线测试</text>
-      <circle cx="600" cy="280" r="112" fill="white" stroke="${result.tier.ringColor}" stroke-width="14"/>
-      <text x="600" y="300" text-anchor="middle" font-family="system-ui,sans-serif" font-size="72" font-weight="800" fill="#111">${result.degradationIndex}</text>
-      <text x="600" y="340" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#888">/ 100</text>
-      <rect x="475" y="370" width="250" height="44" rx="22" fill="${result.tier.ringColor}"/>
-      <text x="600" y="399" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="600" fill="white">${result.tier.label}</text>
-      <text x="600" y="460" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#666">${result.correctCount} / ${result.totalQuestions} 正确</text>
-      <text x="600" y="580" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#aaa">cortex.hydroroll.team</text>
+      <text x="600" y="70" text-anchor="middle" font-family="system-ui,sans-serif" font-size="26" fill="#aaa" font-weight="500">认知防锈 · 基线测试</text>
+      <circle cx="600" cy="260" r="112" fill="white" stroke="${result.tier.ringColor}" stroke-width="14"/>
+      <text x="600" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="72" font-weight="800" fill="#111">${result.degradationIndex}</text>
+      <text x="600" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#999">/ 100</text>
+      <rect x="475" y="350" width="250" height="44" rx="22" fill="${result.tier.ringColor}"/>
+      <text x="600" y="379" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="600" fill="white">${result.tier.label}</text>
+      <text x="600" y="435" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#666">${result.correctCount} / ${result.totalQuestions} 正确</text>
+      ${dimParts ? `<text x="600" y="465" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" fill="#999">${dimParts}</text>` : ""}
+      <text x="600" y="580" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#bbb">cortex.hydroroll.team</text>
     </svg>`;
 
-    // Render SVG to canvas, then download as PNG
     const img = new Image();
     const blob = new Blob([svg], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
@@ -621,6 +631,7 @@ export default function TestFlow() {
 
       canvas.toBlob((pngBlob) => {
         if (!pngBlob) {
+          setIsDownloading(false);
           setToast("生成图片失败");
           setTimeout(() => setToast(null), 2000);
           return;
@@ -632,6 +643,7 @@ export default function TestFlow() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
+        setIsDownloading(false);
         setToast("结果图已保存 ✓");
         setTimeout(() => setToast(null), 2000);
       }, "image/png");
@@ -639,6 +651,7 @@ export default function TestFlow() {
 
     img.onerror = () => {
       URL.revokeObjectURL(url);
+      setIsDownloading(false);
       setToast("生成图片失败");
       setTimeout(() => setToast(null), 2000);
     };
