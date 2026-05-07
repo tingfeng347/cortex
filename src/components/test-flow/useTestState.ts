@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   selectQuestions,
+  ensureBank,
   QUESTIONS_PER_TEST,
   QUESTION_TIME,
 } from "@/lib/questions";
@@ -26,6 +27,7 @@ type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
 
 export function useTestState() {
   const n = useTranslations();
+  const locale = useLocale();
   const [phase, setPhase] = useState<Phase>("landing");
   const [declared, setDeclared] = useState(false);
   const [currentQ, setCurrentQ] = useState(0);
@@ -57,9 +59,16 @@ export function useTestState() {
     timestamp: number;
   } | null>(null);
   const [aiUsage, setAiUsage] = useState<number | null>(null);
-  const [questions, setQuestions] = useState(() =>
-    selectQuestions(QUESTIONS_PER_TEST),
-  );
+  const [questions, setQuestions] = useState<Question[]>([]);
+
+  // Initialise questions on mount + regenerate when locale changes
+  // (except mid-test — questions are frozen once the test starts)
+  useEffect(() => {
+    if (phase === "testing" || phase === "processing") return;
+    ensureBank(locale).then(() => {
+      setQuestions(selectQuestions(QUESTIONS_PER_TEST, locale));
+    });
+  }, [locale, phase]);
   const [savedProgress, setSavedProgress] = useState<SavedProgress | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -360,11 +369,12 @@ export function useTestState() {
     submitAnswer(selected);
   }
 
-  function handleRestart() {
+  async function handleRestart() {
     stopTimer();
     clearProgress();
     setSavedProgress(null);
-    setQuestions(selectQuestions(QUESTIONS_PER_TEST));
+    await ensureBank(locale);
+    setQuestions(selectQuestions(QUESTIONS_PER_TEST, locale));
     setPhase("landing");
     setDeclared(false);
     setAiUsage(null);

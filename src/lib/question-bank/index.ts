@@ -1,20 +1,37 @@
 import type { Question } from "./types";
 import { bank as zhCN } from "./zh-CN";
-import { bank as en } from "./en";
-import { bank as ja } from "./ja";
 
 const BANKS: Record<string, Question[]> = {
   "zh-CN": zhCN,
-  en,
-  ja,
 };
+
+/**
+ * Ensure the question bank for a given locale is loaded.
+ * Other locales are code-split and only loaded on demand.
+ */
+export async function ensureBank(locale: string): Promise<void> {
+  if (BANKS[locale]) return;
+  switch (locale) {
+    case "en":
+      BANKS[locale] = (await import("./en")).bank;
+      break;
+    case "ja":
+      BANKS[locale] = (await import("./ja")).bank;
+      break;
+    default:
+      BANKS[locale] = zhCN;
+  }
+}
 
 /**
  * From the question bank for the given locale, randomly select n questions,
  * ensuring at least 1 from each category (logic / math / vocab).
+ *
+ * The bank for the requested locale must have been loaded first
+ * via {@link ensureBank}. Falls back to zh-CN for unrecognised locales.
  */
 export function selectQuestions(n: number, locale = "zh-CN"): Question[] {
-  const BANK = BANKS[locale] ?? BANKS["zh-CN"];
+  const BANK = BANKS[locale] ?? zhCN;
   const logic = BANK.filter((q) => q.type === "logic");
   const math = BANK.filter((q) => q.type === "math");
   const vocab = BANK.filter((q) => q.type === "vocab");
