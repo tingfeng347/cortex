@@ -197,3 +197,9 @@ html[lang="ja"] {
     @apply font-sans;
   }
 }
+
+/* Landing page question mark — follows cursor */
+.question-mark {
+  display: inline-block;
+  transition: transform 0.15s ease-out;
+}

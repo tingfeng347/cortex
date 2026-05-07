@@ -262,6 +262,7 @@ export default function TestFlow() {
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const progressRef = useRef<SavedProgress | null>(null);
+  const questionMarkRef = useRef<HTMLDivElement | null>(null);
   const isLastQuestion = currentQ === questions.length - 1;
 
   /* ─── Timer Management ─── */
@@ -469,6 +470,39 @@ export default function TestFlow() {
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
+
+  /* ─── Question mark follows cursor/touch ─── */
+
+  useEffect(() => {
+    if (phase !== "landing") return;
+
+    const el = questionMarkRef.current;
+    if (!el) return;
+
+    const span = el.querySelector("span");
+    if (!span) return;
+
+    const handleMove = (clientX: number, clientY: number) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const angle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
+      (span as HTMLElement).style.transform = `rotate(${angle}deg)`;
+    };
+
+    const onMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("touchmove", onTouchMove);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [phase]);
 
   /* ─── Event Handlers ─── */
 
@@ -707,8 +741,8 @@ export default function TestFlow() {
     return (
       <Card className="mx-auto w-full max-w-lg border-0 shadow-lg sm:border md:max-w-xl lg:max-w-2xl">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/5">
-            <span className="text-2xl font-bold text-primary">?</span>
+          <div ref={questionMarkRef} className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/5">
+            <span className="question-mark text-2xl font-bold text-primary">?</span>
           </div>
           <CardTitle className="text-2xl tracking-tight">
             {n("landing.title")}
