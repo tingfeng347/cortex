@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import DistributionChart from "@/components/distribution-chart"
 import Link from "next/link"
 import { ArrowLeft, Users, Brain, BarChart3 } from "lucide-react"
+import { QUESTIONS_PER_TEST } from "@/lib/questions"
 
 interface StatsData {
   totalTests: number
@@ -68,7 +69,7 @@ export default function StatsPage() {
             tierLabel: "",
             tierColor: "#dc2626",
             correctCount: 0,
-            totalQuestions: 5,
+            totalQuestions: QUESTIONS_PER_TEST,
             timestamp: Date.now(),
           }),
         )

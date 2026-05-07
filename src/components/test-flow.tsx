@@ -35,7 +35,7 @@ import {
 import type { Question } from "@/lib/questions";
 import RadarChart from "@/components/radar-chart";
 
-type Phase = "landing" | "declaration" | "testing" | "result";
+type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
 
 const LOCKED_SELECTION_MESSAGE = "不允许更改，毕竟真正的笨蛋就是没有后悔机会的";
 
@@ -52,18 +52,23 @@ function QuestionTimer({
   const circumference = 2 * Math.PI * radius;
   const progress = remaining / total;
   const offset = circumference * (1 - progress);
+  const isUrgent = remaining <= 10 && remaining > 0;
 
   const color =
-    progress > 0.5 ? "#16a34a" : progress > 0.25 ? "#d97706" : "#dc2626";
+    isUrgent ? "#ef4444"
+      : progress > 0.5 ? "#16a34a"
+        : progress > 0.25 ? "#d97706"
+          : "#dc2626";
   const textColor =
-    progress > 0.5
-      ? "text-green-600"
-      : progress > 0.25
-        ? "text-amber-600"
-        : "text-red-600";
+    isUrgent ? "text-red-500"
+      : progress > 0.5 ? "text-green-600"
+        : progress > 0.25 ? "text-amber-600"
+          : "text-red-600";
 
   return (
-    <div className="relative h-16 w-16 shrink-0 sm:h-20 sm:w-20">
+    <div
+      className={`relative h-16 w-16 shrink-0 sm:h-20 sm:w-20 ${isUrgent ? "animate-pulse" : ""}`}
+    >
       <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
         <circle
           cx="50"
@@ -88,7 +93,9 @@ function QuestionTimer({
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <span
-          className={`text-base font-bold tabular-nums sm:text-xl ${textColor}`}
+          className={`text-base font-bold tabular-nums sm:text-xl transition-all ${textColor} ${
+            isUrgent ? "scale-125" : ""
+          }`}
         >
           {remaining}
         </span>
@@ -237,8 +244,13 @@ export default function TestFlow() {
   // Calculate result when all questions answered
   useEffect(() => {
     if (answers.length !== questions.length) return;
+
+    // Immediately show the processing screen
+    setPhase("processing");
+
     const r = calculateResult(answers, timeouts, questions);
     setResult(r);
+
     try {
       // Save previous result before overwriting
       const prevRaw = localStorage.getItem("cognitive-rust-result");
@@ -279,7 +291,10 @@ export default function TestFlow() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     }).catch(() => { });
-    setPhase("result");
+
+    // Brief delay so user sees the processing state before results appear
+    const timer = setTimeout(() => setPhase("result"), 600);
+    return () => clearTimeout(timer);
   }, [answers, timeouts]);
 
   // Auto-advance to next question after answer is recorded
@@ -799,6 +814,25 @@ export default function TestFlow() {
     );
   }
 
+  /* ─── Phase: Processing ─── */
+
+  function renderProcessing() {
+    return (
+      <Card className="mx-auto w-full max-w-lg border-0 shadow-lg sm:border md:max-w-xl lg:max-w-2xl">
+        <CardHeader className="pb-2 text-center">
+          <CardTitle className="text-2xl tracking-tight">测试完成</CardTitle>
+          <CardDescription>正在分析你的认知表现</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center gap-4 py-12">
+          <div className="h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
+          <p className="text-sm text-muted-foreground">
+            正在计算你的认知画像…
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   /* ─── Phase: Result ─── */
 
   function renderResult() {
@@ -1123,6 +1157,7 @@ export default function TestFlow() {
         {phase === "landing" && renderLanding()}
         {phase === "declaration" && renderDeclaration()}
         {phase === "testing" && renderQuestion()}
+        {phase === "processing" && renderProcessing()}
         {phase === "result" && renderResult()}
       </main>
 
