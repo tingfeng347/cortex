@@ -63,3 +63,13 @@ export function selectQuestions(n: number, locale = "zh-CN"): Question[] {
 
   return selected.map((q, i) => ({ ...q, id: i + 1 }));
 }
+
+/**
+ * Return all questions from the bank for the given locale.
+ * Used by the adaptive test coordinator to select from the full pool.
+ * The bank must have been loaded first via ensureBank().
+ */
+export function getAllQuestions(locale = "zh-CN"): Question[] {
+  const BANK = BANKS[locale] ?? zhCN;
+  return BANK.map((q, i) => ({ ...q, id: i + 1 }));
+}

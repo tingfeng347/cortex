@@ -5,17 +5,28 @@ import { useTranslations, useLocale } from "next-intl";
 import {
   selectQuestions,
   ensureBank,
+  getAllQuestions,
+  ADAPTIVE_MODE,
   QUESTIONS_PER_TEST,
   QUESTION_TIME,
 } from "@/lib/questions";
 import {
   calculateResult,
+  abilityToDegradationIndex,
   generateShareText,
+  getTierByIndex,
   type TestResult,
   type DimensionScores,
 } from "@/lib/scoring";
 import { AI_CANONICAL_LEVELS } from "@/lib/constants";
 import type { Question } from "@/lib/questions";
+import {
+  createTestSession,
+  selectNextQuestion,
+  recordResponse,
+  isTestComplete,
+} from "@/lib/adaptive-test";
+import type { AdaptiveTestSession } from "@/lib/adaptive-test";
 import {
   loadProgress,
   clearProgress,
@@ -60,13 +71,19 @@ export function useTestState() {
   } | null>(null);
   const [aiUsage, setAiUsage] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [allQuestions, setAllQuestions] = useState<Question[]>([]);
+  const adaptiveSessionRef = useRef<AdaptiveTestSession | null>(null);
 
   // Initialise questions on mount + regenerate when locale changes
   // (except mid-test — questions are frozen once the test starts)
   useEffect(() => {
     if (phase === "testing" || phase === "processing") return;
     ensureBank(locale).then(() => {
-      setQuestions(selectQuestions(QUESTIONS_PER_TEST, locale));
+      if (ADAPTIVE_MODE) {
+        setAllQuestions(getAllQuestions(locale));
+      } else {
+        setQuestions(selectQuestions(QUESTIONS_PER_TEST, locale));
+      }
     });
   }, [locale, phase]);
   const [savedProgress, setSavedProgress] = useState<SavedProgress | null>(null);
@@ -113,7 +130,20 @@ export function useTestState() {
 
     setPhase("processing");
 
-    const r = calculateResult(answers, timeouts, questions);
+    let r: TestResult;
+    if (ADAPTIVE_MODE && adaptiveSessionRef.current?.thetaEstimate) {
+      const theta = adaptiveSessionRef.current.thetaEstimate.theta;
+      const di = abilityToDegradationIndex(theta);
+      const base = calculateResult(answers, timeouts, questions);
+      r = {
+        ...base,
+        degradationIndex: di,
+        tier: getTierByIndex(di),
+        estimationMethod: "irt",
+      };
+    } else {
+      r = calculateResult(answers, timeouts, questions);
+    }
     setResult(r);
 
     try {
@@ -132,6 +162,7 @@ export function useTestState() {
         dimensionScores: r.dimensionScores,
         aiUsage: aiUsage,
         timestamp: Date.now(),
+        estimationMethod: r.estimationMethod,
       };
       localStorage.setItem("cognitive-rust-result", JSON.stringify(entry));
       const raw = localStorage.getItem("cognitive-rust-history");
@@ -148,6 +179,7 @@ export function useTestState() {
       correctCount: r.correctCount,
       totalQuestions: r.totalQuestions,
       aiUsageLevel: aiUsage !== null ? AI_CANONICAL_LEVELS[aiUsage] : null,
+      estimationMethod: r.estimationMethod,
     };
     fetch("/api/results", {
       method: "POST",
@@ -317,6 +349,25 @@ export function useTestState() {
 
   function handleResume() {
     if (!savedProgress) return;
+    // In adaptive mode, saved progress is incompatible — restart instead
+    if (ADAPTIVE_MODE) {
+      const resumedAiUsage =
+        typeof savedProgress.aiUsage === "number" ? savedProgress.aiUsage : 0;
+      setAiUsage(resumedAiUsage);
+      clearProgress();
+      setSavedProgress(null);
+      setPhase("testing");
+      setCurrentQ(0);
+      setAnswers([]);
+      setTimeouts([]);
+      setSelected(null);
+      const session = createTestSession(QUESTIONS_PER_TEST);
+      adaptiveSessionRef.current = session;
+      const firstQ = selectNextQuestion(session, allQuestions);
+      setQuestions(firstQ ? [firstQ] : selectQuestions(1, locale));
+      startTimer();
+      return;
+    }
     const s = savedProgress;
     setQuestions(s.questions);
     setCurrentQ(s.currentQ);
@@ -342,6 +393,15 @@ export function useTestState() {
     setAnswers([]);
     setTimeouts([]);
     setSelected(null);
+
+    if (ADAPTIVE_MODE) {
+      const session = createTestSession(QUESTIONS_PER_TEST);
+      adaptiveSessionRef.current = session;
+      const firstQ = selectNextQuestion(session, allQuestions);
+      setQuestions(firstQ ? [firstQ] : selectQuestions(1, locale));
+    } else {
+      // Phase 0: questions already pre-selected on mount
+    }
     startTimer();
   }
 
@@ -362,6 +422,30 @@ export function useTestState() {
     setAnswers((prev) => [...prev, answer]);
     setTimeouts((prev) => [...prev, timedOut]);
     setSelected(null);
+
+    // Adaptive mode: record response to session and select next question
+    if (ADAPTIVE_MODE && adaptiveSessionRef.current) {
+      const answeredQ = questions[currentQ];
+      if (answeredQ) {
+        const score = answer === answeredQ.answer ? 1 : 0;
+        recordResponse(
+          adaptiveSessionRef.current,
+          answeredQ.id,
+          answeredQ.type,
+          answeredQ.difficulty,
+          score,
+        );
+      }
+      if (!isTestComplete(adaptiveSessionRef.current)) {
+        const nextQ = selectNextQuestion(
+          adaptiveSessionRef.current,
+          allQuestions.length > 0 ? allQuestions : questions,
+        );
+        if (nextQ) {
+          setQuestions((prev) => [...prev, nextQ]);
+        }
+      }
+    }
   }
 
   function handleNext() {
@@ -373,8 +457,13 @@ export function useTestState() {
     stopTimer();
     clearProgress();
     setSavedProgress(null);
+    adaptiveSessionRef.current = null;
     await ensureBank(locale);
-    setQuestions(selectQuestions(QUESTIONS_PER_TEST, locale));
+    if (ADAPTIVE_MODE) {
+      setAllQuestions(getAllQuestions(locale));
+    } else {
+      setQuestions(selectQuestions(QUESTIONS_PER_TEST, locale));
+    }
     setPhase("landing");
     setDeclared(false);
     setAiUsage(null);

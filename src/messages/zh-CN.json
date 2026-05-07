@@ -133,6 +133,9 @@
     "privacyNote": "所有数据匿名收集，仅用于生成统计分布",
     "aiLevelSuffix": "人",
     "trendAria": "个人退化指数趋势",
+    "estimationTitle": "评估方式分布",
+    "estimationIRT": "IRT 自适应评估",
+    "estimationFixed": "固定百分比评分",
     "aboutLink": "关于",
     "otherGame": "另一个游戏"
   },

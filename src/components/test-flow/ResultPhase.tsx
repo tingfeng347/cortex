@@ -68,7 +68,7 @@ export function ResultPhase({
             index={result.degradationIndex}
             ringColor={result.tier.ringColor}
           />
-          <div className="mt-3">
+          <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
             <Badge
               className="px-3 py-1 text-sm"
               style={{
@@ -78,6 +78,11 @@ export function ResultPhase({
             >
               {n("tier." + result.tier.tierKey)}
             </Badge>
+            {result.estimationMethod === "irt" && (
+              <span className="rounded-full border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                IRT
+              </span>
+            )}
           </div>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
             {n("tier." + result.tier.tierKey + "Desc")}

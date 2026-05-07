@@ -4,7 +4,7 @@ import { saveResult } from "@/lib/storage"
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { degradationIndex, tierLabel, aiUsageLevel } = body
+    const { degradationIndex, tierLabel, aiUsageLevel, estimationMethod } = body
 
     if (typeof degradationIndex !== "number") {
       return NextResponse.json({ error: "invalid payload" }, { status: 400 })
@@ -14,6 +14,7 @@ export async function POST(request: Request) {
       degradationIndex,
       tierLabel,
       aiUsageLevel: aiUsageLevel ?? null,
+      estimationMethod: estimationMethod === "irt" ? "irt" : "percentage",
     })
 
     return NextResponse.json({ ok: true })

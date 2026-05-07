@@ -15,6 +15,8 @@ interface StatsPageData {
   distribution: number[]
   tierCounts: Record<string, number>
   aiUsageCounts: Record<string, number>
+  irtCount: number
+  pctCount: number
 }
 
 interface HistoryEntry {
@@ -261,6 +263,27 @@ export default function StatsPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Estimation method */}
+            {(data.irtCount > 0 || data.pctCount > 0) && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">{t("estimationTitle")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{t("estimationIRT")}</span>
+                      <span className="font-medium tabular-nums">{data.irtCount}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{t("estimationFixed")}</span>
+                      <span className="font-medium tabular-nums">{data.pctCount}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
 

@@ -133,6 +133,9 @@
     "privacyNote": "すべてのデータは匿名で収集され、統計分布の生成のみに使用されます",
     "aiLevelSuffix": "人",
     "trendAria": "個人の退化指数の傾向",
+    "estimationTitle": "評価方式分布",
+    "estimationIRT": "IRT 適応型評価",
+    "estimationFixed": "固定パーセント評価",
     "aboutLink": "このアプリについて",
     "otherGame": "別のゲーム"
   },

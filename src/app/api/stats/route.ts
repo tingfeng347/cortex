@@ -13,6 +13,8 @@ export async function GET() {
       distribution: stats.distribution,
       tierCounts: stats.tierCounts,
       aiUsageCounts: stats.aiUsageCounts,
+      irtCount: stats.irtCount,
+      pctCount: stats.pctCount,
     })
   } catch (err) {
     console.error("GET /api/stats error:", err)

@@ -133,6 +133,9 @@
     "privacyNote": "All data is collected anonymously and only used to generate statistical distributions",
     "aiLevelSuffix": "people",
     "trendAria": "Personal degradation index trend",
+    "estimationTitle": "Estimation Method",
+    "estimationIRT": "IRT Adaptive",
+    "estimationFixed": "Fixed Percentage",
     "aboutLink": "About",
     "otherGame": "Another Game"
   },

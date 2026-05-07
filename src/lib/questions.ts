@@ -1,6 +1,6 @@
 export type { Question } from "./question-bank/types"
 
-export { selectQuestions, ensureBank } from "./question-bank/index"
+export { selectQuestions, ensureBank, getAllQuestions } from "./question-bank/index"
 export const QUESTION_TIME = 40 // seconds per question
 export const QUESTIONS_PER_TEST = 20
 
