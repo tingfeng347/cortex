@@ -43,6 +43,15 @@ export async function getStats(): Promise<StatsData> {
   } catch {
     // ignore (set may not exist yet)
   }
+  // Fallback: read existing country keys directly (backfill for pre-set era)
+  if (countries.length === 0) {
+    try {
+      const keys = await redis.keys(PREFIX + "country:*")
+      countries = keys.map((k: string) => k.slice(PREFIX.length + "country:".length))
+    } catch {
+      // ignore
+    }
+  }
 
   const p = redis.pipeline()
   p.get(PREFIX + "total")
@@ -171,7 +180,7 @@ export async function saveResult(result: {
   }
   if (result.country) {
     p.incr(PREFIX + `country:${result.country}`)
-    redis.sadd(PREFIX + "countries", result.country).catch(() => {})
+    p.sadd(PREFIX + "countries", result.country)
   }
   if (result.elapsedMs && result.elapsedMs > 0) {
     p.incrby(PREFIX + "sum_elapsed", Math.round(result.elapsedMs))
