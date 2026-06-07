@@ -108,7 +108,8 @@
     "aboutLink": "このアプリについて",
     "otherGame": "別のゲーム",
     "logicGameTitle": "論理的思考力に向上の余地があります",
-    "logicGameDesc": "<game>サイバー推理</game>で推理事件を解決し、集中力と論理的思考力を高めましょう！"
+    "logicGameDesc": "<game>サイバー推理</game>で推理事件を解決し、集中力と論理的思考力を高めましょう！",
+    "ddlRoast": "DDL Roast"
   },
   "stats": {
     "pageTitle": "全体統計",
@@ -144,7 +145,8 @@
     "estimationIRT": "IRT 適応型評価",
     "estimationFixed": "固定パーセント評価",
     "aboutLink": "このアプリについて",
-    "otherGame": "別のゲーム"
+    "otherGame": "別のゲーム",
+    "ddlRoast": "DDL Roast"
   },
   "about": {
     "title": "このアプリについて",

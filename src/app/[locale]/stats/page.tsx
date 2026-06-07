@@ -656,6 +656,15 @@ export default function StatsPage() {
             >
               {t("otherGame")}
             </a>
+            <span className="text-muted-foreground/40">|</span>
+            <a
+              href="https://ddlroast.hydroroll.team"
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-foreground hover:underline underline-offset-4"
+            >
+              {t("ddlRoast")}
+            </a>
           </div>
         </div>
       </div>

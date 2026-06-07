@@ -108,7 +108,8 @@
     "aboutLink": "About",
     "otherGame": "Another Game",
     "logicGameTitle": "Room for Logic Improvement",
-    "logicGameDesc": "Try playing <game>Cyber Deduction</game> to improve your focus and logical thinking through case-solving!"
+    "logicGameDesc": "Try playing <game>Cyber Deduction</game> to improve your focus and logical thinking through case-solving!",
+    "ddlRoast": "DDL Roast"
   },
   "stats": {
     "pageTitle": "Platform-wide Statistics",
@@ -144,7 +145,8 @@
     "estimationIRT": "IRT Adaptive",
     "estimationFixed": "Fixed Percentage",
     "aboutLink": "About",
-    "otherGame": "Another Game"
+    "otherGame": "Another Game",
+    "ddlRoast": "DDL Roast"
   },
   "about": {
     "title": "About",

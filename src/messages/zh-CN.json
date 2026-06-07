@@ -103,7 +103,8 @@
     "aboutLink": "关于",
     "otherGame": "另一个游戏(用于提高专注力)",
     "logicGameTitle": "逻辑推理还有提升空间",
-    "logicGameDesc": "试试玩一下<game>赛博断案</game>，通过推理案件提高专注力和逻辑能力！"
+    "logicGameDesc": "试试玩一下<game>赛博断案</game>，通过推理案件提高专注力和逻辑能力！",
+    "ddlRoast": "烤死线"
   },
   "stats": {
     "pageTitle": "全平台统计",
@@ -139,7 +140,8 @@
     "estimationIRT": "IRT 自适应评估",
     "estimationFixed": "固定百分比评分",
     "aboutLink": "关于",
-    "otherGame": "另一个游戏(用于提高专注力)"
+    "otherGame": "另一个游戏(用于提高专注力)",
+    "ddlRoast": "烤死线"
   },
   "about": {
     "title": "关于",
