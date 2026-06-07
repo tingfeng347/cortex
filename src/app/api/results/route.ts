@@ -10,11 +10,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "invalid payload" }, { status: 400 })
     }
 
+    const country = request.headers.get("x-vercel-ip-country") ?? undefined
+
     await saveResult({
       degradationIndex,
       tierLabel,
       aiUsageLevel: aiUsageLevel ?? null,
       estimationMethod: estimationMethod === "irt" ? "irt" : "percentage",
+      country,
     })
 
     return NextResponse.json({ ok: true })

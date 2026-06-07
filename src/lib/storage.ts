@@ -82,6 +82,7 @@ export async function saveResult(result: {
   tierLabel: string
   aiUsageLevel: string | null
   estimationMethod?: "percentage" | "irt"
+  country?: string | null
 }): Promise<void> {
   const bucket = Math.min(Math.floor(result.degradationIndex / 10), 9)
 
@@ -102,6 +103,9 @@ export async function saveResult(result: {
     p.incr(PREFIX + "irt_count")
   } else {
     p.incr(PREFIX + "pct_count")
+  }
+  if (result.country) {
+    p.incr(PREFIX + `country:${result.country}`)
   }
   await p.exec()
 }
