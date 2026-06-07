@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import DistributionChart from "@/components/distribution-chart";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, Users, Brain, BarChart3 } from "lucide-react";
+import { ArrowLeft, Users, Brain, BarChart3, Clock, Globe } from "lucide-react";
 import { TIER_COLOR_MAP, TIER_KEYS } from "@/lib/scoring";
 import { AI_CANONICAL_LEVELS } from "@/lib/constants";
 
@@ -24,6 +24,11 @@ interface StatsPageData {
   aiUsageCounts: Record<string, number>;
   irtCount: number;
   pctCount: number;
+  countryCounts: Record<string, number>;
+  avgElapsedMs: number | null;
+  avgLogic: number | null;
+  avgMath: number | null;
+  avgVocab: number | null;
 }
 
 interface HistoryEntry {
@@ -47,6 +52,18 @@ export default function StatsPage() {
   const t = useTranslations("stats");
   const tierLabel = useTranslations("tier");
   const decl = useTranslations("declaration");
+  const radar = useTranslations("radar");
+  const locale = useLocale();
+
+  const getCountryName = (code: string) => {
+    try {
+      const names = new Intl.DisplayNames([locale], { type: "region" });
+      return names.of(code) ?? code;
+    } catch {
+      return code;
+    }
+  };
+
   const [data, setData] = useState<StatsPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -150,7 +167,7 @@ export default function StatsPage() {
         {data && !loading && data.totalTests > 0 && (
           <div className="space-y-6">
             {/* Summary cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <Card>
                 <CardContent className="flex items-center gap-3 p-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/5">
@@ -237,6 +254,24 @@ export default function StatsPage() {
                     </Card>
                   );
                 })()}
+              {/* Avg elapsed */}
+              {data.avgElapsedMs !== null && (
+                <Card>
+                  <CardContent className="flex items-center gap-3 p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/5">
+                      <Clock className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground">
+                        {t("avgElapsed")}
+                      </div>
+                      <div className="text-xl font-bold tracking-tight">
+                        {Math.round(data.avgElapsedMs / 60000)}min
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Distribution chart */}
@@ -295,6 +330,37 @@ export default function StatsPage() {
               </Card>
             )}
 
+            {/* Country distribution */}
+            {Object.keys(data.countryCounts).length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">
+                    {t("countryTitle")}
+                  </CardTitle>
+                  <CardDescription>{t("countryDesc")}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {Object.entries(data.countryCounts)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([code, count]) => (
+                        <div
+                          key={code}
+                          className="flex items-center justify-between text-sm"
+                        >
+                          <span className="text-muted-foreground">
+                            {getCountryName(code)}
+                          </span>
+                          <span className="font-medium tabular-nums">
+                            {count}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Tier breakdown */}
             <Card>
               <CardHeader className="pb-3">
@@ -328,31 +394,58 @@ export default function StatsPage() {
               </CardContent>
             </Card>
 
-            {/* Estimation method */}
-            {/* {(data.irtCount > 0 || data.pctCount > 0) && ( */}
-            {/*   <Card> */}
-            {/*     <CardHeader className="pb-3"> */}
-            {/*       <CardTitle className="text-base">{t("estimationTitle")}</CardTitle> */}
-            {/*     </CardHeader> */}
-            {/*     <CardContent> */}
-            {/*       <div className="space-y-2 text-sm"> */}
-            {/*         <div className="flex items-center justify-between"> */}
-            {/*           <span className="text-muted-foreground">{t("estimationIRT")}</span> */}
-            {/*           <span className="font-medium tabular-nums">{data.irtCount}</span> */}
-            {/*         </div> */}
-            {/*         <div className="flex items-center justify-between"> */}
-            {/*           <span className="text-muted-foreground">{t("estimationFixed")}</span> */}
-            {/*           <span className="font-medium tabular-nums">{data.pctCount}</span> */}
-            {/*         </div> */}
-            {/*       </div> */}
-            {/*     </CardContent> */}
-            {/*   </Card> */}
-            {/* )} */}
-          </div>
-        )}
+            {/* Dimension averages */}
+            {(data.avgLogic !== null ||
+              data.avgMath !== null ||
+              data.avgVocab !== null) && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">
+                    {t("dimAvgTitle")}
+                  </CardTitle>
+                  <CardDescription>{t("dimAvgDesc")}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {data.avgLogic !== null && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          {radar("logic")}
+                        </span>
+                        <span className="font-medium tabular-nums">
+                          {data.avgLogic}%
+                        </span>
+                      </div>
+                    )}
+                    {data.avgMath !== null && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          {radar("math")}
+                        </span>
+                        <span className="font-medium tabular-nums">
+                          {data.avgMath}%
+                        </span>
+                      </div>
+                    )}
+                    {data.avgVocab !== null && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          {radar("vocab")}
+                        </span>
+                        <span className="font-medium tabular-nums">
+                          {data.avgVocab}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            </div>
+          )}
 
-        {/* Personal trend */}
-        {history.length >= 2 && (
+          {/* Personal trend */}
+          {history.length >= 2 && (
           <Card className="mt-6">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">{t("trendTitle")}</CardTitle>

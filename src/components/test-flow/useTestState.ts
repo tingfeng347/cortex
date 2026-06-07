@@ -186,6 +186,7 @@ export function useTestState() {
       aiUsageLevel: aiUsage !== null ? AI_CANONICAL_LEVELS[aiUsage] : null,
       estimationMethod: r.estimationMethod,
       elapsedMs,
+      dimensionScores: r.dimensionScores,
     };
     fetch("/api/results", {
       method: "POST",
