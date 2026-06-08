@@ -69,11 +69,10 @@ export default function TestFlow() {
 
       {/* Toast */}
       <div
-        className={`fixed top-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background shadow-lg transition-all duration-300 ${
-          s.toast
+        className={`fixed top-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background shadow-lg transition-all duration-300 ${s.toast
             ? "translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-4 opacity-0"
-        }`}
+          }`}
       >
         {s.toast}
       </div>
@@ -81,7 +80,7 @@ export default function TestFlow() {
       <footer className="flex items-center justify-center gap-3 pt-4 text-xs text-muted-foreground">
         <span>Cortex &copy; </span>
         <a
-          href="https://github.com/HsiangNianian"
+          href="https://academic.jyunko.cn"
           target="_blank"
           rel="noreferrer"
           className="transition-colors hover:text-foreground hover:underline underline-offset-4"
