@@ -1,8 +1,36 @@
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QUESTIONS_PER_TEST, QUESTION_TIME } from "@/lib/questions";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "about" })
+  const ogUrl = `/api/og?i=50&t=moderateDecline&c=?&n=5`
+
+  return {
+    title: t("title") + " · Cognitive Rustproof",
+    description: t("originP1").slice(0, 160),
+    openGraph: {
+      title: t("title") + " · Cognitive Rustproof",
+      description: t("originP1").slice(0, 160),
+      type: "article",
+      images: [{ url: ogUrl, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title") + " · Cognitive Rustproof",
+      description: t("originP1").slice(0, 160),
+      images: [ogUrl],
+    },
+  }
+}
 
 export default async function AboutPage() {
   const t = await getTranslations("about");
