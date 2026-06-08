@@ -219,6 +219,17 @@ export function calculateResult(
   }
 }
 
+export function getChallengeCopy(tierKey: string, index: number): string {
+  const challenges: Record<string, string> = {
+    cognitivePeak: `I scored ${index}/100 — cognitive peak. Think you can beat me?`,
+    mildDecline: `I scored ${index}/100 on the cognitive rust test. Can you do better?`,
+    moderateDecline: `AI might be making me rusty. I scored ${index}/100. What's your score?`,
+    significantDecline: `OK this is concerning. I got ${index}/100. Time to see where you stand.`,
+    severeDecline: `The AI brain rust is real. ${index}/100. Dare to test yourself?`,
+  }
+  return challenges[tierKey] ?? challenges.moderateDecline
+}
+
 export function generateShareText(result: TestResult, labels?: {
   site: string
   degradation: string

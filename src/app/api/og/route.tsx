@@ -18,6 +18,7 @@ export async function GET(request: Request) {
   const total = searchParams.get("n") ?? String(QUESTIONS_PER_TEST)
 
   const tier = TIER_CONFIG[tierLabel] ?? TIER_CONFIG["moderateDecline"]
+  const challengeText = searchParams.get("challenge") ?? ""
 
   return new ImageResponse(
     (
@@ -88,6 +89,13 @@ export async function GET(request: Request) {
         <div style={{ marginTop: "16px", fontSize: "18px", color: "#666" }}>
           {correct} / {total} 正确
         </div>
+
+        {/* Challenge text */}
+        {challengeText && (
+          <div style={{ marginTop: "20px", fontSize: "20px", color: "#444", textAlign: "center", maxWidth: "600px", padding: "0 40px" }}>
+            {challengeText}
+          </div>
+        )}
 
         {/* Footer URL */}
         <div

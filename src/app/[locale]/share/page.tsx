@@ -2,7 +2,7 @@ import { type Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { Link } from "@/i18n/navigation"
 import { AutoRedirect } from "@/components/share-redirect"
-import { getTierByIndex } from "@/lib/scoring"
+import { getTierByIndex, getChallengeCopy } from "@/lib/scoring"
 
 export async function generateMetadata({
   searchParams,
@@ -16,20 +16,24 @@ export async function generateMetadata({
   const ref = sp.ref
   const index = ref ? Math.min(100, Math.max(0, Number(ref) || 50)) : 50
   const tier = getTierByIndex(index)
+  const challengeCopy = getChallengeCopy(tier.tierKey, index)
   const t = await getTranslations({ locale, namespace: "site" })
 
-  const ogUrl = `/api/og?i=${index}&t=${encodeURIComponent(tier.tierKey)}&c=?&n=5`
+  const ogUrl = `/api/og?i=${index}&t=${encodeURIComponent(tier.tierKey)}&c=?&n=5&challenge=${encodeURIComponent(challengeCopy)}`
 
   return {
+    title: t("title") + " — " + tier.label,
+    description: challengeCopy,
     openGraph: {
       title: t("title") + " — " + tier.label,
-      description: `${index}/100 · ${t("title")}`,
+      description: challengeCopy,
+      type: "website",
       images: [{ url: ogUrl, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: t("title") + " — " + tier.label,
-      description: `${index}/100 · ${t("title")}`,
+      description: challengeCopy,
       images: [ogUrl],
     },
   }
