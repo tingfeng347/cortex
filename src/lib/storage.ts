@@ -1,5 +1,5 @@
 import { Redis } from "@upstash/redis"
-import { TIER_LABELS, RESULT_TIERS, type DimensionScores } from "./scoring"
+import { TIER_LABELS, RESULT_TIERS } from "./scoring"
 import { AI_CANONICAL_LEVELS } from "./constants"
 
 function getRedis(): Redis {
@@ -28,9 +28,6 @@ export interface StatsData {
   pctCount: number
   countryCounts: Record<string, number>
   avgElapsedMs: number | null
-  avgLogic: number | null
-  avgMath: number | null
-  avgVocab: number | null
 }
 
 export async function getStats(): Promise<StatsData> {
@@ -43,7 +40,6 @@ export async function getStats(): Promise<StatsData> {
   } catch {
     // ignore (set may not exist yet)
   }
-  // Fallback: read existing country keys directly (backfill for pre-set era)
   if (countries.length === 0) {
     try {
       const keys = await redis.keys(PREFIX + "country:*")
@@ -63,18 +59,10 @@ export async function getStats(): Promise<StatsData> {
   for (const level of AI_CANONICAL_LEVELS) p.get(PREFIX + `ai:${level}`)
   p.get(PREFIX + "irt_count")
   p.get(PREFIX + "pct_count")
-  // Country counts
   for (const code of countries) p.get(PREFIX + `country:${code}`)
   // Elapsed time
   p.get(PREFIX + "sum_elapsed")
   p.get(PREFIX + "elapsed_count")
-  // Dimension score sums
-  p.get(PREFIX + "sum_logic")
-  p.get(PREFIX + "logic_count")
-  p.get(PREFIX + "sum_math")
-  p.get(PREFIX + "math_count")
-  p.get(PREFIX + "sum_vocab")
-  p.get(PREFIX + "vocab_count")
 
   const results = await p.exec<(number | null)[]>()
   let idx = 0
@@ -101,7 +89,6 @@ export async function getStats(): Promise<StatsData> {
   const irtCount = (results[idx++] as number) ?? 0
   const pctCount = (results[idx++] as number) ?? 0
 
-  // Country counts
   const countryCounts: Record<string, number> = {}
   for (const code of countries) {
     countryCounts[code] = (results[idx++] as number) ?? 0
@@ -110,14 +97,6 @@ export async function getStats(): Promise<StatsData> {
   // Elapsed time
   const sumElapsed = (results[idx++] as number) ?? 0
   const elapsedCount = (results[idx++] as number) ?? 0
-
-  // Dimension score sums
-  const sumLogic = (results[idx++] as number) ?? 0
-  const logicCount = (results[idx++] as number) ?? 0
-  const sumMath = (results[idx++] as number) ?? 0
-  const mathCount = (results[idx++] as number) ?? 0
-  const sumVocab = (results[idx++] as number) ?? 0
-  const vocabCount = (results[idx++] as number) ?? 0
 
   return {
     totalTests: total,
@@ -130,9 +109,6 @@ export async function getStats(): Promise<StatsData> {
     pctCount,
     countryCounts,
     avgElapsedMs: elapsedCount ? Math.round(sumElapsed / elapsedCount) : null,
-    avgLogic: logicCount ? Math.round((sumLogic / logicCount) * 10) / 10 : null,
-    avgMath: mathCount ? Math.round((sumMath / mathCount) * 10) / 10 : null,
-    avgVocab: vocabCount ? Math.round((sumVocab / vocabCount) * 10) / 10 : null,
   }
 }
 
@@ -155,7 +131,6 @@ export async function saveResult(result: {
   estimationMethod?: "percentage" | "irt"
   country?: string | null
   elapsedMs?: number | null
-  dimensionScores?: DimensionScores | null
 }): Promise<void> {
   const bucket = Math.min(Math.floor(result.degradationIndex / 10), 9)
 
@@ -185,21 +160,6 @@ export async function saveResult(result: {
   if (result.elapsedMs && result.elapsedMs > 0) {
     p.incrby(PREFIX + "sum_elapsed", Math.round(result.elapsedMs))
     p.incr(PREFIX + "elapsed_count")
-  }
-  if (result.dimensionScores) {
-    const ds = result.dimensionScores
-    if (ds.logic !== null) {
-      p.incrby(PREFIX + "sum_logic", ds.logic)
-      p.incr(PREFIX + "logic_count")
-    }
-    if (ds.math !== null) {
-      p.incrby(PREFIX + "sum_math", ds.math)
-      p.incr(PREFIX + "math_count")
-    }
-    if (ds.vocab !== null) {
-      p.incrby(PREFIX + "sum_vocab", ds.vocab)
-      p.incr(PREFIX + "vocab_count")
-    }
   }
   await p.exec()
 }

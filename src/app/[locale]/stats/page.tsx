@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -26,9 +26,6 @@ interface StatsPageData {
   pctCount: number;
   countryCounts: Record<string, number>;
   avgElapsedMs: number | null;
-  avgLogic: number | null;
-  avgMath: number | null;
-  avgVocab: number | null;
 }
 
 interface HistoryEntry {
@@ -52,20 +49,6 @@ export default function StatsPage() {
   const t = useTranslations("stats");
   const tierLabel = useTranslations("tier");
   const decl = useTranslations("declaration");
-  const radar = useTranslations("radar");
-  const locale = useLocale();
-
-  const countryFlag = (code: string) =>
-    String.fromCodePoint(...[...code].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
-
-  const getCountryName = (code: string) => {
-    try {
-      const names = new Intl.DisplayNames([locale], { type: "region" });
-      return names.of(code) ?? code;
-    } catch {
-      return code;
-    }
-  };
 
   const [data, setData] = useState<StatsPageData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -333,41 +316,6 @@ export default function StatsPage() {
               </Card>
             )}
 
-            {/* Country distribution */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">
-                  {t("countryTitle")}
-                </CardTitle>
-                <CardDescription>{t("countryDesc")}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {data.countryCounts && Object.keys(data.countryCounts).length > 0
-                    ? Object.entries(data.countryCounts)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([code, count]) => (
-                          <div
-                            key={code}
-                            className="flex items-center justify-between text-sm"
-                          >
-                            <span className="text-muted-foreground">
-                              {countryFlag(code)} {getCountryName(code)}
-                            </span>
-                            <span className="font-medium tabular-nums">
-                              {count}
-                            </span>
-                          </div>
-                        ))
-                    : (
-                      <p className="text-sm text-muted-foreground">
-                        {t("noData")}
-                      </p>
-                    )}
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Tier breakdown */}
             <Card>
               <CardHeader className="pb-3">
@@ -401,43 +349,6 @@ export default function StatsPage() {
               </CardContent>
             </Card>
 
-            {/* Dimension averages */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">
-                  {t("dimAvgTitle")}
-                </CardTitle>
-                <CardDescription>{t("dimAvgDesc")}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {radar("logic")}
-                    </span>
-                    <span className="font-medium tabular-nums">
-                      {data.avgLogic != null ? `${data.avgLogic}%` : t("noData")}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {radar("math")}
-                    </span>
-                    <span className="font-medium tabular-nums">
-                      {data.avgMath != null ? `${data.avgMath}%` : t("noData")}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {radar("vocab")}
-                    </span>
-                    <span className="font-medium tabular-nums">
-                      {data.avgVocab != null ? `${data.avgVocab}%` : t("noData")}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
             </div>
           )}
 

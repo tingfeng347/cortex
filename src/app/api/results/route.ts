@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { degradationIndex, tierLabel, aiUsageLevel, estimationMethod, elapsedMs, dimensionScores } = body
+    const { degradationIndex, tierLabel, aiUsageLevel, estimationMethod, elapsedMs } = body
 
     // Score bounds check
     if (typeof degradationIndex !== "number" || degradationIndex < 0 || degradationIndex > 100) {
@@ -37,7 +37,6 @@ export async function POST(request: Request) {
       estimationMethod: estimationMethod === "irt" ? "irt" : "percentage",
       country,
       elapsedMs: typeof elapsedMs === "number" ? elapsedMs : null,
-      dimensionScores: dimensionScores ?? null,
     })
 
     return NextResponse.json({ ok: true })
