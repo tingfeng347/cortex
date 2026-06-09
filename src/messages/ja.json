@@ -37,9 +37,9 @@
 		"retakeButton": "もう一度測定",
 		"viewStats": "全体統計を見る",
 		"viewLastResult": "前回の結果詳細を見る",
-		"communityTitle": "QQグループ：積案拂塵・奇案特刊編集部",
-		"communityDesc": "グループID 751476984。AIゲーム、AI認知テスト、そしてAIを多用しながら自分の思考力を保つ方法について話しましょう。",
-		"communityJoinCta": "QQグループに参加",
+		"communityTitle": "Discordコミュニティに参加",
+		"communityDesc": "AIアプリの実装・運用、実践的なAIプロダクトづくり、Agent開発、認知テストについて開発者同士で話しましょう。",
+		"communityJoinCta": "Discordに参加",
 		"communityGameCta": "サイバー推理を試す",
 		"communityDismiss": "コミュニティ案内を閉じる",
 		"footerTagline": "認知能力は筋肉と同じ——使わなければ衰えます。定期的に測定して、AIがあなたに何を残したのかを知りましょう。"

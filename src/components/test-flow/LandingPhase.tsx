@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode, type RefObject } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ExternalLink, Gamepad2, MessageCircle, X } from "lucide-react";
 import {
@@ -46,7 +46,9 @@ export function LandingPhase({
   handleViewLastResult,
 }: LandingPhaseProps) {
   const n = useTranslations();
+  const locale = useLocale();
   const isChallenge = challengeRef !== null;
+  const isChinese = locale === "zh-CN";
   const [showCommunityBanner, setShowCommunityBanner] = useState(true);
 
   return (
@@ -67,9 +69,7 @@ export function LandingPhase({
           {isChallenge ? (
             <>
               {n("landing.challengePrefix")}{" "}
-              <span className="font-bold text-foreground">
-                {challengeRef}
-              </span>{" "}
+              <span className="font-bold text-foreground">{challengeRef}</span>{" "}
               {n("landing.challengeSuffix")}
             </>
           ) : (
@@ -107,7 +107,11 @@ export function LandingPhase({
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <a
-                    href="https://qm.qq.com/q/Hhh3B2E68S"
+                    href={
+                      isChinese
+                        ? "https://qm.qq.com/q/Hhh3B2E68S"
+                        : "https://discord.gg/pt4f7sVFsH"
+                    }
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -115,15 +119,17 @@ export function LandingPhase({
                     {n("landing.communityJoinCta")}
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </a>
-                  <a
-                    href="https://deadpan.hydroroll.team"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                  >
-                    <Gamepad2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    {n("landing.communityGameCta")}
-                  </a>
+                  {isChinese && (
+                    <a
+                      href="https://deadpan.hydroroll.team"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                    >
+                      <Gamepad2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      {n("landing.communityGameCta")}
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -224,14 +230,8 @@ export function LandingPhase({
             </Button>
           </>
         ) : (
-          <Button
-            size="lg"
-            className="w-full text-base"
-            onClick={handleStart}
-          >
-            {savedResult
-              ? n("landing.retakeButton")
-              : n("landing.ctaButton")}
+          <Button size="lg" className="w-full text-base" onClick={handleStart}>
+            {savedResult ? n("landing.retakeButton") : n("landing.ctaButton")}
           </Button>
         )}
         <a
