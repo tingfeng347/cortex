@@ -20,6 +20,10 @@ Phase 0 → 0.9 完成。Phase 1 全部完成。
 - 全平台统计页（正态分布、百分位排名、AI 使用量分组）
 - 个人趋势折线图
 - PWA 支持 + 分享卡片 + 主题切换
+- **数据存储**: [Cloudflare KV](https://developers.cloudflare.com/kv/) — Workers Paid Plan ($5/月)
+  - KV: 10M 读 + 1M 写/月
+  - 同时可用: D1 (5GB SQLite)、Workers AI (10K/天)、Queues、Durable Objects
+  - 2026-06 从 Upstash Redis 迁移
 
 ## 技术栈
 
@@ -27,7 +31,7 @@ Phase 0 → 0.9 完成。Phase 1 全部完成。
 | ------ | -------------------------------- |
 | 框架   | Next.js 16 (App Router)          |
 | UI     | React 19 + Tailwind CSS v4 + shadcn/ui |
-| 数据   | Upstash Redis                    |
+| 数据   | Cloudflare KV（Workers Paid $5/月） |
 | 平台   | Vercel                           |
 | 包管理 | pnpm                             |
 | 语言   | TypeScript                       |
