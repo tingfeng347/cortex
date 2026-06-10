@@ -331,20 +331,15 @@ export async function saveResultWithRateLimit(
 
 const EDGE_CONFIG_ID = "ecfg_u1649pkjevm409mhfgpmyxny5nfs"
 
-export async function syncStatsToEdgeConfig(): Promise<void> {
+async function patchEdgeConfig(items: Record<string, unknown>): Promise<void> {
   const token = process.env.VERCEL_API_TOKEN
   if (!token) return
 
-  const stats = await getStats()
-  const items = [
-    { operation: "upsert", key: "totalTests", value: stats.totalTests },
-    { operation: "upsert", key: "avgDegradation", value: stats.avgDegradation },
-    { operation: "upsert", key: "distribution", value: stats.distribution },
-    { operation: "upsert", key: "tierCounts", value: stats.tierCounts },
-    { operation: "upsert", key: "aiUsageCounts", value: stats.aiUsageCounts },
-    { operation: "upsert", key: "irtCount", value: stats.irtCount },
-    { operation: "upsert", key: "pctCount", value: stats.pctCount },
-  ]
+  const ops = Object.entries(items).map(([key, value]) => ({
+    operation: "upsert" as const,
+    key,
+    value,
+  }))
 
   await fetch(`https://api.vercel.com/v1/edge-config/${EDGE_CONFIG_ID}/items`, {
     method: "PATCH",
@@ -352,6 +347,68 @@ export async function syncStatsToEdgeConfig(): Promise<void> {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ items }),
+    body: JSON.stringify({ items: ops }),
+  })
+}
+
+export async function syncStatsToEdgeConfig(): Promise<void> {
+  const token = process.env.VERCEL_API_TOKEN
+  if (!token) return
+
+  const stats = await getStats()
+  await patchEdgeConfig({
+    totalTests: stats.totalTests,
+    avgDegradation: stats.avgDegradation,
+    distribution: stats.distribution,
+    tierCounts: stats.tierCounts,
+    aiUsageCounts: stats.aiUsageCounts,
+    irtCount: stats.irtCount,
+    pctCount: stats.pctCount,
+  })
+}
+
+export async function saveResultToEdgeConfig(result: {
+  degradationIndex: number
+  tierLabel: string
+  aiUsageLevel: string | null
+  estimationMethod?: "percentage" | "irt"
+}): Promise<void> {
+  const token = process.env.VERCEL_API_TOKEN
+  if (!token) throw new Error("VERCEL_API_TOKEN not set")
+
+  // Read current stats from Edge Config (use SDK for optimized read)
+  const { getAll } = await import("@vercel/edge-config")
+  const current = (await getAll()) as Record<string, unknown> | undefined
+
+  const totalTests = ((current?.totalTests as number) ?? 0) + 1
+  const sumDegradation =
+    (current?.avgDegradation as number ?? 0) * ((current?.totalTests as number) ?? 0) +
+    result.degradationIndex
+  const avgDegradation = Math.round((sumDegradation / totalTests) * 10) / 10
+
+  const bucket = Math.max(0, Math.min(Math.floor(result.degradationIndex / 10), 9))
+  const distribution = [...((current?.distribution as number[]) ?? Array(10).fill(0))]
+  distribution[bucket] += 1
+
+  const tierCounts = { ...((current?.tierCounts as Record<string, number>) ?? {}) }
+  const tierKey = TIER_LABEL_TO_KEY[result.tierLabel] ?? result.tierLabel
+  tierCounts[tierKey] = (tierCounts[tierKey] ?? 0) + 1
+
+  const aiUsageCounts = { ...((current?.aiUsageCounts as Record<string, number>) ?? {}) }
+  if (result.aiUsageLevel) {
+    aiUsageCounts[result.aiUsageLevel] = (aiUsageCounts[result.aiUsageLevel] ?? 0) + 1
+  }
+
+  const irtCount = ((current?.irtCount as number) ?? 0) + (result.estimationMethod === "irt" ? 1 : 0)
+  const pctCount = ((current?.pctCount as number) ?? 0) + (result.estimationMethod !== "irt" ? 1 : 0)
+
+  await patchEdgeConfig({
+    totalTests,
+    avgDegradation,
+    distribution,
+    tierCounts,
+    aiUsageCounts,
+    irtCount,
+    pctCount,
   })
 }
