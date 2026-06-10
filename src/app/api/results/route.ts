@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { saveResult, checkRateLimit } from "@/lib/storage"
+import { saveResultWithRateLimit } from "@/lib/storage"
 import { TIER_KEYS } from "@/lib/scoring"
 import { AI_CANONICAL_LEVELS } from "@/lib/constants"
 
@@ -35,16 +35,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "too fast" }, { status: 400 })
     }
 
-    // Rate limiting by IP
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
-    const allowed = await checkRateLimit(ip)
-    if (!allowed) {
-      return NextResponse.json({ error: "rate limited" }, { status: 429 })
-    }
-
     const country = request.headers.get("x-vercel-ip-country") ?? undefined
 
-    await saveResult({
+    const ok = await saveResultWithRateLimit(ip, {
       degradationIndex,
       tierLabel,
       aiUsageLevel: aiUsageLevel ?? null,
@@ -52,6 +46,9 @@ export async function POST(request: Request) {
       country,
       elapsedMs: typeof elapsedMs === "number" ? elapsedMs : null,
     })
+    if (!ok) {
+      return NextResponse.json({ error: "rate limited" }, { status: 429 })
+    }
 
     return NextResponse.json({ ok: true })
   } catch (err) {

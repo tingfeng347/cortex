@@ -11,6 +11,8 @@ let statsScripts: {
   write: RedisScript<number>
 } | null = null
 
+let rateLimitedSaveScript: RedisScript<number> | null = null
+
 function getRedis(): Redis {
   redis ??= Redis.fromEnv()
   return redis
@@ -25,6 +27,13 @@ function getStatsScripts() {
     write: redis.createScript<number>(WRITE_STATS_SCRIPT),
   }
   return statsScripts
+}
+
+function getRateLimitedSaveScript() {
+  rateLimitedSaveScript ??= getRedis().createScript<number>(
+    RATE_LIMITED_SAVE_SCRIPT,
+  )
+  return rateLimitedSaveScript
 }
 
 const PREFIX = "cortex:"
@@ -92,6 +101,50 @@ end
 if elapsed > 0 then
   redis.call("HINCRBY", key, "sum_elapsed", elapsed)
   redis.call("HINCRBY", key, "elapsed_count", 1)
+end
+
+return 1
+`
+
+const RATE_LIMITED_SAVE_SCRIPT = `
+local stats_key = KEYS[1]
+local rate_key = KEYS[2]
+
+local rate_max = tonumber(ARGV[8])
+local rate_ttl = tonumber(ARGV[9])
+
+-- Check rate limit
+local count = redis.call("INCR", rate_key)
+if count == 1 then
+  redis.call("EXPIRE", rate_key, rate_ttl)
+end
+if count > rate_max then
+  return 0
+end
+
+-- Save stats
+local degradation = tonumber(ARGV[1])
+local bucket = ARGV[2]
+local tier = ARGV[3]
+local ai = ARGV[4]
+local method = ARGV[5]
+local country = ARGV[6]
+local elapsed = tonumber(ARGV[7])
+
+redis.call("HINCRBY", stats_key, "total", 1)
+redis.call("HINCRBY", stats_key, "sum_degradation", degradation)
+redis.call("HINCRBY", stats_key, "dist:" .. bucket, 1)
+redis.call("HINCRBY", stats_key, "tier:" .. tier, 1)
+if ai ~= "" then
+  redis.call("HINCRBY", stats_key, "ai:" .. ai, 1)
+end
+redis.call("HINCRBY", stats_key, "method:" .. method, 1)
+if country ~= "" then
+  redis.call("HINCRBY", stats_key, "country:" .. country, 1)
+end
+if elapsed > 0 then
+  redis.call("HINCRBY", stats_key, "sum_elapsed", elapsed)
+  redis.call("HINCRBY", stats_key, "elapsed_count", 1)
 end
 
 return 1
@@ -241,4 +294,37 @@ export async function saveResult(result: {
     result.country ?? "",
     String(result.elapsedMs && result.elapsedMs > 0 ? Math.round(result.elapsedMs) : 0),
   ])
+}
+
+export async function saveResultWithRateLimit(
+  ip: string,
+  result: {
+    degradationIndex: number
+    tierLabel: string
+    aiUsageLevel: string | null
+    estimationMethod?: "percentage" | "irt"
+    country?: string | null
+    elapsedMs?: number | null
+  },
+): Promise<boolean> {
+  const bucket = Math.max(0, Math.min(Math.floor(result.degradationIndex / 10), 9))
+  const tierKey = TIER_LABEL_TO_KEY[result.tierLabel] ?? result.tierLabel
+  const method = result.estimationMethod === "irt" ? "irt" : "pct"
+  const rateKey = PREFIX + `rate:${ip}`
+
+  const ok = await getRateLimitedSaveScript().exec(
+    [STATS_HASH_KEY, rateKey],
+    [
+      String(result.degradationIndex),
+      String(bucket),
+      tierKey,
+      result.aiUsageLevel ?? "",
+      method,
+      result.country ?? "",
+      String(result.elapsedMs && result.elapsedMs > 0 ? Math.round(result.elapsedMs) : 0),
+      String(RATE_LIMIT_MAX),
+      String(RATE_LIMIT_WINDOW),
+    ],
+  )
+  return ok === 1
 }
