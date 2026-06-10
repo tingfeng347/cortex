@@ -109,7 +109,7 @@ export function LandingPhase({
                   <a
                     href={
                       isChinese
-                        ? "https://qm.qq.com/q/Hhh3B2E68S"
+                        ? "https://qm.qq.com/q/URG4U6D0As"
                         : "https://discord.gg/pt4f7sVFsH"
                     }
                     target="_blank"
