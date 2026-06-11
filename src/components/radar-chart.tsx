@@ -47,24 +47,13 @@ export default function RadarChart({
   const levels = [20, 40, 60, 80, 100];
 
   // Draw a polygon for a set of scores
-  function polygon(
-    scores: DimensionScores,
-    stroke: string,
-    fill: string,
-  ): string {
+  function polygon(scores: DimensionScores): string {
     const pts = AXIS_LABELS.map((a) => {
       const v = scores[a.key] ?? 0;
       return point(AXIS_LABELS.indexOf(a), v);
     });
     return pts.map((p) => `${p.x},${p.y}`).join(" ");
   }
-
-  // Extract values for grid checking
-  function userPolygonValues(): number[] {
-    return AXIS_LABELS.map((a) => userScores[a.key] ?? 0);
-  }
-
-  const userVals = userPolygonValues();
 
   return (
     <svg
@@ -108,7 +97,7 @@ export default function RadarChart({
       {/* Average overlay */}
       {avgScores && (
         <polygon
-          points={polygon(avgScores, COLORS.avg, COLORS.avgFill)}
+          points={polygon(avgScores)}
           fill={COLORS.avgFill}
           stroke={COLORS.avg}
           strokeWidth="1.5"
@@ -118,7 +107,7 @@ export default function RadarChart({
 
       {/* User polygon */}
       <polygon
-        points={polygon(userScores, COLORS.user, COLORS.userFill)}
+        points={polygon(userScores)}
         fill={COLORS.userFill}
         stroke={COLORS.user}
         strokeWidth="2.5"

@@ -72,22 +72,23 @@ export default function StatsClient() {
         setLoading(false);
       });
 
-    // Load user history from localStorage
-    try {
-      const raw = localStorage.getItem("cognitive-rust-history");
-      if (raw) {
-        const parsed: HistoryEntry[] = JSON.parse(raw);
-        setHistory(parsed);
+    queueMicrotask(() => {
+      try {
+        const raw = localStorage.getItem("cognitive-rust-history");
+        if (raw) {
+          const parsed: HistoryEntry[] = JSON.parse(raw);
+          setHistory(parsed);
+        }
+        const resultRaw = localStorage.getItem("cognitive-rust-result");
+        if (resultRaw) {
+          const parsed: UserResult = JSON.parse(resultRaw);
+          setUserScore(parsed.degradationIndex);
+          setUserTier(parsed.tier);
+        }
+      } catch {
+        // ignore
       }
-      const resultRaw = localStorage.getItem("cognitive-rust-result");
-      if (resultRaw) {
-        const parsed: UserResult = JSON.parse(resultRaw);
-        setUserScore(parsed.degradationIndex);
-        setUserTier(parsed.tier);
-      }
-    } catch {
-      // ignore
-    }
+    });
   }, []);
 
   return (
@@ -252,7 +253,6 @@ export default function StatsClient() {
             <CardContent>
               <DistributionChart
                 distribution={data.distribution}
-                avgDegradation={data.avgDegradation}
               />
             </CardContent>
           </Card>

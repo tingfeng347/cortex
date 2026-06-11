@@ -6,13 +6,9 @@ import { TIER_COLORS, TIER_KEYS } from "@/lib/scoring";
 
 interface ChartProps {
   distribution: number[];
-  avgDegradation: number | null;
 }
 
-export default function DistributionChart({
-  distribution,
-  avgDegradation,
-}: ChartProps) {
+export default function DistributionChart({ distribution }: ChartProps) {
   const t = useTranslations("distribution");
   const tierT = useTranslations("tier");
   const [userScore, setUserScore] = useState<number | null>(null);
@@ -20,23 +16,23 @@ export default function DistributionChart({
   const [userTierKey, setUserTierKey] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("cognitive-rust-result");
-      if (saved) {
-        const data = JSON.parse(saved);
-        setUserScore(data.degradationIndex);
-        setUserTier(data.tierLabel);
-        setUserTierKey(data.tierLabelKey ?? null);
+    queueMicrotask(() => {
+      try {
+        const saved = localStorage.getItem("cognitive-rust-result");
+        if (saved) {
+          const data = JSON.parse(saved);
+          setUserScore(data.degradationIndex);
+          setUserTier(data.tierLabel);
+          setUserTierKey(data.tierLabelKey ?? null);
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
+    });
   }, []);
 
   const maxCount = Math.max(...distribution, 1);
   const total = distribution.reduce((a, b) => a + b, 0);
-  const values = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-
   return (
     <div className="w-full">
       {/* Chart area */}
