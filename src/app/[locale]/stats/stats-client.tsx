@@ -383,13 +383,13 @@ export default function StatsClient() {
               role="img"
               aria-label={t("trendAria")}
             >
-              {/* Tier zone backgrounds */}
+              {/* Tier zone backgrounds: top=y=0 (high degradation), bottom=y=176 (low degradation) */}
               {[
-                { y: 0, h: 44, fill: "#16a34a15" },
-                { y: 44, h: 44, fill: "#65a30d15" },
+                { y: 0, h: 44, fill: "#dc262615" },
+                { y: 44, h: 44, fill: "#ea580c15" },
                 { y: 88, h: 44, fill: "#d9770615" },
-                { y: 132, h: 44, fill: "#ea580c15" },
-                { y: 176, h: 44, fill: "#dc262615" },
+                { y: 132, h: 44, fill: "#65a30d15" },
+                { y: 176, h: 44, fill: "#16a34a15" },
               ].map((zone, zi) => (
                 <rect
                   key={zi}
@@ -401,8 +401,8 @@ export default function StatsClient() {
                 />
               ))}
 
-              {/* Tier zone labels */}
-              {TIER_KEYS.map((key, i) => (
+              {/* Tier zone labels: reversed so top=severeDecline, bottom=cognitivePeak */}
+              {[...TIER_KEYS].reverse().map((key, i) => (
                 <text
                   key={key}
                   x="38"
