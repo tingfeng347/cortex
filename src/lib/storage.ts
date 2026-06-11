@@ -1,5 +1,8 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare"
 import { TIER_KEYS, RESULT_TIERS } from "./scoring"
 import { AI_CANONICAL_LEVELS } from "./constants"
+
+// ---- REST API fallback (used when KV bindings not available) ----
 
 const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID!
 const CF_KV_NS = "0c72ec9e090c4137b117c3425370f05c"
@@ -11,6 +14,8 @@ function cfAuth(): Record<string, string> {
     "Content-Type": "text/plain",
   }
 }
+
+// ---- Types ----
 
 interface StatsStore {
   totalTests: number
@@ -37,7 +42,20 @@ for (const t of RESULT_TIERS) {
   TIER_LABEL_TO_KEY[t.label] = t.tierKey
 }
 
+// ---- KV access layer ----
+
 async function kvGet(key: string): Promise<string | null> {
+  // Try direct KV binding first
+  try {
+    const { env } = await getCloudflareContext()
+    if (env.CORTEX_KV) {
+      return await env.CORTEX_KV.get(key)
+    }
+  } catch {
+    // binding not available, fall back to REST API
+  }
+
+  // REST API fallback
   const res = await fetch(`${CF_API_BASE}/${encodeURIComponent(key)}`, {
     headers: cfAuth(),
     cache: "no-store" as const,
@@ -48,11 +66,40 @@ async function kvGet(key: string): Promise<string | null> {
 }
 
 async function kvGetJson<T>(key: string): Promise<T | null> {
+  // Try direct KV binding first
+  try {
+    const { env } = await getCloudflareContext()
+    if (env.CORTEX_KV) {
+      const raw = await env.CORTEX_KV.get(key)
+      if (!raw) return null
+      try { return JSON.parse(raw) } catch { return null }
+    }
+  } catch {
+    // binding not available, fall back to REST API
+  }
+
+  // REST API fallback
   const raw = await kvGet(key)
   return raw ? JSON.parse(raw) : null
 }
 
 async function kvPut(key: string, value: string, ttl?: number): Promise<void> {
+  // Try direct KV binding first
+  try {
+    const { env } = await getCloudflareContext()
+    if (env.CORTEX_KV) {
+      if (ttl) {
+        await env.CORTEX_KV.put(key, value, { expirationTtl: ttl })
+      } else {
+        await env.CORTEX_KV.put(key, value)
+      }
+      return
+    }
+  } catch {
+    // binding not available, fall back to REST API
+  }
+
+  // REST API fallback
   const url = new URL(`${CF_API_BASE}/${encodeURIComponent(key)}`)
   if (ttl) url.searchParams.set("expiration_ttl", String(ttl))
 

@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Script from "next/script"
 import "./globals.css"
-import { Analytics } from "@vercel/analytics/react"
 import { cookies } from "next/headers"
 
 export const metadata: Metadata = {
@@ -38,7 +37,6 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-dvh bg-gradient-to-b from-background to-muted/30">
-        <Analytics />
         {children}
       </body>
     </html>

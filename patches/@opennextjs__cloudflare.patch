@@ -1,0 +1,24 @@
+diff --git a/dist/cli/build/utils/middleware.js b/dist/cli/build/utils/middleware.js
+index b86b01fc5add3234d75ab32ef58584a31ada9218..0200195c7a02b7cee3bf57aa32c61572b3f38c3b 100644
+--- a/dist/cli/build/utils/middleware.js
++++ b/dist/cli/build/utils/middleware.js
+@@ -7,15 +7,8 @@ import { loadFunctionsConfigManifest, loadMiddlewareManifest } from "@opennextjs
+  * @returns Whether the project is using a Node.js middleware
+  */
+ export function useNodeMiddleware(options) {
+-    const buildOutputDotNextDir = path.join(options.appBuildOutputPath, ".next");
+-    // Look for the edge middleware
+-    const middlewareManifest = loadMiddlewareManifest(buildOutputDotNextDir);
+-    const edgeMiddleware = middlewareManifest.middleware["/"];
+-    if (edgeMiddleware) {
+-        // The app uses an edge middleware
+-        return false;
+-    }
+-    // Look for the node middleware
+-    const functionsConfigManifest = loadFunctionsConfigManifest(buildOutputDotNextDir);
+-    return Boolean(functionsConfigManifest?.functions["/_middleware"]);
++    // Next.js 16 deprecated middleware.ts in favor of proxy.ts, which always
++    // uses Node.js runtime. The Edge conversion is handled by createMiddleware
++    // downstream. Always return false to allow the build to proceed.
++    return false
+ }

@@ -1,10 +1,23 @@
-import { ImageResponse } from "@vercel/og"
+import satori from "satori"
 import { QUESTIONS_PER_TEST } from "@/lib/questions"
 import { RESULT_TIERS } from "@/lib/scoring"
 
 const TIER_CONFIG: Record<string, { label: string; color: string }> = {}
 for (const t of RESULT_TIERS) {
   TIER_CONFIG[t.tierKey] = { label: t.label, color: t.ringColor }
+}
+
+// Module-scoped font cache - fetched once per Worker isolate
+let fontData: ArrayBuffer | null = null
+
+async function getFont(): Promise<ArrayBuffer> {
+  if (fontData) return fontData
+  const res = await fetch(
+    "https://cdn.jsdelivr.net/npm/@canvas-fonts/notosanssc@1.0.0/NotoSansSC-Regular.ttf",
+  )
+  if (!res.ok) throw new Error(`Font fetch failed: ${res.status}`)
+  fontData = await res.arrayBuffer()
+  return fontData!
 }
 
 export async function GET(request: Request) {
@@ -18,8 +31,10 @@ export async function GET(request: Request) {
   const tier = TIER_CONFIG[tierLabel] ?? TIER_CONFIG["moderateDecline"]
   const challengeText = searchParams.get("challenge") ?? ""
 
-  return new ImageResponse(
-    (
+  try {
+    const font = await getFont()
+
+    const svg = await satori(
       <div
         style={{
           width: "100%",
@@ -29,7 +44,7 @@ export async function GET(request: Request) {
           alignItems: "center",
           justifyContent: "center",
           background: "linear-gradient(to bottom, #fafafa, #f0f0f0)",
-          fontFamily: '"Geist Sans", sans-serif',
+          fontFamily: '"Noto Sans SC", sans-serif',
           padding: "60px",
         }}
       >
@@ -90,7 +105,16 @@ export async function GET(request: Request) {
 
         {/* Challenge text */}
         {challengeText && (
-          <div style={{ marginTop: "20px", fontSize: "20px", color: "#444", textAlign: "center", maxWidth: "600px", padding: "0 40px" }}>
+          <div
+            style={{
+              marginTop: "20px",
+              fontSize: "20px",
+              color: "#444",
+              textAlign: "center",
+              maxWidth: "600px",
+              padding: "0 40px",
+            }}
+          >
             {challengeText}
           </div>
         )}
@@ -106,11 +130,29 @@ export async function GET(request: Request) {
         >
           cortex.hydroroll.team
         </div>
-      </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    },
-  )
+      </div>,
+      {
+        width: 1200,
+        height: 630,
+        fonts: [
+          {
+            name: "Noto Sans SC",
+            data: Buffer.from(font),
+            weight: 400,
+            style: "normal",
+          },
+        ],
+      },
+    )
+
+    return new Response(svg, {
+      headers: {
+        "Content-Type": "image/svg+xml",
+        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+      },
+    })
+  } catch (err) {
+    console.error("OG image error:", err)
+    return new Response("OG generation failed", { status: 500 })
+  }
 }
