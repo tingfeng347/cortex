@@ -27,6 +27,7 @@ import {
   isTestComplete,
 } from "@/lib/adaptive-test";
 import type { AdaptiveTestSession } from "@/lib/adaptive-test";
+import { estimateAbility } from "@/lib/irt/engine";
 import {
   loadProgress,
   clearProgress,
@@ -47,6 +48,9 @@ interface StoredResultSummary {
   timestamp: number;
   aiUsage?: number | null;
   estimationMethod?: "percentage" | "irt";
+  theta?: number;
+  thetaSE?: number;
+  thetaByType?: TestResult["thetaByType"];
 }
 
 export function useTestState() {
@@ -138,13 +142,33 @@ export function useTestState() {
       let r: TestResult;
       if (ADAPTIVE_MODE && adaptiveSessionRef.current?.thetaEstimate) {
         const theta = adaptiveSessionRef.current.thetaEstimate.theta;
+        const se = adaptiveSessionRef.current.thetaEstimate.standardError;
         const di = abilityToDegradationIndex(theta);
         const base = calculateResult(answers, timeouts, questions);
+
+        // Per-dimension theta estimates
+        const responses = adaptiveSessionRef.current.responses;
+        const thetaByType: TestResult["thetaByType"] = {
+          logic: null,
+          math: null,
+          vocab: null,
+        };
+        for (const dim of ["logic", "math", "vocab"] as const) {
+          const dimResponses = responses.filter((r) => r.type === dim);
+          if (dimResponses.length >= 3) {
+            const est = estimateAbility(dimResponses);
+            thetaByType[dim] = { theta: est.theta, se: est.standardError };
+          }
+        }
+
         r = {
           ...base,
           degradationIndex: di,
           tier: getTierByIndex(di),
           estimationMethod: "irt",
+          theta,
+          thetaSE: se,
+          thetaByType,
         };
       } else {
         r = calculateResult(answers, timeouts, questions);
@@ -168,6 +192,9 @@ export function useTestState() {
           aiUsage: aiUsage,
           timestamp: Date.now(),
           estimationMethod: r.estimationMethod,
+          theta: r.theta,
+          thetaSE: r.thetaSE,
+          thetaByType: r.thetaByType,
         };
         localStorage.setItem("cognitive-rust-result", JSON.stringify(entry));
         localStorage.setItem("cognitive-rust-full-result", JSON.stringify({ result: r, aiUsage }));

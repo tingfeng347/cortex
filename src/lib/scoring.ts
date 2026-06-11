@@ -122,10 +122,22 @@ export interface TestResult {
   questions: Question[]
   /** Phase 1: how the degradation index was computed */
   estimationMethod?: "percentage" | "irt"
+  /** IRT: ability estimate in logits (range ~ -3 to +3) */
+  theta?: number
+  /** IRT: standard error of the theta estimate */
+  thetaSE?: number
+  /** IRT: per-dimension theta estimates */
+  thetaByType?: {
+    logic: { theta: number; se: number } | null
+    math: { theta: number; se: number } | null
+    vocab: { theta: number; se: number } | null
+  }
 }
 
 /**
  * Standard normal CDF (Φ(z)) using Abramowitz & Stegun approximation.
+ *
+ * Φ(x) = 0.5 × (1 + sign(x) × erf(|x| / √2))
  */
 export function normalCDF(x: number): number {
   const a1 = 0.254829592
@@ -136,13 +148,13 @@ export function normalCDF(x: number): number {
   const p = 0.3275911
 
   const sign = x < 0 ? -1 : 1
-  const absX = Math.abs(x)
+  // Scale by 1/√2 — the A&S formula approximates erf(z), and Φ(x) = 0.5·(1 + erf(x/√2))
+  const z = Math.abs(x) / Math.SQRT2
 
-  // Approximation of the error function
-  const t = 1 / (1 + p * absX)
+  const t = 1 / (1 + p * z)
   const erf =
     1 -
-    (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX))
+    (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-z * z))
 
   return 0.5 * (1 + sign * erf)
 }

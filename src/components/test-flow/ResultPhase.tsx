@@ -1,5 +1,4 @@
-"use client";
-
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
@@ -13,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { TestResult, DimensionScores } from "@/lib/scoring";
+import { normalCDF, abilityToDegradationIndex, type TestResult, type DimensionScores } from "@/lib/scoring";
 import RadarChart from "@/components/radar-chart";
 import { DegradationGauge } from "./DegradationGauge";
 
@@ -52,6 +51,7 @@ export function ResultPhase({
   handleDownloadImage,
 }: ResultPhaseProps) {
   const n = useTranslations();
+  const [showScoringInfo, setShowScoringInfo] = useState(false);
 
   return (
     <Card className="mx-auto w-full max-w-lg border-0 shadow-lg sm:border md:max-w-xl lg:max-w-2xl">
@@ -80,9 +80,12 @@ export function ResultPhase({
               {n("tier." + result.tier.tierKey)}
             </Badge>
             {result.estimationMethod === "irt" && (
-              <span className="rounded-full border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+              <Link
+                href="/about#irt-scoring"
+                className="rounded-full border px-2 py-0.5 text-[10px] font-medium text-muted-foreground decoration-dotted underline underline-offset-2 hover:text-foreground transition-colors"
+              >
                 IRT
-              </span>
+              </Link>
             )}
           </div>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
@@ -106,6 +109,142 @@ export function ResultPhase({
             </p>
           </div>
         )}
+
+        {/* Scoring method explanation */}
+        <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 p-4">
+          <button
+            onClick={() => setShowScoringInfo(!showScoringInfo)}
+            className="flex w-full items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <span>{n("result.scoringCalcTitle")}</span>
+            <span className="text-[10px]">
+              {showScoringInfo ? "▲" : "▼"}
+            </span>
+          </button>
+          {showScoringInfo && (
+            <div className="mt-3 space-y-2">
+              {result.estimationMethod === "irt" ? (
+                <>
+                  <p className="text-xs font-medium text-foreground">
+                    {n.rich("result.scoringIrtSteps", {
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </p>
+                  <div className="space-y-1.5 text-xs text-muted-foreground">
+                    {result.theta !== undefined ? (
+                      <>
+                        <div className="flex items-center justify-between">
+                          <span>{n("result.scoringIrtTheta")}</span>
+                          <span className="font-mono tabular-nums text-foreground">
+                            {result.theta.toFixed(2)}
+                            {result.thetaSE !== undefined && (
+                              <span className="text-muted-foreground">
+                                {" ± "}{result.thetaSE.toFixed(2)}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span>{n("result.scoringIrtPercentile")}</span>
+                          <span className="font-mono tabular-nums text-foreground">
+                            {(normalCDF(result.theta) * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="shrink-0">{n("result.scoringIrtFormula")}</span>
+                          <span className="text-right font-mono tabular-nums text-foreground">
+                            {"100 − "}
+                            {(normalCDF(result.theta) * 100).toFixed(1)}
+                            {" ≈ "}
+                            <strong>{result.degradationIndex}</strong>
+                          </span>
+                        </div>
+
+                        {/* Per-dimension theta */}
+                        {result.thetaByType && (
+                          <div className="mt-2 border-t border-dashed border-muted-foreground/20 pt-2">
+                            <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">
+                              {n("result.scoringByDimension")}
+                            </p>
+                            <div className="space-y-1">
+                              {(
+                                [
+                                  "logic",
+                                  "math",
+                                  "vocab",
+                                ] as const
+                              ).map((dim) => {
+                                const dimTheta = result.thetaByType?.[dim];
+                                if (!dimTheta) return null;
+                                const dimDI = abilityToDegradationIndex(
+                                  dimTheta.theta,
+                                );
+                                return (
+                                  <div
+                                    key={dim}
+                                    className="flex items-center justify-between gap-2"
+                                  >
+                                    <span className="shrink-0 text-muted-foreground">
+                                      {n("radar." + dim)}
+                                    </span>
+                                    <span className="text-right font-mono tabular-nums text-foreground">
+                                      θ = {dimTheta.theta.toFixed(2)}
+                                      <span className="text-muted-foreground">
+                                        {" ± "}
+                                        {dimTheta.se.toFixed(2)}
+                                      </span>
+                                      {" → DI "}
+                                      <strong>{dimDI}</strong>
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span>{n("result.scoringIrtResult")}</span>
+                        <span className="font-mono tabular-nums text-foreground">
+                          <strong>{result.degradationIndex}</strong>
+                          {" / 100"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs font-medium text-foreground">
+                    {n.rich("result.scoringPctSteps", {
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </p>
+                  <div className="space-y-1.5 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between">
+                      <span>{n("result.scoringPctRate")}</span>
+                      <span className="font-mono tabular-nums text-foreground">
+                        {result.correctCount} / {result.totalQuestions}
+                        {" = "}
+                        {Math.round((result.correctCount / result.totalQuestions) * 100)}%
+                      </span>
+                    </div>
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="shrink-0">{n("result.scoringPctFormula")}</span>
+                      <span className="text-right font-mono tabular-nums text-foreground">
+                        {"100 − "}
+                        {Math.round((result.correctCount / result.totalQuestions) * 100)}
+                        {" = "}
+                        <strong>{result.degradationIndex}</strong>
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         <Separator />
 

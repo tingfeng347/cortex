@@ -84,6 +84,38 @@ export default async function AboutPage() {
             </p>
           </section>
 
+          {/* IRT Scoring */}
+          <section id="irt-scoring" className="space-y-2 scroll-mt-20">
+            <h2 className="text-sm font-semibold text-foreground">
+              {t("irtTitle")}
+            </h2>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t.rich("irtP1", {
+                strong: (chunks) => <strong className="font-semibold text-foreground">{chunks}</strong>,
+              })}
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t.rich("irtP2", {
+                strong: (chunks) => <strong className="font-semibold text-foreground">{chunks}</strong>,
+              })}
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t.rich("irtP3", {
+                strong: (chunks) => <strong className="font-semibold text-foreground">{chunks}</strong>,
+              })}
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t.rich("irtP4", {
+                strong: (chunks) => <strong className="font-semibold text-foreground">{chunks}</strong>,
+              })}
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t.rich("irtP5", {
+                strong: (chunks) => <strong className="font-semibold text-foreground">{chunks}</strong>,
+              })}
+            </p>
+          </section>
+
           {/* Data & Privacy */}
           <section className="space-y-2">
             <h2 className="text-sm font-semibold text-foreground">

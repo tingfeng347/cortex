@@ -330,6 +330,73 @@ export default function StatsClient() {
             </CardContent>
           </Card>
 
+          {/* Estimation method breakdown */}
+          {(data.irtCount > 0 || data.pctCount > 0) && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">
+                  {t("estimationTitle")}
+                </CardTitle>
+                <CardDescription className="text-xs leading-relaxed">
+                  {data.irtCount > 0 && data.pctCount > 0
+                    ? t("estimationMixedDesc")
+                    : data.irtCount > 0
+                      ? t("estimationIrtOnlyDesc")
+                      : t("estimationPctOnlyDesc")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {data.irtCount > 0 && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Link
+                        href="/about#irt-scoring"
+                        className="w-28 shrink-0 text-muted-foreground decoration-dotted underline underline-offset-2 hover:text-foreground transition-colors"
+                      >
+                        {t("estimationIRT")}
+                      </Link>
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full bg-blue-500 transition-all"
+                          style={{
+                            width: `${(data.irtCount / data.totalTests) * 100}%`,
+                          }}
+                        />
+                      </div>
+                      <span className="w-16 text-right font-medium tabular-nums">
+                        {data.irtCount}{" "}
+                        <span className="text-xs text-muted-foreground">
+                          ({Math.round((data.irtCount / data.totalTests) * 100)}%)
+                        </span>
+                      </span>
+                    </div>
+                  )}
+                  {data.pctCount > 0 && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <span className="w-28 shrink-0 text-muted-foreground">
+                        {t("estimationFixed")}
+                      </span>
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full bg-amber-500 transition-all"
+                          style={{
+                            width: `${(data.pctCount / data.totalTests) * 100}%`,
+                          }}
+                        />
+                      </div>
+                      <span className="w-16 text-right font-medium tabular-nums">
+                        {data.pctCount}{" "}
+                        <span className="text-xs text-muted-foreground">
+                          ({Math.round((data.pctCount / data.totalTests) * 100)}%)
+                        </span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           </div>
         )}
 

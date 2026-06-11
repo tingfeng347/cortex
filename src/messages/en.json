@@ -52,7 +52,12 @@
 		"timeLimit": "Each question has a {seconds}-second limit, auto-skip on timeout",
 		"aiUsageLabel": "How much time do you spend using AI tools daily?",
 		"aiUsageHint": "ChatGPT, Claude, Copilot, Gemini, etc. all count",
-		"aiLevels": ["< 30 min", "30 min - 2 hr", "2 - 5 hr", "> 5 hr"],
+		"aiLevels": [
+			"< 30 min",
+			"30 min - 2 hr",
+			"2 - 5 hr",
+			"> 5 hr"
+		],
 		"pledge": "I pledge not to use any AI assistance during this test",
 		"startButton": "Start Quiz",
 		"selectAiFirst": "Please select your AI usage first",
@@ -114,7 +119,20 @@
 		"otherXingce": "Another Test",
 		"logicGoodTitle": "Great Logic Score!",
 		"logicGoodDesc": "Are you a programmer? Try <lcti>Another XingCe</lcti> and check your open-source karma!",
-		"disclaimer": "Some questions are AI-generated in real-time and may contain errors. If you find any issues, feel free to join our community via the homepage. This is just a snapshot—one score doesn't define you. Don't take it too seriously."
+		"disclaimer": "Some questions are AI-generated in real-time and may contain errors. If you find any issues, feel free to join our community via the homepage. This is just a snapshot—one score doesn't define you. Don't take it too seriously.",
+		"scoringMethod": "How this score is calculated",
+		"scoringIrtDesc": "This test used <strong>adaptive IRT estimation</strong>. Questions were selected based on your real-time ability level — each answer refined the estimate. Your final ability (θ) was mapped to a percentile via the normal distribution, then inverted to produce the degradation index. This means <strong>which</strong> questions you got right matters as much as how many.",
+		"scoringPctDesc": "This test used <strong>fixed-percentage scoring</strong>. Your degradation index is simply the percentage of questions you got wrong: <code>100 − (correct / total × 100)</code>. Every question carries equal weight regardless of difficulty.",
+		"scoringCalcTitle": "How this score is calculated",
+		"scoringIrtSteps": "<strong>IRT Adaptive Estimation</strong>",
+		"scoringIrtTheta": "Ability estimate (θ)",
+		"scoringIrtPercentile": "Percentile Φ(θ)",
+		"scoringIrtFormula": "Degradation index = 100 − Φ(θ) × 100",
+		"scoringPctSteps": "<strong>Fixed-Percentage Scoring</strong>",
+		"scoringPctRate": "Correct / Total",
+		"scoringPctFormula": "Degradation index = 100 − (correct / total × 100)",
+		"scoringIrtResult": "Degradation index",
+		"scoringByDimension": "Per-dimension ability"
 	},
 	"stats": {
 		"pageTitle": "Platform-wide Statistics",
@@ -155,7 +173,10 @@
 		"author": "Hsiang Nianian",
 		"otherGame": "Another Game",
 		"ddlRoast": "DDL Roast",
-		"otherXingce": "Another XingCe"
+		"otherXingce": "Another XingCe",
+		"estimationMixedDesc": "IRT adapts question difficulty to your ability; fixed percentage weights every question equally.",
+		"estimationIrtOnlyDesc": "All tests so far have used IRT adaptive estimation — questions adapt to your ability level in real time.",
+		"estimationPctOnlyDesc": "All tests so far have used fixed-percentage scoring — every question carries equal weight."
 	},
 	"about": {
 		"title": "About",
@@ -198,7 +219,16 @@
 			"Phase 4: Cognitive Rustproof Economy — employer matching, insurance pricing, decentralized cognitive credit ecosystem"
 		],
 		"signature": "May 7, 2026\nHsiang Nianian",
-		"footerBack": "Back to Test"
+		"footerBack": "Back to Test",
+		"irtTitle": "How IRT Scoring Works",
+		"irtP1": "This test uses <strong>Item Response Theory (IRT)</strong>, the same framework behind the SAT, GRE, and professional certification exams. Unlike simple percentage scoring, IRT accounts for <strong>which</strong> questions you got right, not just <strong>how many</strong>. Getting an easy question wrong hurts more; getting a hard question right boosts more.",
+		"irtP2": "Each question has three parameters: <strong>difficulty</strong> (how hard it is), <strong>discrimination</strong> (how well it separates ability levels), and <strong>guessing</strong> (chance of guessing correctly). Together they form a 3PL logistic curve that models the probability of a correct answer at any ability level.",
+		"irtP3": "During the test, after each answer the system re-estimates your ability (θ) and picks the next question to maximize <strong>Fisher information</strong> — the question that will tell us the most about you at your current estimated level. This is why the test can feel harder when you are doing well and easier when you are struggling.",
+		"irtP4": "At the end, your ability θ is estimated via <strong>EAP (Expected A Posteriori)</strong>, a Bayesian method that finds the most likely ability value given your full response pattern. The result is a theta score in logits, typically ranging from −3 to +3.",
+		"irtP5": "Finally, your theta is mapped to a percentile using the standard normal distribution: θ = 0 (average) → 50th percentile → degradation index 50. θ = +1.5 (top ~7%) → degradation index ~7. This produces your final 0–100 degradation index where <strong>lower is better</strong>.",
+		"irtCtaPrefix": "Want the full technical details? ",
+		"irtCtaLink": "Read the deep dive article",
+		"irtCtaSuffix": " on our blog."
 	},
 	"share": {
 		"loading": "Redirecting...",

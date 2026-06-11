@@ -52,7 +52,12 @@
 		"timeLimit": "每道题限时 {seconds} 秒，超时将自动跳过",
 		"aiUsageLabel": "你每天花多少时间使用 AI 工具？",
 		"aiUsageHint": "ChatGPT、Claude、Gemini、DeepSeeK、豆包 等都算",
-		"aiLevels": ["< 30 分钟", "30 分钟 - 2 小时", "2 - 5 小时", "> 5 小时"],
+		"aiLevels": [
+			"< 30 分钟",
+			"30 分钟 - 2 小时",
+			"2 - 5 小时",
+			"> 5 小时"
+		],
 		"pledge": "我承诺在本次测试中不使用任何 AI 辅助工具",
 		"startButton": "开始答题",
 		"selectAiFirst": "请先选择 AI 使用量",
@@ -114,7 +119,20 @@
 		"otherXingce": "另一个行测",
 		"logicGoodTitle": "逻辑不错！",
 		"logicGoodDesc": "你是程序员？试试<lcti>另一个行测</lcti>，看看你的开源人品！",
-		"disclaimer": "部分题型由 AI 实时自适应出题，可能存在错误，还请见谅。如有问题欢迎在首页加群反馈。这只是一次测试，一次成绩说明不了什么，不要太较真。"
+		"disclaimer": "部分题型由 AI 实时自适应出题，可能存在错误，还请见谅。如有问题欢迎在首页加群反馈。这只是一次测试，一次成绩说明不了什么，不要太较真。",
+		"scoringMethod": "分数是怎么计算的",
+		"scoringIrtDesc": "本次测试使用了 <strong>IRT 自适应评估</strong>。系统根据你的实时能力水平动态选题——每道回答都会更新对你的能力估计。你的最终能力值 (θ) 通过正态分布映射为百分位，再反转得到退化指数。也就是说，<strong>答对了哪些题</strong>和答对了多少题同样重要。",
+		"scoringPctDesc": "本次测试使用了 <strong>固定百分比评分</strong>。退化指数 = 答错的题目占比：<code>100 − (正确数 / 总题数 × 100)</code>。每道题权重相同，不区分难度。",
+		"scoringCalcTitle": "分数是怎么计算的",
+		"scoringIrtSteps": "<strong>IRT 自适应评估</strong>",
+		"scoringIrtTheta": "能力估计值 (θ)",
+		"scoringIrtPercentile": "百分位 Φ(θ)",
+		"scoringIrtFormula": "退化指数 = 100 − Φ(θ) × 100",
+		"scoringPctSteps": "<strong>固定百分比评分</strong>",
+		"scoringPctRate": "正确 / 总题",
+		"scoringPctFormula": "退化指数 = 100 − (正确数 / 总题数 × 100)",
+		"scoringIrtResult": "退化指数",
+		"scoringByDimension": "各维度能力估计"
 	},
 	"stats": {
 		"pageTitle": "全平台统计",
@@ -155,7 +173,10 @@
 		"author": "简律纯",
 		"otherGame": "另一个游戏",
 		"ddlRoast": "烤死线",
-		"otherXingce": "另一个行测"
+		"otherXingce": "另一个行测",
+		"estimationMixedDesc": "IRT 自适应会根据能力动态调整题目难度；固定百分比每题权重相同。",
+		"estimationIrtOnlyDesc": "目前所有测试均使用 IRT 自适应评估——题目难度根据你的能力水平实时调整。",
+		"estimationPctOnlyDesc": "目前所有测试均使用固定百分比评分——每道题权重相同。"
 	},
 	"about": {
 		"title": "关于",
@@ -198,7 +219,16 @@
 			"Phase 4：认知防锈经济——雇主匹配、保险定价、去中心化认知信用生态"
 		],
 		"signature": "2026 年 5 月 7 日\n简律纯",
-		"footerBack": "返回测试"
+		"footerBack": "返回测试",
+		"irtTitle": "IRT 评分是怎么工作的",
+		"irtP1": "本测试使用 <strong>项目反应理论 (IRT)</strong>，这也是 SAT、GRE 等专业考试背后的评分框架。和简单算正确率不同，IRT 会区分<strong>你答对了哪些题</strong>，而不仅仅是你答对了多少题。答错简单题扣分更重，答对难题加分更多。",
+		"irtP2": "每道题有三个参数：<strong>难度</strong>（题目有多难）、<strong>区分度</strong>（题目区分不同能力水平的能力）、<strong>猜测度</strong>（纯猜对的概率）。三者构成一条 3PL 逻辑曲线，描述在任何能力水平下答对该题的几率。",
+		"irtP3": "测试过程中，每当你答完一题，系统会重新估计你的能力值 (θ)，并选取能最大化 <strong>Fisher 信息量</strong> 的下一题——也就是在当前估计水平下能提供最多信息的那道题。这就是为什么你答得好时题会变难，答得不好时题会变简单。",
+		"irtP4": "测试结束时，你的能力 θ 通过 <strong>EAP（期望后验估计）</strong> 计算，这是一种贝叶斯方法，根据你全部答题的模式找到最可能的能力值。结果是一个以 logits 为单位的 θ 分数，通常在 −3 到 +3 之间。",
+		"irtP5": "最后，θ 通过标准正态分布映射为百分位：θ = 0（平均水平）→ 第 50 百分位 → 退化指数 50。θ = +1.5（前约 7%）→ 退化指数约 7。由此得出你最终的 0–100 退化指数，<strong>越低越好</strong>。",
+		"irtCtaPrefix": "想看完整技术细节？",
+		"irtCtaLink": "阅读深度解析文章",
+		"irtCtaSuffix": "。"
 	},
 	"share": {
 		"loading": "正在跳转...",
