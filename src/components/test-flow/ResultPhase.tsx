@@ -22,6 +22,7 @@ interface ResultPhaseProps {
   prevResult: {
     degradationIndex: number;
     tierLabel: string;
+    tierLabelKey?: string;
     tierColor: string;
     correctCount: number;
     totalQuestions: number;
@@ -268,8 +269,8 @@ export function ResultPhase({
                   {prevResult.degradationIndex}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {(prevResult as any).tierLabelKey
-                    ? n("tier." + (prevResult as any).tierLabelKey)
+                  {prevResult.tierLabelKey
+                    ? n("tier." + prevResult.tierLabelKey)
                     : prevResult.tierLabel}
                 </p>
               </div>
@@ -457,15 +458,16 @@ export function ResultPhase({
           </Button>
         </div>
         <div className="flex w-full items-center justify-center gap-3">
-          <a
-            href={"/stats?latest=" + result.degradationIndex}
+          <Link
+            href={`/stats?latest=${result.degradationIndex}`}
             className="text-xs text-muted-foreground underline-offset-4 hover:underline"
           >
             {n("result.viewStatsButton")}
-          </a>
+          </Link>
           <span className="text-muted-foreground/40">|</span>
           <button
             onClick={handleDownloadImage}
+            disabled={isDownloading}
             className="text-xs text-muted-foreground underline-offset-4 hover:underline"
           >
             {n("result.downloadButton")}

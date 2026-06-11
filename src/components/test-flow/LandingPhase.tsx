@@ -22,6 +22,7 @@ interface LandingPhaseProps {
     degradationIndex: number;
     tierLabel: string;
     tierColor: string;
+    tierLabelKey?: string;
     correctCount: number;
     totalQuestions: number;
     dimensionScores?: DimensionScores;
@@ -189,8 +190,8 @@ export function LandingPhase({
                 className="rounded-full px-2 py-0.5 text-xs font-medium text-white"
                 style={{ backgroundColor: savedResult.tierColor }}
               >
-                {(savedResult as any).tierLabelKey
-                  ? n("tier." + (savedResult as any).tierLabelKey)
+                {savedResult.tierLabelKey
+                  ? n("tier." + savedResult.tierLabelKey)
                   : savedResult.tierLabel}
               </span>
             </div>
@@ -234,12 +235,12 @@ export function LandingPhase({
             {savedResult ? n("landing.retakeButton") : n("landing.ctaButton")}
           </Button>
         )}
-        <a
+        <Link
           href="/stats"
           className="text-xs text-muted-foreground underline-offset-4 hover:underline"
         >
           {n("landing.viewStats")}
-        </a>
+        </Link>
       </CardFooter>
     </Card>
   );

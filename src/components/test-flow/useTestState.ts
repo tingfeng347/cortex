@@ -36,6 +36,19 @@ import {
 
 type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
 
+interface StoredResultSummary {
+  degradationIndex: number;
+  tierLabel: string;
+  tierLabelKey?: string;
+  tierColor: string;
+  correctCount: number;
+  totalQuestions: number;
+  dimensionScores?: DimensionScores;
+  timestamp: number;
+  aiUsage?: number | null;
+  estimationMethod?: "percentage" | "irt";
+}
+
 export function useTestState() {
   const n = useTranslations();
   const locale = useLocale();
@@ -48,28 +61,12 @@ export function useTestState() {
   const [timeouts, setTimeouts] = useState<boolean[]>([]);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [result, setResult] = useState<TestResult | null>(null);
-  const [savedResult, setSavedResult] = useState<{
-    degradationIndex: number;
-    tierLabel: string;
-    tierColor: string;
-    correctCount: number;
-    totalQuestions: number;
-    dimensionScores?: DimensionScores;
-    timestamp: number;
-  } | null>(null);
+  const [savedResult, setSavedResult] = useState<StoredResultSummary | null>(null);
   const [showExplanations, setShowExplanations] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [challengeRef, setChallengeRef] = useState<number | null>(null);
-  const [prevResult, setPrevResult] = useState<{
-    degradationIndex: number;
-    tierLabel: string;
-    tierColor: string;
-    correctCount: number;
-    totalQuestions: number;
-    dimensionScores?: DimensionScores;
-    timestamp: number;
-  } | null>(null);
+  const [prevResult, setPrevResult] = useState<StoredResultSummary | null>(null);
   const [aiUsage, setAiUsage] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
@@ -125,6 +122,8 @@ export function useTestState() {
     if (timeLeft > 0) return;
     if (answers.length > currentQ) return;
     submitAnswer(selected);
+    // submitAnswer intentionally uses the current question snapshot.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, phase, selected, answers.length, currentQ]);
 
   // Calculate result when all questions answered
@@ -132,83 +131,93 @@ export function useTestState() {
     const total = ADAPTIVE_MODE ? QUESTIONS_PER_TEST : questions.length;
     if (answers.length === 0 || answers.length !== total) return;
 
-    setPhase("processing");
+    let resultTimer: ReturnType<typeof setTimeout> | null = null;
+    const settleTimer = setTimeout(() => {
+      setPhase("processing");
 
-    let r: TestResult;
-    if (ADAPTIVE_MODE && adaptiveSessionRef.current?.thetaEstimate) {
-      const theta = adaptiveSessionRef.current.thetaEstimate.theta;
-      const di = abilityToDegradationIndex(theta);
-      const base = calculateResult(answers, timeouts, questions);
-      r = {
-        ...base,
-        degradationIndex: di,
-        tier: getTierByIndex(di),
-        estimationMethod: "irt",
-      };
-    } else {
-      r = calculateResult(answers, timeouts, questions);
-    }
-    setResult(r);
-
-    try {
-      const prevRaw = localStorage.getItem("cognitive-rust-result");
-      if (prevRaw) {
-        setPrevResult(JSON.parse(prevRaw));
+      let r: TestResult;
+      if (ADAPTIVE_MODE && adaptiveSessionRef.current?.thetaEstimate) {
+        const theta = adaptiveSessionRef.current.thetaEstimate.theta;
+        const di = abilityToDegradationIndex(theta);
+        const base = calculateResult(answers, timeouts, questions);
+        r = {
+          ...base,
+          degradationIndex: di,
+          tier: getTierByIndex(di),
+          estimationMethod: "irt",
+        };
+      } else {
+        r = calculateResult(answers, timeouts, questions);
       }
+      setResult(r);
 
-      const entry = {
+      try {
+        const prevRaw = localStorage.getItem("cognitive-rust-result");
+        if (prevRaw) {
+          setPrevResult(JSON.parse(prevRaw));
+        }
+
+        const entry = {
+          degradationIndex: r.degradationIndex,
+          tierLabel: r.tier.tierKey,
+          tierLabelKey: r.tier.tierKey,
+          tierColor: r.tier.ringColor,
+          correctCount: r.correctCount,
+          totalQuestions: r.totalQuestions,
+          dimensionScores: r.dimensionScores,
+          aiUsage: aiUsage,
+          timestamp: Date.now(),
+          estimationMethod: r.estimationMethod,
+        };
+        localStorage.setItem("cognitive-rust-result", JSON.stringify(entry));
+        localStorage.setItem("cognitive-rust-full-result", JSON.stringify({ result: r, aiUsage }));
+        const raw = localStorage.getItem("cognitive-rust-history");
+        const history = raw ? JSON.parse(raw) : [];
+        history.push(entry);
+        if (history.length > 20) history.shift();
+        localStorage.setItem("cognitive-rust-history", JSON.stringify(history));
+      } catch {
+        // ignore
+      }
+      const elapsedMs = testStartTime.current ? Date.now() - testStartTime.current : null;
+      const payload = {
         degradationIndex: r.degradationIndex,
         tierLabel: r.tier.tierKey,
-        tierLabelKey: r.tier.tierKey,
-        tierColor: r.tier.ringColor,
         correctCount: r.correctCount,
         totalQuestions: r.totalQuestions,
-        dimensionScores: r.dimensionScores,
-        aiUsage: aiUsage,
-        timestamp: Date.now(),
+        aiUsageLevel: aiUsage !== null ? AI_CANONICAL_LEVELS[aiUsage] : null,
         estimationMethod: r.estimationMethod,
+        elapsedMs,
       };
-      localStorage.setItem("cognitive-rust-result", JSON.stringify(entry));
-      localStorage.setItem("cognitive-rust-full-result", JSON.stringify({ result: r, aiUsage }));
-      const raw = localStorage.getItem("cognitive-rust-history");
-      const history = raw ? JSON.parse(raw) : [];
-      history.push(entry);
-      if (history.length > 20) history.shift();
-      localStorage.setItem("cognitive-rust-history", JSON.stringify(history));
-    } catch {
-      // ignore
-    }
-    const elapsedMs = testStartTime.current ? Date.now() - testStartTime.current : null;
-    const payload = {
-      degradationIndex: r.degradationIndex,
-      tierLabel: r.tier.tierKey,
-      correctCount: r.correctCount,
-      totalQuestions: r.totalQuestions,
-      aiUsageLevel: aiUsage !== null ? AI_CANONICAL_LEVELS[aiUsage] : null,
-      estimationMethod: r.estimationMethod,
-      elapsedMs,
+      fetch("/api/results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+
+      clearProgress();
+      setSavedProgress(null);
+
+      resultTimer = setTimeout(() => setPhase("result"), 600);
+    }, 0);
+
+    return () => {
+      clearTimeout(settleTimer);
+      if (resultTimer) clearTimeout(resultTimer);
     };
-    fetch("/api/results", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(() => {});
-
-    clearProgress();
-    setSavedProgress(null);
-
-    const timer = setTimeout(() => setPhase("result"), 600);
-    return () => clearTimeout(timer);
-  }, [answers, timeouts]);
+  }, [answers, timeouts, questions, aiUsage]);
 
   // Auto-advance to next question after answer is recorded
   useEffect(() => {
     if (phase !== "testing") return;
     if (answers.length <= currentQ) return;
     if (answers.length >= (ADAPTIVE_MODE ? QUESTIONS_PER_TEST : questions.length)) return;
-    setCurrentQ((prev) => prev + 1);
-    startTimer();
-  }, [answers, phase]);
+    const timer = setTimeout(() => {
+      setCurrentQ((prev) => prev + 1);
+      startTimer();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [answers.length, currentQ, phase, questions.length, startTimer]);
 
   // Save progress after each answer
   useEffect(() => {
@@ -227,7 +236,7 @@ export function useTestState() {
     };
     progressRef.current = snapshot;
     saveProgress(snapshot);
-  }, [answers, phase]);
+  }, [answers, phase, questions, currentQ, timeouts, declared, aiUsage]);
 
   // Save progress on visibility change / beforeunload
   useEffect(() => {
@@ -268,51 +277,58 @@ export function useTestState() {
 
   // Load saved progress + previous result from localStorage (after hydration)
   useEffect(() => {
-    const p = loadProgress();
-    if (p) setSavedProgress(p);
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      const p = loadProgress();
+      if (p) setSavedProgress(p);
 
-    try {
-      const saved = localStorage.getItem("cognitive-rust-result");
-      if (saved) {
-        setSavedResult(JSON.parse(saved));
+      try {
+        const saved = localStorage.getItem("cognitive-rust-result");
+        if (saved) {
+          setSavedResult(JSON.parse(saved));
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
-    // Check pending reminder
-    try {
-      const reminderRaw = localStorage.getItem("cognitive-rust-reminder");
-      if (reminderRaw) {
-        const reminder = JSON.parse(reminderRaw);
-        if (Date.now() >= reminder.targetDate) {
-          localStorage.removeItem("cognitive-rust-reminder");
-          if (
-            "Notification" in window &&
-            Notification.permission === "granted"
-          ) {
-            new Notification(n("toast.reminderTitle"), {
-              body: n("toast.reminderBody", {
-                tier: reminder.tierLabelKey
-                  ? n("tier." + reminder.tierLabelKey)
-                  : reminder.tierLabel,
-              }),
-              icon: "/favicon.ico",
-            });
+      // Check pending reminder
+      try {
+        const reminderRaw = localStorage.getItem("cognitive-rust-reminder");
+        if (reminderRaw) {
+          const reminder = JSON.parse(reminderRaw);
+          if (Date.now() >= reminder.targetDate) {
+            localStorage.removeItem("cognitive-rust-reminder");
+            if (
+              "Notification" in window &&
+              Notification.permission === "granted"
+            ) {
+              new Notification(n("toast.reminderTitle"), {
+                body: n("toast.reminderBody", {
+                  tier: reminder.tierLabelKey
+                    ? n("tier." + reminder.tierLabelKey)
+                    : reminder.tierLabel,
+                }),
+                icon: "/favicon.ico",
+              });
+            }
           }
         }
+      } catch {
+        /* ignore */
       }
-    } catch {
-      /* ignore */
-    }
 
-    const params = new URLSearchParams(window.location.search);
-    const ref = params.get("ref");
-    if (ref !== null) {
-      const n_ = parseInt(ref, 10);
-      if (!isNaN(n_)) setChallengeRef(n_);
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-  }, []);
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
+      if (ref !== null) {
+        const n_ = parseInt(ref, 10);
+        if (!isNaN(n_)) setChallengeRef(n_);
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [n]);
 
   // Question mark follows cursor/touch
   useEffect(() => {
@@ -496,7 +512,7 @@ export function useTestState() {
 
       // Load prevResult from history for comparison
       const historyRaw = localStorage.getItem("cognitive-rust-history");
-      const historyParsed: any[] = historyRaw ? JSON.parse(historyRaw) : [];
+      const historyParsed: StoredResultSummary[] = historyRaw ? JSON.parse(historyRaw) : [];
       if (historyParsed.length >= 2) {
         setPrevResult(historyParsed[historyParsed.length - 2]);
       }
