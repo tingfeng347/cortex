@@ -37,6 +37,9 @@ yarn-error.log*
 .open-next
 .wrangler
 
+# e2e
+/test-results
+
 # vercel
 .vercel
 

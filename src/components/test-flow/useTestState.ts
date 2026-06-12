@@ -34,7 +34,11 @@ import {
   clearProgress,
   saveProgress,
   type SavedProgress,
-} from "./helpers";
+} from "./helpers"
+import { usePremium } from "../premium/usePremium"
+
+const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
+const LAST_FREE_TEST_KEY = "cortex:last-free-test";
 
 type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
 
@@ -59,6 +63,7 @@ interface StoredResultSummary {
 export function useTestState() {
   const n = useTranslations();
   const locale = useLocale();
+  const { isPremium, syncNow } = usePremium();
   const testStartTime = useRef<number>(0);
   const [phase, setPhase] = useState<Phase>("landing");
   const [declared, setDeclared] = useState(false);
@@ -79,6 +84,8 @@ export function useTestState() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
   const adaptiveSessionRef = useRef<AdaptiveTestSession | null>(null);
+  const [cooldownEndsAt, setCooldownEndsAt] = useState<number>(0);
+  const [cooldownVersion, setCooldownVersion] = useState(0);
 
   // Initialise questions on mount + regenerate when locale changes
   // (except mid-test — questions are frozen once the test starts)
@@ -207,6 +214,15 @@ export function useTestState() {
         history.push(entry);
         if (history.length > 20) history.shift();
         localStorage.setItem("cognitive-rust-history", JSON.stringify(history));
+
+        // Set cooldown for free users
+        if (!isPremium) {
+          localStorage.setItem(LAST_FREE_TEST_KEY, String(Date.now()))
+        }
+        // Sync to cloud for premium users
+        if (isPremium) {
+          syncNow().catch(() => {})
+        }
       } catch {
         // ignore
       }
@@ -355,11 +371,25 @@ export function useTestState() {
         if (!isNaN(n_)) setChallengeRef(n_);
         window.history.replaceState({}, "", window.location.pathname);
       }
+
+      // Check cooldown for free users
+      if (!isPremium) {
+        try {
+          const lastFree = localStorage.getItem(LAST_FREE_TEST_KEY)
+          if (lastFree) {
+            const lastTs = parseInt(lastFree, 10)
+            const cooldownEnd = lastTs + COOLDOWN_MS
+            if (Date.now() < cooldownEnd) {
+              setCooldownEndsAt(cooldownEnd)
+            }
+          }
+        } catch { /* ignore */ }
+      }
     });
     return () => {
       cancelled = true;
     };
-  }, [n]);
+  }, [n, isPremium]);
 
   // Question mark follows cursor/touch
   useEffect(() => {
@@ -396,6 +426,21 @@ export function useTestState() {
   /* ─── Event Handlers ─── */
 
   function handleStart() {
+    // Check cooldown for free users
+    if (!isPremium) {
+      try {
+        const lastFree = localStorage.getItem(LAST_FREE_TEST_KEY)
+        if (lastFree) {
+          const lastTs = parseInt(lastFree, 10)
+          const cooldownEnd = lastTs + COOLDOWN_MS
+          if (Date.now() < cooldownEnd) {
+            setCooldownEndsAt(cooldownEnd)
+            setCooldownVersion((v) => v + 1)
+            return // blocked by cooldown
+          }
+        }
+      } catch { /* ignore */ }
+    }
     clearProgress();
     setSavedProgress(null);
     setPhase("declaration");
@@ -623,7 +668,8 @@ export function useTestState() {
     }
 
     try {
-      await navigator.clipboard.writeText(text + "\n" + pageUrl);
+      const shareText = isPremium ? text : text + "\n\n测试来自 认知防锈 cortex.hydroroll.team"
+      await navigator.clipboard.writeText(shareText + "\n" + pageUrl);
       setToast(n("toast.resultCopied"));
       setTimeout(() => setToast(null), 2000);
     } catch {
@@ -698,6 +744,7 @@ export function useTestState() {
       <text x="600" y="435" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#666">${result.correctCount} / ${result.totalQuestions}</text>
       ${dimParts ? `<text x="600" y="465" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" fill="#999">${dimParts}</text>` : ""}
       <text x="600" y="580" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#bbb">cortex.hydroroll.team</text>
+      ${!isPremium ? `<text x="600" y="610" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#d97706" font-weight="500">认知防锈 · 免费版</text>` : ""}
     </svg>`;
 
     const img = new Image();
@@ -763,6 +810,8 @@ export function useTestState() {
     questions,
     isLastQuestion,
     totalQuestions: QUESTIONS_PER_TEST,
+    cooldownEndsAt,
+    cooldownVersion,
 
     // Refs
     questionMarkRef,

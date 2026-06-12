@@ -4,6 +4,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/language-toggle"
 import { ServiceWorkerRegister } from "@/components/service-worker-register"
+import { PremiumWrapper } from "@/components/premium/PremiumWrapper"
 import { QUESTIONS_PER_TEST } from "@/lib/questions"
 import { RESULT_TIERS } from "@/lib/scoring"
 
@@ -99,7 +100,7 @@ export default async function LocaleLayout({
         <ThemeToggle />
       </div>
       <ServiceWorkerRegister />
-      {children}
+      <PremiumWrapper>{children}</PremiumWrapper>
     </NextIntlClientProvider>
   )
 }

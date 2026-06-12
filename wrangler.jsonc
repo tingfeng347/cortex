@@ -12,5 +12,12 @@
       "binding": "CORTEX_KV",
       "id": "0c72ec9e090c4137b117c3425370f05c"
     }
+  ],
+  "d1_databases": [
+    {
+      "binding": "CORTEX_DB",
+      "database_name": "cortex-db",
+      "database_id": "1e4abc9a-cad9-4796-85d0-4c8be768ca2e"
+    }
   ]
 }

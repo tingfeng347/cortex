@@ -23,6 +23,8 @@ export default function TestFlow() {
             handleStart={s.handleStart}
             handleResume={s.handleResume}
             handleViewLastResult={s.handleViewLastResult}
+            cooldownEndsAt={s.cooldownEndsAt}
+            cooldownVersion={s.cooldownVersion}
           />
         )}
         {s.phase === "declaration" && (
@@ -67,10 +69,11 @@ export default function TestFlow() {
 
       {/* Toast */}
       <div
-        className={`fixed top-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background shadow-lg transition-all duration-300 ${s.toast
+        className={`fixed top-6 left-1/2 z-50 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-sm rounded-xl bg-foreground px-4 py-3 text-center text-sm font-medium text-background shadow-lg transition-all duration-300 ${
+          s.toast
             ? "translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-4 opacity-0"
-          }`}
+        }`}
       >
         {typeof s.toast === "string"
           ? s.toast
