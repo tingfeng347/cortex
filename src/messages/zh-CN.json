@@ -18,7 +18,7 @@
 		"logic": "逻辑推理",
 		"math": "速算",
 		"vocab": "词汇语义",
-		"event": "事件事理"
+		"event": "事理分析"
 	},
 	"landing": {
 		"title": "认知防锈 · 基线测试",
@@ -317,7 +317,7 @@
 			"sequence": "数列推理",
 			"math": "速算",
 			"vocab": "词汇语义",
-			"event": "事件事理"
+			"event": "事理分析"
 		},
 		"multiSelect": "多选",
 		"multiSelectHint": "请勾选所有正确答案"

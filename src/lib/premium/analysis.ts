@@ -54,7 +54,7 @@ const DIMENSION_META: Record<string, { label: string; tip: Record<string, string
     },
   },
   event: {
-    label: "事件事理",
+    label: "事理分析",
     tip: {
       improving: "事理分析能力在提升，因果推断越来越敏锐。",
       declining: "事理分析能力下降，可能和碎片化阅读有关——试着多读长文章。",

@@ -56,10 +56,12 @@ export default function RadarChart({
     return pts.map((p) => `${p.x},${p.y}`).join(" ");
   }
 
+  const pad = size * 0.12;
+
   return (
     <svg
-      viewBox={`0 0 ${size} ${size}`}
-      className="h-auto w-full"
+      viewBox={`${-pad} ${-pad} ${size + pad * 2} ${size + pad * 2}`}
+      className="h-auto w-full overflow-visible"
       role="img"
       aria-label={t("ariaLabel")}
     >
@@ -135,7 +137,7 @@ export default function RadarChart({
 
       {/* Axis labels */}
       {AXIS_LABELS.map((a, i) => {
-        const p = point(i, 115);
+        const p = point(i, 108);
         return (
           <text
             key={a.key}

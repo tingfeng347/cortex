@@ -46,7 +46,7 @@ export const DIMENSION_LABELS: Record<string, string> = {
   logic: "逻辑推理",
   math: "速算",
   vocab: "词汇语义",
-  event: "事件事理",
+  event: "事理分析",
 }
 
 const ALL_DIMS = ["logic", "math", "vocab", "event"] as const

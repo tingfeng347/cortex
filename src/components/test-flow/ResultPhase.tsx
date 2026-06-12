@@ -301,7 +301,7 @@ export function ResultPhase({
                 const isWeak = score < 50;
                 return (
                   <div key={key} className="flex items-center gap-2 text-sm">
-                    <span className="w-16 shrink-0 text-muted-foreground">
+                    <span className="w-20 shrink-0 text-muted-foreground text-right">
                       {n("radar." + key)}
                     </span>
                     <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
