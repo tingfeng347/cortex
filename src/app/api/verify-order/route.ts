@@ -56,7 +56,6 @@ export async function POST(request: Request) {
         success: true,
         tier: tier.type,
         planName: tier.label,
-        userName: order.user_name ?? null,
         message: "谢谢你请的这杯奶茶！你的名字会出现在网站感谢名单中。",
         thankYou: true,
       })
@@ -77,7 +76,6 @@ export async function POST(request: Request) {
       tier: tier.type,
       licenseKey: result.licenseKey,
       planName: tier.label,
-      userName: order.user_name ?? null,
     })
   } catch (error) {
     console.error("[verify-order] Unexpected error:", error)

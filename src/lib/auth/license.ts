@@ -109,9 +109,18 @@ export async function activateDevice(
   }
 }
 
+export async function findExistingLicenseByUser(userId: string): Promise<string | null> {
+  const row = await d1First<{ license_key: string }>(
+    "SELECT license_key FROM licenses WHERE afdian_user_id = ? AND status = 'active' LIMIT 1",
+    [userId],
+  )
+  return row?.license_key ?? null
+}
+
 export async function createLicenseFromOrder(
   orderId: string,
   planId: string,
+  userId?: string,
 ): Promise<{ success: boolean; licenseKey?: string; reason?: string }> {
   // Check if order already has a license
   const existing = await d1First<{ license_key: string }>(
@@ -122,10 +131,23 @@ export async function createLicenseFromOrder(
     return { success: true, licenseKey: existing.license_key }
   }
 
+  // Check if user already has an active license
+  if (userId) {
+    const userLicense = await findExistingLicenseByUser(userId)
+    if (userLicense) {
+      // User already has a license — re-use it, just record this order
+      await d1Run(
+        "INSERT INTO licenses (license_key, afdian_order_id, afdian_plan_id, afdian_user_id, status) VALUES (?, ?, ?, ?, 'active')",
+        [userLicense, orderId, planId, userId],
+      )
+      return { success: true, licenseKey: userLicense }
+    }
+  }
+
   const licenseKey = generateLicenseKey()
   await d1Run(
-    "INSERT INTO licenses (license_key, afdian_order_id, afdian_plan_id, status) VALUES (?, ?, ?, 'active')",
-    [licenseKey, orderId, planId],
+    "INSERT INTO licenses (license_key, afdian_order_id, afdian_plan_id, afdian_user_id, status) VALUES (?, ?, ?, ?, 'active')",
+    [licenseKey, orderId, planId, userId ?? null],
   )
 
   return { success: true, licenseKey }
@@ -165,6 +187,16 @@ export async function saveTestResult(
     elapsedMs: number
   },
 ) {
+  // Dedup: skip if an identical result was saved within the last 10 seconds
+  const dup = await d1First<{ id: number }>(
+    `SELECT id FROM test_results
+     WHERE license_key = ? AND degradation_index = ? AND correct_count = ? AND total_questions = ?
+     AND created_at > datetime('now', '-10 seconds')
+     LIMIT 1`,
+    [licenseKey, result.degradationIndex, result.correctCount, result.totalQuestions],
+  )
+  if (dup) return // duplicate, skip
+
   await d1Run(
     `INSERT INTO test_results
      (license_key, degradation_index, tier_key, correct_count, total_questions,

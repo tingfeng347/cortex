@@ -322,6 +322,14 @@ export function useTestState() {
     return () => stopTimer();
   }, [stopTimer]);
 
+  // Clear cooldown when premium status changes to true
+  useEffect(() => {
+    if (isPremium) {
+      setCooldownEndsAt(0)
+      localStorage.removeItem(LAST_FREE_TEST_KEY)
+    }
+  }, [isPremium])
+
   // Load saved progress + previous result from localStorage (after hydration)
   useEffect(() => {
     let cancelled = false;

@@ -8,6 +8,7 @@ type FooterNamespace = "result" | "stats"
 
 export function SiteFooter({ namespace }: { namespace: FooterNamespace }) {
   const t = useTranslations(namespace)
+  const ts = useTranslations("sponsors")
   const [toast, setToast] = useState(false)
 
   function handleDdlRoastClick() {
@@ -43,6 +44,13 @@ export function SiteFooter({ namespace }: { namespace: FooterNamespace }) {
           className="transition-colors hover:text-foreground hover:underline underline-offset-4"
         >
           {t("aboutLink")}
+        </Link>
+        <span className="text-muted-foreground/40">|</span>
+        <Link
+          href="/sponsors"
+          className="transition-colors hover:text-foreground hover:underline underline-offset-4"
+        >
+          {ts("title")}
         </Link>
       </div>
       <div className="flex items-center justify-center gap-3">

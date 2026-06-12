@@ -17,6 +17,7 @@ import { QUESTIONS_PER_TEST, QUESTION_TIME } from "@/lib/questions";
 import type { DimensionScores } from "@/lib/scoring";
 import type { SavedProgress } from "./helpers";
 import { CooldownBanner } from "../premium/CooldownBanner";
+import { usePremium } from "../premium/usePremium";
 
 interface LandingPhaseProps {
   savedResult: {
@@ -52,7 +53,9 @@ export function LandingPhase({
   cooldownVersion,
 }: LandingPhaseProps) {
   const n = useTranslations();
+  const ts = useTranslations("sponsors");
   const locale = useLocale();
+  const { isPremium } = usePremium();
   const isChallenge = challengeRef !== null;
   const isChinese = locale === "zh-CN";
   const [showCommunityBanner, setShowCommunityBanner] = useState(true);
@@ -276,6 +279,18 @@ export function LandingPhase({
               className="text-xs text-muted-foreground underline-offset-4 hover:underline"
             >
               {n("landing.viewStats")}
+            </Link>
+            <Link
+              href={isPremium ? "/premium" : "/unlock"}
+              className="text-xs text-primary/70 underline-offset-4 hover:underline"
+            >
+              {isPremium ? n("landing.managePremium") : n("landing.activateLicense")}
+            </Link>
+            <Link
+              href="/sponsors"
+              className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+            >
+              {ts("title")}
             </Link>
           </CardFooter>
         </Card>

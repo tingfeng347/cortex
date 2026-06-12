@@ -184,14 +184,15 @@ export default function StatsClient() {
                 </div>
               </CardContent>
             </Card>
-            {/* User's percentile */}
+            {/* User's rank */}
             {userScore !== null &&
               (() => {
                 const total = data.distribution.reduce((a, b) => a + b, 0);
-                const below = data.distribution
-                  .slice(0, Math.ceil(userScore / 10))
-                  .reduce((a, b) => a + b, 0);
-                const pct = total > 0 ? Math.round((below / total) * 100) : 0;
+                const bucketIdx = Math.min(Math.floor(userScore / 10), 9);
+                const below = data.distribution.slice(0, bucketIdx).reduce((a, b) => a + b, 0);
+                const same = data.distribution[bucketIdx] ?? 0;
+                const above = total - below - same;
+                const pct = total > 0 ? Math.round((above / total) * 100) : 0;
                 const tierColorMap = TIER_COLOR_MAP;
                 const c =
                   userTier?.color ??
@@ -200,28 +201,24 @@ export default function StatsClient() {
                 return (
                   <Card className="col-span-2">
                     <CardContent className="flex items-center gap-3 p-4 min-w-0">
-                      <div
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-                        style={{ backgroundColor: c + "15" }}
-                      >
-                        <span
-                          className="text-sm font-bold"
-                          style={{ color: c }}
-                        >
-                          #
+                      <div className="shrink-0 flex items-baseline gap-2">
+                        <span className="text-3xl font-bold tracking-tight tabular-nums">
+                          {userScore}
                         </span>
+                        <span className="text-xs text-muted-foreground">/100</span>
+                        <span className="text-muted-foreground/20">|</span>
+                        <span className="text-3xl font-bold tracking-tight tabular-nums">
+                          {pct}
+                        </span>
+                        <span className="text-xs text-muted-foreground">%</span>
                       </div>
+                      <span className="text-muted-foreground/20 text-lg">|</span>
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs text-muted-foreground truncate">
-                          {t("yourRank")}
+                        <div className="text-xs text-muted-foreground">
+                          {t("yourRank")}{same > 0 ? `（${t("tied", { count: same })}）` : ""}
                         </div>
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-xl font-bold tracking-tight shrink-0">
-                            {pct}%
-                          </span>
-                          <span className="text-xs text-muted-foreground truncate">
-                            {t("ranking", { count: below })}
-                          </span>
+                        <div className="text-xs text-muted-foreground">
+                          {t("ranking", { count: above })} · {t("rankedBehind", { count: below })}
                         </div>
                         {userTier && (
                           <span
@@ -329,73 +326,6 @@ export default function StatsClient() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Estimation method breakdown */}
-          {(data.irtCount > 0 || data.pctCount > 0) && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">
-                  {t("estimationTitle")}
-                </CardTitle>
-                <CardDescription className="text-xs leading-relaxed">
-                  {data.irtCount > 0 && data.pctCount > 0
-                    ? t("estimationMixedDesc")
-                    : data.irtCount > 0
-                      ? t("estimationIrtOnlyDesc")
-                      : t("estimationPctOnlyDesc")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {data.irtCount > 0 && (
-                    <div className="flex items-center gap-3 text-sm">
-                      <Link
-                        href="/about#irt-scoring"
-                        className="w-28 shrink-0 text-muted-foreground decoration-dotted underline underline-offset-2 hover:text-foreground transition-colors"
-                      >
-                        {t("estimationIRT")}
-                      </Link>
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full bg-blue-500 transition-all"
-                          style={{
-                            width: `${(data.irtCount / data.totalTests) * 100}%`,
-                          }}
-                        />
-                      </div>
-                      <span className="w-16 text-right font-medium tabular-nums">
-                        {data.irtCount}{" "}
-                        <span className="text-xs text-muted-foreground">
-                          ({Math.round((data.irtCount / data.totalTests) * 100)}%)
-                        </span>
-                      </span>
-                    </div>
-                  )}
-                  {data.pctCount > 0 && (
-                    <div className="flex items-center gap-3 text-sm">
-                      <span className="w-28 shrink-0 text-muted-foreground">
-                        {t("estimationFixed")}
-                      </span>
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full bg-amber-500 transition-all"
-                          style={{
-                            width: `${(data.pctCount / data.totalTests) * 100}%`,
-                          }}
-                        />
-                      </div>
-                      <span className="w-16 text-right font-medium tabular-nums">
-                        {data.pctCount}{" "}
-                        <span className="text-xs text-muted-foreground">
-                          ({Math.round((data.pctCount / data.totalTests) * 100)}%)
-                        </span>
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
 
           </div>
         )}

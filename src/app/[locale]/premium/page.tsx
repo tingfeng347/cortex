@@ -101,7 +101,7 @@ export default function PremiumPage() {
 
         {/* Status Card */}
         <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950">
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-600">
                 <Check className="h-5 w-5 text-white" />

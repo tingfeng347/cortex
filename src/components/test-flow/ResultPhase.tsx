@@ -17,7 +17,6 @@ import { normalCDF, abilityToDegradationIndex, scoreAnswer, isCorrect, type Test
 import RadarChart from "@/components/radar-chart";
 import { DegradationGauge } from "./DegradationGauge";
 import { usePremium } from "../premium/usePremium";
-import { ExportButton } from "../premium/ExportButton";
 import { analyzeHistory, type TrendAnalysis } from "@/lib/premium/analysis";
 
 interface ResultPhaseProps {
@@ -56,7 +55,26 @@ export function ResultPhase({
 }: ResultPhaseProps) {
   const n = useTranslations();
   const [showScoringInfo, setShowScoringInfo] = useState(false);
-  const { isPremium } = usePremium();
+  const { isPremium, licenseKey } = usePremium();
+
+  async function handleExportCSV() {
+    if (!licenseKey) return
+    try {
+      const res = await fetch("/api/premium/export", {
+        headers: { Authorization: `Bearer ${licenseKey}` },
+      })
+      if (!res.ok) return
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = "cognitive-rust-results.csv"
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch { /* silent */ }
+  }
 
   const analysis: TrendAnalysis | null = useMemo(() => {
     if (!isPremium) return null
@@ -680,7 +698,12 @@ export function ResultPhase({
           {isPremium && (
             <>
               <span className="text-muted-foreground/40">|</span>
-              <ExportButton />
+              <button
+                onClick={handleExportCSV}
+                className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+              >
+                导出 CSV
+              </button>
             </>
           )}
         </div>

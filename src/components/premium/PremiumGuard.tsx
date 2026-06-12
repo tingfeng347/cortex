@@ -1,6 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
+import { Link } from "@/i18n/navigation"
 import { usePremium } from "./usePremium"
 
 interface PremiumGuardProps {
@@ -23,12 +24,12 @@ function DefaultLocked() {
   return (
     <div className="rounded-xl border border-dashed border-muted-foreground/30 p-6 text-center">
       <p className="text-sm text-muted-foreground">此功能需要解锁高级版</p>
-      <a
+      <Link
         href="/unlock"
         className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
       >
         解锁高级版 ¥29.90 →
-      </a>
+      </Link>
     </div>
   )
 }

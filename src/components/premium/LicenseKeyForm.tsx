@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { usePremium } from "./usePremium"
 import { Button } from "@/components/ui/button"
 import { Check, Copy, Loader2, XCircle, Coffee } from "lucide-react"
@@ -10,7 +11,8 @@ interface LicenseKeyFormProps {
 }
 
 export function LicenseKeyForm({ onSuccess }: LicenseKeyFormProps) {
-  const { isPremium, isLoading: premiumLoading, activateLicense, error: premiumError } = usePremium()
+  const t = useTranslations("unlock")
+  const { isPremium, activateLicense, error: premiumError } = usePremium()
 
   const [orderId, setOrderId] = useState("")
   const [verifying, setVerifying] = useState(false)
@@ -18,19 +20,17 @@ export function LicenseKeyForm({ onSuccess }: LicenseKeyFormProps) {
     success: boolean
     licenseKey?: string
     planName?: string
-    userName?: string
     error?: string
     thankYou?: boolean
     message?: string
   } | null>(null)
   const [copied, setCopied] = useState(false)
 
-  // If user is already premium, don't show the form
   if (isPremium) {
     return (
       <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center dark:border-green-800 dark:bg-green-950">
         <Check className="mx-auto h-8 w-8 text-green-600" />
-        <p className="mt-2 text-sm font-medium text-green-800 dark:text-green-200">你已经解锁了高级版</p>
+        <p className="mt-2 text-sm font-medium text-green-800 dark:text-green-200">{t("alreadyPremium")}</p>
       </div>
     )
   }
@@ -52,12 +52,11 @@ export function LicenseKeyForm({ onSuccess }: LicenseKeyFormProps) {
       setResult(data)
 
       if (data.success && data.licenseKey) {
-        // Auto-activate the license
         const ok = await activateLicense(data.licenseKey)
         if (ok && onSuccess) onSuccess(data.licenseKey)
       }
     } catch {
-      setResult({ success: false, error: "网络错误，请稍后重试。" })
+      setResult({ success: false, error: t("networkError") })
     } finally {
       setVerifying(false)
     }
@@ -77,21 +76,17 @@ export function LicenseKeyForm({ onSuccess }: LicenseKeyFormProps) {
         </div>
       )}
 
-      {/* Success with license key */}
       {result?.success && result.licenseKey && (
         <div className="rounded-xl border border-green-200 bg-green-50 p-6 space-y-4 dark:border-green-800 dark:bg-green-950">
           <div className="text-center">
             <Check className="mx-auto h-10 w-10 text-green-600" />
             <p className="mt-2 text-lg font-semibold text-green-800 dark:text-green-200">
-              {result.planName ?? "解锁成功！"}
+              {result.planName ?? "OK"}
             </p>
-            {result.userName && (
-              <p className="text-sm text-green-600 dark:text-green-400">爱发电用户：{result.userName}</p>
-            )}
           </div>
 
           <div className="rounded-lg bg-white/50 p-4 dark:bg-black/20">
-            <p className="text-xs text-muted-foreground mb-2">你的 License Key（请保存好）：</p>
+            <p className="text-xs text-muted-foreground mb-2">{t("licenseKeyLabel")}</p>
             <div className="flex items-center gap-2">
               <code className="flex-1 rounded bg-background px-3 py-2 text-sm font-mono select-all">
                 {result.licenseKey}
@@ -108,12 +103,11 @@ export function LicenseKeyForm({ onSuccess }: LicenseKeyFormProps) {
           </div>
 
           <p className="text-xs text-green-600 dark:text-green-400 text-center">
-            已自动激活。Key 已保存在此设备。换设备时输入此 Key 即可同步。
+            {t("autoActivated")}
           </p>
         </div>
       )}
 
-      {/* Thank you (support tier) */}
       {result?.success && result.thankYou && (
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-center dark:border-blue-800 dark:bg-blue-950">
           <div className="flex items-center justify-center gap-2">
@@ -124,27 +118,25 @@ export function LicenseKeyForm({ onSuccess }: LicenseKeyFormProps) {
         </div>
       )}
 
-      {/* Error */}
       {result && !result.success && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300 flex items-start gap-3">
           <XCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium">验证失败</p>
+            <p className="font-medium">{t("verifyFailed")}</p>
             <p className="mt-1">{result.error}</p>
           </div>
         </div>
       )}
 
-      {/* Order ID input form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label htmlFor="order-id" className="block text-sm font-medium mb-1">
-            爱发电订单号
+            {t("orderLabel")}
           </label>
           <input
             id="order-id"
             type="text"
-            placeholder="在爱发电完成付款后，输入订单号"
+            placeholder={t("orderPlaceholder")}
             value={orderId}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrderId(e.target.value)}
             disabled={verifying}
@@ -155,10 +147,10 @@ export function LicenseKeyForm({ onSuccess }: LicenseKeyFormProps) {
           {verifying ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              验证中...
+              {t("verifying")}
             </>
           ) : (
-            "验证并激活"
+            t("verifyButton")
           )}
         </Button>
       </form>

@@ -61,10 +61,12 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     if (cached && cachedKey) {
       try {
         const data = JSON.parse(cached)
-        // If cache is still fresh, trust it
+        // Trust cache immediately, sync in background
+        setIsPremium(true)
+        setLicenseKey(cachedKey)
+        performSync(cachedKey).then(() => setLastSyncAt(Date.now())).catch(() => {})
+        // Still re-validate if cache is stale
         if (Date.now() - data.timestamp < REVALIDATE_MS) {
-          setIsPremium(true)
-          setLicenseKey(cachedKey)
           setIsLoading(false)
           return
         }

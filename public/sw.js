@@ -1,10 +1,6 @@
-const CACHE = "cognitive-rust-v2";
-const PRECACHE_ASSETS = ["/favicon.svg", "/manifest.json"];
+const CACHE = "cognitive-rust-v3";
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(PRECACHE_ASSETS)),
-  );
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
@@ -18,15 +14,13 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  // API calls: network-first (offline fallback to cache)
+  // API calls: network-only (don't cache)
   if (event.request.url.includes("/api/")) {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request)),
-    );
+    event.respondWith(fetch(event.request));
     return;
   }
 
-  // Navigation (HTML pages): network-first, always serve fresh
+  // Navigation (HTML pages): network-first, never stale
   if (event.request.mode === "navigate") {
     event.respondWith(
       fetch(event.request).catch(() => caches.match(event.request)),
@@ -34,13 +28,15 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets: cache-first with on-access caching
+  // Static assets: stale-while-revalidate
   event.respondWith(
-    caches.match(event.request).then(
-      (cached) => cached ?? fetch(event.request).then((res) => {
-        const clone = res.clone();
-        caches.open(CACHE).then((cache) => cache.put(event.request, clone));
-        return res;
+    caches.open(CACHE).then((cache) =>
+      cache.match(event.request).then((cached) => {
+        const fetchPromise = fetch(event.request).then((res) => {
+          cache.put(event.request, res.clone());
+          return res;
+        });
+        return cached ?? fetchPromise;
       }),
     ),
   );
