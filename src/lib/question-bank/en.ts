@@ -2435,4 +2435,506 @@ export const bank: Question[] = [
     discrimination: 1,
     guessing: 0.25,
   },
+
+  // ════════════════════════════════════════════
+  //  事件事理分析
+  // ════════════════════════════════════════════
+  {
+    id: 145,
+    type: "event",
+    category: "event",
+    question:
+      "Order these events by cause and effect:\n① The company quarterly earnings report shows a major loss\n② The CEO announces resignation\n③ The stock price drops sharply\n④ Investors sell off shares\n\nWhat is the correct causal order?",
+    options: ["①→②→③→④","②→①→④→③","③→④→①→②","④→③→②→①"],
+    answer: 0,
+    difficulty: -0.5,
+    discrimination: 1,
+    guessing: 0.25,
+    explanation:
+      "The earnings loss (①) is the root cause, leading to the CEO resignation (②), which triggers the stock price drop (③), and then investor sell-off (④). The chain is ①→②→③→④.",
+  },
+  {
+    id: 146,
+    type: "event",
+    category: "event",
+    question:
+      "Order these events chronologically:\n① A new social media app goes viral among teenagers\n② Major brands create accounts on the platform\n③ The platform launches a creator monetization program\n④ Influencers and content creators flock to the platform\n\nWhat is the correct order?",
+    options: ["①→②→③→④","①→③→②→④","③→①→②→④","②→①→④→③"],
+    answer: 0,
+    difficulty: -0.3,
+    discrimination: 1,
+    guessing: 0.25,
+    explanation:
+      "The app gains users first (①), brands follow the audience (②), the platform then incentivizes creators (③), and creators join (④). Correct order: ①→②→③→④.",
+  },
+  {
+    id: 147,
+    type: "event",
+    category: "event",
+    question:
+      "Order these events by cause and effect:\n① A city implements a fare-free public transit policy\n② Public transit ridership increases by 35%\n③ Traffic congestion during peak hours drops significantly\n④ Air quality measurements show a measurable improvement\n\nWhat is the correct causal order?",
+    options: ["①→②→③→④","②→①→③→④","①→③→②→④","③→②→①→④"],
+    answer: 0,
+    difficulty: 0,
+    discrimination: 1,
+    guessing: 0.25,
+    explanation:
+      "The policy change (①) causes more people to ride transit (②), which reduces cars on the road (③), leading to better air quality (④). Chain: ①→②→③→④.",
+  },
+  {
+    id: 148,
+    type: "event",
+    category: "event",
+    question:
+      "Order these events chronologically in a scientific discovery process:\n① A graduate student notices an anomaly in experimental data\n② The research team replicates the finding across multiple labs\n③ A paper is submitted to a peer-reviewed journal\n④ The discovery is widely reported in mainstream media\n\nWhat is the correct order?",
+    options: ["①→②→③→④","②→①→④→③","①→③→②→④","④→①→②→③"],
+    answer: 0,
+    difficulty: 0.3,
+    discrimination: 1,
+    guessing: 0.25,
+    explanation:
+      "Discovery starts with noticing an anomaly (①), then replication validates it (②), then peer-reviewed publication (③), and finally media coverage (④). Correct order: ①→②→③→④.",
+  },
+
+  // ════════════════════════════════════════════
+  //  LLM 批量生成 · 2026-06-12
+  //  Event 23 题
+  // ════════════════════════════════════════════
+  {
+    id: 149,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the correct causal sequence:\n1. Farmers experience lower crop yields.\n2. The city imposes water restrictions.\n3. Food prices rise.\n4. The region suffers a severe drought.",
+    options: [
+      "Severe drought, Water restrictions, Lower crop yields, Higher food prices",
+      "Water restrictions, Severe drought, Lower crop yields, Higher food prices",
+      "Lower crop yields, Severe drought, Water restrictions, Higher food prices",
+      "Severe drought, Lower crop yields, Water restrictions, Higher food prices"
+    ],
+    answer: 0,
+    explanation:
+      "The drought is the initial cause, leading to water restrictions as a response. The restrictions reduce water for irrigation, causing lower crop yields. The reduced supply then drives up food prices.",
+    difficulty: -0.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 150,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical chronological order based on cause and effect:\n1. Company A launches a new smartphone.\n2. Sales of Company A's phone drop significantly.\n3. Competitor B releases a similar phone at a lower price.\n4. Sales skyrocket in the first month.\n5. Company A reduces the price of its phone.",
+    options: [
+      "1, 4, 3, 2, 5",
+      "1, 3, 4, 2, 5",
+      "1, 4, 2, 3, 5",
+      "1, 3, 5, 4, 2"
+    ],
+    answer: 0,
+    explanation:
+      "The correct sequence starts with the launch (1) causing high sales (4). Then, competitor's release (3) leads to a sales drop (2), prompting a price reduction (5). Option 2 has competitor before high sales, option 3 has drop before competitor, and option 4 has price reduction before drop, which are illogical.",
+    difficulty: -0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 151,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the correct causal sequence: (1) Software company releases new product version. (2) Customer complaints about bugs increase. (3) Company hires additional developers. (4) Product performance improves. (5) Customer satisfaction ratings rise.",
+    options: [
+      "Release → Complaints → Hire → Improve → Satisfaction",
+      "Complaints → Release → Hire → Improve → Satisfaction",
+      "Release → Hire → Complaints → Improve → Satisfaction",
+      "Release → Complaints → Improve → Hire → Satisfaction"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence starts with the release of a new version (1), which introduces bugs leading to increased complaints (2). In response, the company hires more developers (3) to fix the issues, resulting in improved performance (4), and ultimately higher customer satisfaction (5). Any other order breaks the logical cause-and-effect relationships, such as hiring before complaints or improving performance before fixing bugs.",
+    difficulty: 1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 152,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) The company launched a new smartphone. (2) Sales of the smartphone exceeded projections. (3) The marketing team released an online advertising campaign for the smartphone. (4) Website traffic to the product page increased significantly.",
+    options: [
+      "1, 3, 4, 2",
+      "3, 1, 4, 2",
+      "1, 2, 3, 4",
+      "3, 4, 1, 2"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence starts with the product launch (1), which enables the marketing team to create an advertising campaign (3). The campaign then drives an increase in website traffic (4), which subsequently leads to higher sales (2). Option A (1,3,4,2) reflects this logical chain. Other options either place marketing before the product is available (B), imply sales occurred before traffic increased (C), or suggest traffic increased before the launch or campaign (D).",
+    difficulty: 0.1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 153,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the correct causal sequence: (1) The company recalls the product. (2) Health inspectors confirm contamination. (3) Consumers report food poisoning. (4) The company issues a public apology.",
+    options: [
+      "3 → 2 → 1 → 4",
+      "1 → 3 → 2 → 4",
+      "3 → 1 → 2 → 4",
+      "2 → 3 → 1 → 4"
+    ],
+    answer: 0,
+    explanation:
+      "The correct sequence begins with consumers reporting food poisoning (3). Health inspectors then investigate and confirm contamination (2). Following confirmation, the company recalls the product (1). Finally, the company issues a public apology (4). Thus, the order is 3-2-1-4.",
+    difficulty: -0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 154,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence:\n(1) The company's sales decline significantly.\n(2) The company announces a price reduction campaign.\n(3) Competitors lower their prices as well.\n(4) The company's profit margins shrink.",
+    options: [
+      "1, 2, 3, 4",
+      "2, 1, 3, 4",
+      "1, 3, 2, 4",
+      "3, 2, 1, 4"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence is that initial sales decline triggers a price reduction campaign, which prompts competitors to also lower prices, ultimately leading to reduced profit margins. Options B, C, and D place events out of order, violating the cause-effect relationships (e.g., price reduction cannot precede sales decline that caused it).",
+    difficulty: 0.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 155,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the correct causal sequence: (1) Company hires external safety consultants. (2) Regulatory fines are imposed. (3) Company issues a product recall. (4) Widespread media coverage of the recall. (5) Consumer complaints about product malfunctions increase.",
+    options: [
+      "5 → 1 → 3 → 4 → 2",
+      "5 → 3 → 1 → 4 → 2",
+      "1 → 5 → 3 → 4 → 2",
+      "5 → 1 → 4 → 3 → 2"
+    ],
+    answer: 0,
+    explanation:
+      "The causal chain begins with an increase in consumer complaints (5), which prompts the company to investigate by hiring external safety consultants (1). The consultants likely identify a serious defect, leading the company to issue a recall (3). The recall attracts widespread media coverage (4), and subsequently, regulatory authorities impose fines (2). Alternative sequences violate causality: for instance, issuing a recall before hiring consultants (option 2) skips the necessary investigation; hiring consultants before complaints arise (option 3) lacks a trigger; and media coverage before the recall (option 4) is implausible because the recall itself is the news event.",
+    difficulty: 0.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 156,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Traffic congestion decreases during peak hours. (2) Citizens start using bikes for short trips. (3) Bike-sharing stations are installed across the city. (4) City council approves funding for bike-sharing program.",
+    options: [
+      "4 → 3 → 2 → 1",
+      "3 → 4 → 2 → 1",
+      "4 → 2 → 3 → 1",
+      "4 → 3 → 1 → 2"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence is: first, the city council approves funding (4), which enables the installation of bike-sharing stations (3). Once stations are in place, citizens start using bikes for short trips (2). Finally, increased bike usage leads to reduced traffic congestion (1). Option A follows this logic. Option B has installation before approval, which is implausible. Option C has citizen usage before station installation, which is illogical. Option D has congestion decreasing before citizens start using bikes, reversing the cause and effect.",
+    difficulty: -0.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 157,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Mark is offered a job at a top company. (2) Mark studies hard for several weeks. (3) Mark passes his final exams.",
+    options: [
+      "2, 3, 1",
+      "3, 2, 1",
+      "1, 2, 3",
+      "2, 1, 3"
+    ],
+    answer: 0,
+    explanation:
+      "Studying hard leads to passing exams, which then leads to being offered a job. The correct causal sequence is: Mark studies hard (2) → passes exams (3) → gets job offer (1). Thus, the order is 2, 3, 1.",
+    difficulty: -2.9,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 158,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) City officials approve funding for subway construction. (2) Construction of subway tunnels begins. (3) Subway stations are built. (4) Subway service starts. (5) Commuters shift from cars to subway.",
+    options: [
+      "1,2,3,4,5",
+      "2,1,3,4,5",
+      "1,3,2,4,5",
+      "1,2,4,3,5"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence begins with approval of funding (1), which enables tunnel construction (2). After tunnels are built, stations are constructed (3). Only then can subway service start (4), leading to commuters shifting from cars to subway (5). Any other order violates the temporal and causal dependencies between these events.",
+    difficulty: -0.6,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 159,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the correct causal sequence: (1) Chatter updates its algorithm to prioritize paid content. (2) Users complain of reduced organic reach and many migrate to Talk. (3) Chatter's ad revenue declines as user engagement drops. (4) Chatter's stock price falls sharply. (5) A hedge fund launches a hostile takeover bid for Chatter.",
+    options: [
+      "1, 2, 3, 4, 5",
+      "1, 3, 2, 4, 5",
+      "2, 1, 3, 4, 5",
+      "1, 2, 4, 3, 5"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence begins with the algorithm update (1), which directly causes user dissatisfaction and migration to a rival platform (2). This decline in active users leads to reduced ad revenue (3), as fewer users mean less engagement and fewer ad impressions. The revenue drop negatively impacts investor confidence, causing the stock price to fall (4). Finally, the low stock price makes Chatter an attractive target for a hostile takeover bid (5). Other options misplace the order: option B puts ad revenue decline before user migration, which is illogical since revenue depends on user engagement; option C starts with user complaints before the algorithm update; option D incorrectly places the stock price fall before the ad revenue decline.",
+    difficulty: 3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 160,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) City council passes a law requiring residents to separate recyclables. (2) Recycling contamination rates decrease. (3) Residents receive educational pamphlets on proper recycling. (4) Recycling processing facility reports higher quality materials. (5) City's recycling revenue increases.",
+    options: [
+      "1-2-3-4-5",
+      "1-3-2-4-5",
+      "3-1-2-4-5",
+      "1-3-4-2-5"
+    ],
+    answer: 1,
+    explanation:
+      "The law (1) is the initial cause, which leads to the distribution of educational pamphlets (3) to inform residents. Proper education results in decreased contamination (2), which in turn leads to higher quality materials at the facility (4). Finally, higher quality materials increase recycling revenue (5). Thus, the correct sequence is 1-3-2-4-5.",
+    difficulty: 1.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 161,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Several customers report fires caused by the battery pack. (2) The company issues a formal recall of all affected units. (3) Engineers identify a manufacturing defect in the battery pack. (4) A news article highlights the potential danger of the batteries.",
+    options: [
+      "1 → 3 → 4 → 2",
+      "3 → 1 → 2 → 4",
+      "4 → 1 → 3 → 2",
+      "1 → 4 → 2 → 3"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence begins with customer reports of fires (1), which triggers an investigation by engineers who identify the defect (3). The defect information is then publicized via a news article (4), leading to the company's recall decision (2).",
+    difficulty: -0.6,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 162,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Anna's phone battery starts lasting longer. (2) Anna installs a battery optimization app. (3) Anna reads online about battery-saving tips. (4) Anna notices her phone battery drains quickly.",
+    options: [
+      "4, 3, 2, 1",
+      "1, 2, 3, 4",
+      "3, 4, 2, 1",
+      "2, 1, 4, 3"
+    ],
+    answer: 0,
+    explanation:
+      "The correct sequence is 4 (notice problem) → 3 (read tips) → 2 (install app) → 1 (battery lasts longer). Anna first notices the battery draining quickly, which motivates her to read online about solutions. After learning about battery-saving tips, she installs an optimization app, which then causes the battery to last longer. The other orders are illogical because they place events out of causal order (e.g., the battery lasting longer before installing the app, or reading tips before noticing the problem).",
+    difficulty: -2.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 163,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) The coffee shop introduces a loyalty program. (2) The coffee shop experiences a decline in customer visits. (3) The cost of coffee beans increases significantly. (4) The owner raises the prices of all beverages. (5) Customers complain about the higher prices.",
+    options: [
+      "3 → 4 → 5 → 2 → 1",
+      "3 → 4 → 2 → 5 → 1",
+      "4 → 3 → 5 → 2 → 1",
+      "3 → 5 → 4 → 2 → 1"
+    ],
+    answer: 0,
+    explanation:
+      "The causal chain starts with the increase in coffee bean costs (3), which forces the owner to raise prices (4). Higher prices lead to customer complaints (5), which cause a decline in customer visits (2). The owner then introduces a loyalty program (1) to attract customers back. Option A correctly follows this cause-and-effect sequence.",
+    difficulty: -0.3,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 164,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Reports of injuries surface, (2) Company issues a product recall, (3) Safety defect is identified in manufacturing, (4) Sales of the product decline.",
+    options: [
+      "1, 2, 3, 4",
+      "3, 1, 2, 4",
+      "2, 4, 1, 3",
+      "4, 3, 1, 2"
+    ],
+    answer: 1,
+    explanation:
+      "The causal sequence begins with the safety defect being identified in manufacturing (3), which leads to injuries caused by the defect, prompting reports to surface (1). In response to the reports, the company issues a recall (2), and as a result of the recall and negative publicity, sales decline (4). Thus, the correct order is 3, 1, 2, 4.",
+    difficulty: 0.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 165,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) The company expands production capacity. (2) The company's electricity costs decrease. (3) The government announces tax credits for solar energy investment. (4) The company installs solar panels.",
+    options: [
+      "3, 4, 2, 1",
+      "3, 2, 4, 1",
+      "1, 3, 4, 2",
+      "4, 3, 2, 1"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence starts with the government announcing tax credits (3), which incentivizes the company to install solar panels (4). The solar panels then cause a decrease in electricity costs (2), and the cost savings enable the company to expand production capacity (1). Option A is the only order that follows this logic. Option B incorrectly places the cost decrease before the installation. Option C starts with expansion, which is an effect, not a cause. Option D starts with installation before the tax credits that motivated it.",
+    difficulty: -0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 166,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Strong winds knock down a tree onto power lines, (2) The power outage lasts for several hours, (3) Residents start using generators to power their homes, (4) Carbon monoxide poisoning cases are reported at the local hospital.",
+    options: [
+      "1, 2, 3, 4",
+      "1, 3, 2, 4",
+      "2, 1, 3, 4",
+      "4, 3, 2, 1"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence starts with the storm causing the tree to fall on power lines (1), which leads to a power outage (2). Because of the outage, residents use generators (3), and improper use of generators causes carbon monoxide poisoning (4). Therefore, the order is 1, 2, 3, 4.",
+    difficulty: 0.2,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 167,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) A major social media platform announces a new privacy policy that restricts data sharing with third-party advertisers. (2) The platform's advertising revenue declines significantly. (3) Many users express outrage and delete their accounts. (4) The company hires a public relations firm to improve its image.",
+    options: [
+      "1, 3, 2, 4",
+      "1, 2, 3, 4",
+      "3, 1, 2, 4",
+      "1, 3, 4, 2"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence starts with the announcement of the new privacy policy (1). This leads to user outrage and account deletions (3), which then causes a decline in advertising revenue (2) because fewer users mean less data and ad impressions. Finally, the company hires a PR firm (4) in response to the revenue decline and negative publicity. Option A (1,3,2,4) is the only order that follows this logical chain.",
+    difficulty: -0.4,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 168,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Harmony introduces a personalized playlist algorithm. (2) Users spend more time on the platform, increasing ad revenue. (3) Competitors replicate the feature, leading to market saturation. (4) Harmony's user growth slows, so they reduce investment in algorithm improvement. (5) User engagement declines as algorithm quality stagnates.",
+    options: [
+      "1,2,3,4,5",
+      "1,3,2,4,5",
+      "1,2,4,3,5",
+      "2,1,3,4,5"
+    ],
+    answer: 0,
+    explanation:
+      "The correct sequence starts with Harmony introducing a new algorithm (1), which leads to increased user time and ad revenue (2). This success attracts competitors who copy the feature (3), causing market saturation and slowing Harmony's growth. In response, Harmony cuts investment in the algorithm (4), leading to stagnation and declining user engagement (5). Other orders break the cause-effect chain, e.g., competitors copying before user growth is implausible.",
+    difficulty: 2.5,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 169,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the correct causal sequence: (1) Student studies regularly. (2) Student performs well on the test. (3) Student understands the material. (4) Student gets a good grade.",
+    options: [
+      "1, 3, 2, 4",
+      "2, 1, 3, 4",
+      "3, 1, 4, 2",
+      "1, 2, 3, 4"
+    ],
+    answer: 0,
+    explanation:
+      "Studying regularly (1) leads to understanding the material (3), which leads to performing well on the test (2), which then leads to getting a good grade (4). Thus the correct order is 1, 3, 2, 4.",
+    difficulty: -1.8,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 170,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence: (1) Jane updates her resume. (2) Jane interviews and receives a job offer. (3) Jane's company announces layoffs. (4) Jane resigns from her current position. (5) Jane applies for several positions.",
+    options: [
+      "3, 1, 5, 2, 4",
+      "1, 3, 5, 2, 4",
+      "3, 5, 1, 2, 4",
+      "1, 5, 3, 2, 4"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence starts with layoff announcements (3), which prompts Jane to update her resume (1). She then applies for jobs (5), interviews and gets an offer (2), and finally resigns (4). Option A (3,1,5,2,4) is the only one that follows this logical cause-effect chain.",
+    difficulty: -1,
+    discrimination: 1,
+    guessing: 0.25,
+  },
+  {
+    id: 171,
+    type: "event",
+    category: "event",
+    question:
+      "Arrange the following events in the most logical causal sequence:\n1. A tech company releases a new AI-powered customer service system.\n2. The company eliminates several human customer service positions.\n3. Customer satisfaction ratings decline sharply.\n4. The AI system is updated with better natural language processing.\n5. Customer satisfaction ratings recover and exceed previous levels.",
+    options: [
+      "1 → 2 → 3 → 4 → 5",
+      "1 → 3 → 2 → 4 → 5",
+      "2 → 1 → 3 → 4 → 5",
+      "1 → 2 → 4 → 3 → 5"
+    ],
+    answer: 0,
+    explanation:
+      "The correct causal sequence begins with the release of the AI system (1), which directly leads to the elimination of human customer service positions (2) as the company relies on the new technology. Subsequently, customers experience impersonal service, causing satisfaction to decline sharply (3). In response, the company updates the AI system with better language processing (4), which eventually improves service quality, leading to a recovery and rise in satisfaction (5). The other options contain logical inconsistencies: option B places satisfaction decline before layoffs, despite the layoffs being a direct consequence of the system release and a likely cause of the decline; option C has layoffs before the system release; option D has the AI update before the satisfaction decline, which is implausible because the decline typically motivates the update.",
+    difficulty: 0.6,
+    discrimination: 1,
+    guessing: 0.25,
+  },
 ];

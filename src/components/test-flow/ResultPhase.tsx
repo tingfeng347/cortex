@@ -208,6 +208,7 @@ export function ResultPhase({
                                   "logic",
                                   "math",
                                   "vocab",
+                                  "event",
                                 ] as const
                               ).map((dim) => {
                                 const dimTheta = result.thetaByType?.[dim];
@@ -294,9 +295,9 @@ export function ResultPhase({
               <RadarChart userScores={result.dimensionScores} size={200} />
             </div>
             <div className="flex-1 space-y-2 self-center sm:self-auto">
-              {(["logic", "math", "vocab"] as const).map((key) => {
+              {(["logic", "math", "vocab", "event"] as const).map((key) => {
                 const score = result.dimensionScores[key];
-                if (score === null) return null;
+                if (score == null) return null;
                 const isWeak = score < 50;
                 return (
                   <div key={key} className="flex items-center gap-2 text-sm">
@@ -341,6 +342,7 @@ export function ResultPhase({
             { key: "logic", label: n("radar.logic"), score: result.dimensionScores.logic },
             { key: "math", label: n("radar.math"), score: result.dimensionScores.math },
             { key: "vocab", label: n("radar.vocab"), score: result.dimensionScores.vocab },
+            { key: "event", label: n("radar.event"), score: result.dimensionScores.event },
           ];
           const dims = allDims.filter(
             (d): d is { key: string; label: string; score: number } =>
@@ -485,7 +487,7 @@ export function ResultPhase({
                 <p className="text-xs font-medium text-muted-foreground">
                   {n("result.dimensionCompare")}
                 </p>
-                {(["logic", "math", "vocab"] as const).map((key) => {
+                {(["logic", "math", "vocab", "event"] as const).map((key) => {
                   const prev = prevResult.dimensionScores?.[key];
                   const cur = result.dimensionScores[key];
                   if (prev === null || prev === undefined || cur === null)

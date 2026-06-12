@@ -17,7 +17,8 @@
 		"ariaLabel": "认知维度雷达图",
 		"logic": "逻辑推理",
 		"math": "速算",
-		"vocab": "词汇语义"
+		"vocab": "词汇语义",
+		"event": "事件事理"
 	},
 	"landing": {
 		"title": "认知防锈 · 基线测试",
@@ -81,7 +82,8 @@
 		"adviceTips": {
 			"logic": "每天做一道逻辑题（比如数独或推理题），逐步提升分析能力。",
 			"math": "在心算之前不要立刻掏出计算器——先自己算一遍，哪怕慢一点。",
-			"vocab": "每天读 10 分钟纸质书或长文章，留意用词和表达方式。"
+			"vocab": "每天读 10 分钟纸质书或长文章，留意用词和表达方式。",
+			"event": "试着阅读深度报道或长篇文章，注意事件之间的因果链条和逻辑关联。"
 		},
 		"retestPrompt": "7 天后复测，追踪你的变化",
 		"retestDesc": "认知能力就像肌肉——定期测量才能看到趋势。我们会在本地保存你的历史记录。",
@@ -205,6 +207,7 @@
 		"trendLogic": "逻辑",
 		"trendMath": "速算",
 		"trendVocab": "词汇",
+	"trendEvent": "事理",
 		"trendFirst": "首次",
 		"trendLatest": "最新",
 		"trendFlat": "→ 持平",
@@ -313,7 +316,8 @@
 			"logic": "逻辑推理",
 			"sequence": "数列推理",
 			"math": "速算",
-			"vocab": "词汇语义"
+			"vocab": "词汇语义",
+			"event": "事件事理"
 		},
 		"multiSelect": "多选",
 		"multiSelectHint": "请勾选所有正确答案"

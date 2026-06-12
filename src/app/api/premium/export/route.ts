@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { validateLicense, getLicenseResults } from "@/lib/auth/license"
 import { generateCSV } from "@/lib/premium/export"
+import { normalizeDimensionScores } from "@/lib/scoring"
 
 export async function GET(request: Request) {
   const auth = request.headers.get("authorization")
@@ -22,7 +23,7 @@ export async function GET(request: Request) {
         tierKey: r.tier_key,
         correctCount: r.correct_count,
         totalQuestions: r.total_questions,
-        dimensionScores: safeParse(r.dimension_scores),
+        dimensionScores: normalizeDimensionScores(safeParse(r.dimension_scores)),
         aiUsageLevel: r.ai_usage_level,
         estimationMethod: r.estimation_method,
         elapsedMs: r.elapsed_ms,

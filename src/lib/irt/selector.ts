@@ -63,7 +63,7 @@ export function selectNextQuestionByType(
   theta: number,
   pool: Question[],
   usedIds: Set<number>,
-  type: "logic" | "math" | "vocab",
+  type: "logic" | "math" | "vocab" | "event",
 ): Question | null {
   const candidates = pool.filter((q) => q.type === type);
   return selectNextQuestion(theta, candidates, usedIds);

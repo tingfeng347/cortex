@@ -1,6 +1,6 @@
 export interface ResponseRecord {
   questionId: number;
-  type: "logic" | "math" | "vocab";
+  type: "logic" | "math" | "vocab" | "event";
   score: number; // 0–1, fractional for partial credit
   difficulty: number;
   discrimination?: number;
@@ -22,6 +22,7 @@ export interface AbilityProfile {
     logic: ThetaEstimate | null;
     math: ThetaEstimate | null;
     vocab: ThetaEstimate | null;
+    event: ThetaEstimate | null;
   };
   testDate: string; // ISO date
   questionsAnswered: number;

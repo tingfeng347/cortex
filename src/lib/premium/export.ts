@@ -1,11 +1,13 @@
 // CSV export for premium users
 
+import type { DimensionScores } from "../scoring"
+
 interface ExportEntry {
   degradationIndex: number
   tierKey: string
   correctCount: number
   totalQuestions: number
-  dimensionScores: Record<string, number | null> | null
+  dimensionScores: DimensionScores | Record<string, number | null> | null
   aiUsageLevel: string | null
   estimationMethod: string
   elapsedMs: number
@@ -13,17 +15,9 @@ interface ExportEntry {
 }
 
 const CSV_HEADERS = [
-  "日期",
-  "退化指数",
-  "等级",
-  "正确数",
-  "总题数",
-  "逻辑(%)",
-  "速算(%)",
-  "词汇(%)",
-  "AI使用量",
-  "评估方式",
-  "用时(秒)",
+  "日期", "退化指数", "等级", "正确数", "总题数",
+  "逻辑推理", "速算", "词汇语义", "事件事理",
+  "AI使用量", "评估方式", "用时(秒)",
 ]
 
 function escapeCsv(val: string | number | null): string {
@@ -43,6 +37,7 @@ export function generateCSV(results: ExportEntry[]): string {
     const logic = r.dimensionScores?.logic ?? ""
     const math = r.dimensionScores?.math ?? ""
     const vocab = r.dimensionScores?.vocab ?? ""
+    const event = r.dimensionScores?.event ?? ""
     const elapsed = r.elapsedMs > 0 ? Math.round(r.elapsedMs / 1000) : ""
 
     rows.push([
@@ -54,6 +49,7 @@ export function generateCSV(results: ExportEntry[]): string {
       logic,
       math,
       vocab,
+      event,
       escapeCsv(r.aiUsageLevel),
       escapeCsv(r.estimationMethod === "irt" ? "IRT自适应" : "固定百分比"),
       elapsed,

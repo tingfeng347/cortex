@@ -31,11 +31,12 @@ export default function RadarChart({
     { key: "logic" as const, label: t("logic") },
     { key: "math" as const, label: t("math") },
     { key: "vocab" as const, label: t("vocab") },
+    { key: "event" as const, label: t("event") },
   ];
 
-  // Three axes at 120° intervals, starting at top-center (-90°)
+  // Four axes at 90° intervals, starting at top-center (-90°)
   function point(index: number, value: number): { x: number; y: number } {
-    const angle = (-90 + index * 120) * (Math.PI / 180);
+    const angle = (-90 + index * 90) * (Math.PI / 180);
     const r = (value / 100) * radius;
     return {
       x: cx + r * Math.cos(angle),
@@ -117,7 +118,7 @@ export default function RadarChart({
       {/* User data points */}
       {AXIS_LABELS.map((a, i) => {
         const v = userScores[a.key];
-        if (v === null) return null;
+        if (v == null) return null;
         const p = point(i, v);
         return (
           <circle
@@ -154,11 +155,11 @@ export default function RadarChart({
       {/* Value labels near user dots */}
       {AXIS_LABELS.map((a, i) => {
         const v = userScores[a.key];
-        if (v === null) return null;
+        if (v == null) return null;
         const p = point(i, v);
         // Offset text toward the outer direction
         const offset = v > 80 ? -12 : 10;
-        const angle = (-90 + i * 120) * (Math.PI / 180);
+        const angle = (-90 + i * 90) * (Math.PI / 180);
         const tx = p.x + offset * Math.cos(angle);
         const ty = p.y + offset * Math.sin(angle);
         return (

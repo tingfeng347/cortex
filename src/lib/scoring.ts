@@ -38,6 +38,7 @@ export interface DimensionScores {
   logic: number | null // percentage correct (0-100), null if no questions of this type
   math: number | null
   vocab: number | null
+  event: number | null
 }
 
 // Dimension labels — kept for backward compat, use `n("radar." + type)` for display
@@ -45,6 +46,35 @@ export const DIMENSION_LABELS: Record<string, string> = {
   logic: "逻辑推理",
   math: "速算",
   vocab: "词汇语义",
+  event: "事件事理",
+}
+
+const ALL_DIMS = ["logic", "math", "vocab", "event"] as const
+
+/** Normalize dimension scores from old-format data that may lack newer dimensions. */
+export function normalizeDimensionScores(raw: unknown): DimensionScores {
+  const obj = (raw ?? {}) as Record<string, unknown>
+  return {
+    logic: typeof obj.logic === "number" ? obj.logic : null,
+    math: typeof obj.math === "number" ? obj.math : null,
+    vocab: typeof obj.vocab === "number" ? obj.vocab : null,
+    event: typeof obj.event === "number" ? obj.event : null,
+  }
+}
+
+/** Normalize thetaByType from old-format data that may lack newer dimensions. */
+export function normalizeThetaByType(raw: unknown): TestResult["thetaByType"] {
+  const obj = (raw ?? {}) as Record<string, unknown>
+  const dim = (key: string) => {
+    const v = obj[key] as { theta: number; se: number } | null | undefined
+    return v && typeof v.theta === "number" && typeof v.se === "number" ? v : null
+  }
+  return {
+    logic: dim("logic"),
+    math: dim("math"),
+    vocab: dim("vocab"),
+    event: dim("event"),
+  }
 }
 
 export interface ResultTier {
@@ -165,6 +195,7 @@ export interface TestResult {
     logic: { theta: number; se: number } | null
     math: { theta: number; se: number } | null
     vocab: { theta: number; se: number } | null
+    event: { theta: number; se: number } | null
   }
 }
 
@@ -247,6 +278,9 @@ export function calculateResult(
     vocab: dimCorrect.vocab
       ? Math.round((dimCorrect.vocab.correct / dimCorrect.vocab.total) * 100)
       : null,
+    event: dimCorrect.event
+      ? Math.round((dimCorrect.event.correct / dimCorrect.event.total) * 100)
+      : null,
   }
 
   return {
@@ -284,6 +318,7 @@ export function generateShareText(result: TestResult, labels?: {
   logic: string
   math: string
   vocab: string
+  event: string
   cta: string
 }): string {
   const l = labels ?? {
@@ -296,6 +331,7 @@ export function generateShareText(result: TestResult, labels?: {
     logic: "逻辑",
     math: "速算",
     vocab: "词汇",
+    event: "事理",
     cta: "在 https://cortex.hydroroll.team 测试你的认知状态",
   }
   const lines = [
@@ -313,6 +349,8 @@ export function generateShareText(result: TestResult, labels?: {
     dimParts.push(`${l.math} ${result.dimensionScores.math}%`)
   if (result.dimensionScores.vocab !== null)
     dimParts.push(`${l.vocab} ${result.dimensionScores.vocab}%`)
+  if (result.dimensionScores.event !== null)
+    dimParts.push(`${l.event} ${result.dimensionScores.event}%`)
   if (dimParts.length > 0) lines.push("", dimParts.join(" · "))
 
   lines.push("", l.description, "", l.advice, "")

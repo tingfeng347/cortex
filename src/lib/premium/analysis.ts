@@ -1,7 +1,7 @@
 // Per-dimension trend analysis for premium users
 
 export interface DimensionTrend {
-  dimension: "logic" | "math" | "vocab"
+  dimension: "logic" | "math" | "vocab" | "event"
   label: string
   firstScore: number | null
   latestScore: number | null
@@ -53,6 +53,14 @@ const DIMENSION_META: Record<string, { label: string; tip: Record<string, string
       stable: "语义理解能力保持稳定。",
     },
   },
+  event: {
+    label: "事件事理",
+    tip: {
+      improving: "事理分析能力在提升，因果推断越来越敏锐。",
+      declining: "事理分析能力下降，可能和碎片化阅读有关——试着多读长文章。",
+      stable: "事理分析能力保持稳定。",
+    },
+  },
 }
 
 export function analyzeHistory(history: HistoryEntry[]): TrendAnalysis {
@@ -73,7 +81,7 @@ export function analyzeHistory(history: HistoryEntry[]): TrendAnalysis {
   const last = sorted[sorted.length - 1]
 
   // Per-dimension analysis
-  const dimensions: DimensionTrend[] = (["logic", "math", "vocab"] as const).map((dim) => {
+  const dimensions: DimensionTrend[] = (["logic", "math", "vocab", "event"] as const).map((dim) => {
     const firstScore = first.dimensionScores?.[dim] ?? null
     const latestScore = last.dimensionScores?.[dim] ?? null
     const delta = firstScore !== null && latestScore !== null

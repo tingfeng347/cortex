@@ -17,7 +17,8 @@
 		"ariaLabel": "Cognitive dimension radar chart",
 		"logic": "Logic",
 		"math": "Mental Math",
-		"vocab": "Vocabulary"
+		"vocab": "Vocabulary",
+		"event": "Event Reasoning"
 	},
 	"landing": {
 		"title": "Cognitive Rustproof · Baseline Test",
@@ -86,7 +87,8 @@
 		"adviceTips": {
 			"logic": "Do one logic puzzle a day (e.g., Sudoku or reasoning puzzles) to gradually improve analytical skills.",
 			"math": "Don't reach for a calculator right away when doing mental math—try calculating it yourself first, even if it's slow.",
-			"vocab": "Read 10 minutes of a physical book or long-form article daily, paying attention to word choices and expressions."
+			"vocab": "Read 10 minutes of a physical book or long-form article daily, paying attention to word choices and expressions.",
+			"event": "Read long-form journalism or in-depth articles, paying attention to causal chains and logical connections between events."
 		},
 		"retestPrompt": "Retest in 7 days to track your changes",
 		"retestDesc": "Cognitive ability is like a muscle—measure regularly to see the trend. Your history is saved locally.",
@@ -210,6 +212,7 @@
 		"trendLogic": "Logic",
 		"trendMath": "Mental Math",
 		"trendVocab": "Vocabulary",
+		"trendEvent": "Event",
 		"trendFirst": "First",
 		"trendLatest": "Latest",
 		"trendFlat": "→ Flat",
@@ -318,7 +321,8 @@
 			"logic": "Logic Reasoning",
 			"sequence": "Sequence Reasoning",
 			"math": "Mental Math",
-			"vocab": "Vocabulary"
+			"vocab": "Vocabulary",
+			"event": "Event Reasoning"
 		},
 		"multiSelect": "Multi-select",
 		"multiSelectHint": "Select all correct answers"

@@ -5,7 +5,7 @@ import { selectNextQuestionByType } from "./irt/selector";
 
 export interface AdaptiveTestSession {
   /** Pre-shuffled dimension order for all questions in this test */
-  dimensionOrder: ("logic" | "math" | "vocab")[];
+  dimensionOrder: ("logic" | "math" | "vocab" | "event")[];
   /** How many questions have been answered (0 … targetCount) */
   currentStep: number;
   /** Response records for every answered question */
@@ -29,16 +29,17 @@ function shuffle<T>(arr: T[]): T[] {
 
 /**
  * Create a new adaptive test session with a pre-allocated, shuffled
- * dimension order (logic×7, math×7, vocab×6 = 20 total).
+ * dimension order (logic×5, math×5, vocab×5, event×5 = 20 total).
  */
 export function createTestSession(
   targetCount: number = 20,
 ): AdaptiveTestSession {
   // Pre-allocate dimension order (7 logic, 7 math, 6 vocab)
-  const dimensionOrder: ("logic" | "math" | "vocab")[] = shuffle([
-    ...Array(7).fill("logic"),
-    ...Array(7).fill("math"),
-    ...Array(6).fill("vocab"),
+  const dimensionOrder: ("logic" | "math" | "vocab" | "event")[] = shuffle([
+    ...Array(5).fill("logic"),
+    ...Array(5).fill("math"),
+    ...Array(5).fill("vocab"),
+    ...Array(5).fill("event"),
   ]);
 
   return {
@@ -62,7 +63,7 @@ export function isTestComplete(session: AdaptiveTestSession): boolean {
  */
 export function getCurrentDimension(
   session: AdaptiveTestSession,
-): "logic" | "math" | "vocab" {
+): "logic" | "math" | "vocab" | "event" {
   return session.dimensionOrder[session.currentStep];
 }
 
@@ -93,7 +94,7 @@ export function selectNextQuestion(
 export function recordResponse(
   session: AdaptiveTestSession,
   questionId: number,
-  type: "logic" | "math" | "vocab",
+  type: "logic" | "math" | "vocab" | "event",
   difficulty: number,
   score: number, // 0–1, fractional for partial credit
   responseTime?: number,

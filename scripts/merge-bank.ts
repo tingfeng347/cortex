@@ -23,11 +23,12 @@ const TYPE_LABELS: Record<string, { zh: string; en: string; ja: string }> = {
   logic: { zh: "逻辑推理", en: "Logic", ja: "論理推論" },
   math: { zh: "速算", en: "Math", ja: "暗算" },
   vocab: { zh: "词汇语义", en: "Vocabulary", ja: "語彙" },
+  event: { zh: "事件事理", en: "Event", ja: "事象因果" },
 };
 
 interface Question {
   id: number;
-  type: "logic" | "math" | "vocab";
+  type: "logic" | "math" | "vocab" | "event";
   category: string;
   question: string;
   options: string[];

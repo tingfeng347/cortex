@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { validateLicense, getLicenseResults, saveTestResult } from "@/lib/auth/license"
+import { normalizeDimensionScores, normalizeThetaByType } from "@/lib/scoring"
 
 function getLicenseKey(request: Request): string | null {
   const auth = request.headers.get("authorization")
@@ -26,12 +27,12 @@ export async function GET(request: Request) {
         tierKey: r.tier_key,
         correctCount: r.correct_count,
         totalQuestions: r.total_questions,
-        dimensionScores: safeJsonParse(r.dimension_scores),
+        dimensionScores: normalizeDimensionScores(safeJsonParse(r.dimension_scores)),
         aiUsageLevel: r.ai_usage_level,
         estimationMethod: r.estimation_method,
         theta: r.theta,
         thetaSE: r.theta_se,
-        thetaByType: safeJsonParse(r.theta_by_type ?? null),
+        thetaByType: normalizeThetaByType(safeJsonParse(r.theta_by_type ?? null)),
         elapsedMs: r.elapsed_ms,
         createdAt: r.created_at,
       })),

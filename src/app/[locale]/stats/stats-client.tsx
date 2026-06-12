@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { normalizeDimensionScores, normalizeThetaByType } from "@/lib/scoring";
 import {
   Card,
   CardContent,
@@ -35,6 +36,7 @@ interface HistoryEntry {
     logic: number | null;
     math: number | null;
     vocab: number | null;
+    event: number | null;
   };
   tierColor?: string;
 }
@@ -57,7 +59,7 @@ export default function StatsClient() {
   const [userScore, setUserScore] = useState<number | null>(null);
   const [userTier, setUserTier] = useState<UserResult["tier"] | null>(null);
   const [trendDimension, setTrendDimension] = useState<
-    "overall" | "logic" | "math" | "vocab"
+    "overall" | "logic" | "math" | "vocab" | "event"
   >("overall");
 
   useEffect(() => {
@@ -77,11 +79,14 @@ export default function StatsClient() {
         const raw = localStorage.getItem("cognitive-rust-history");
         if (raw) {
           const parsed: HistoryEntry[] = JSON.parse(raw);
+          parsed.forEach((h) => {
+            if (h.dimensionScores) h.dimensionScores = normalizeDimensionScores(h.dimensionScores)
+          });
           setHistory(parsed);
         }
         const resultRaw = localStorage.getItem("cognitive-rust-result");
         if (resultRaw) {
-          const parsed: UserResult = JSON.parse(resultRaw);
+          const parsed = JSON.parse(resultRaw) as UserResult & { dimensionScores?: unknown; thetaByType?: unknown };
           setUserScore(parsed.degradationIndex);
           setUserTier(parsed.tier);
         }
@@ -340,7 +345,7 @@ export default function StatsClient() {
             </CardDescription>
             {/* Dimension toggle */}
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {(["overall", "logic", "math", "vocab"] as const).map((dim) => {
+              {(["overall", "logic", "math", "vocab", "event"] as const).map((dim) => {
                 const label =
                   dim === "overall"
                     ? t("trendOverall")
@@ -348,7 +353,9 @@ export default function StatsClient() {
                       ? t("trendLogic")
                       : dim === "math"
                         ? t("trendMath")
-                        : t("trendVocab");
+                        : dim === "vocab"
+                          ? t("trendVocab")
+                          : t("trendEvent");
                 // Only show dimension toggle if there's data for it
                 if (dim !== "overall") {
                   const hasData = history.some(
@@ -522,7 +529,9 @@ export default function StatsClient() {
                       ? "#2563eb"
                       : trendDimension === "math"
                         ? "#d97706"
-                        : "#16a34a";
+                        : trendDimension === "vocab"
+                          ? "#16a34a"
+                          : "#8b5cf6";
                   return (
                     <g key={i}>
                       {i > 0 &&

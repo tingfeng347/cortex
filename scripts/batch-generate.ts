@@ -46,19 +46,22 @@ const BATCH_SIZE_PER_WRITE = 5; // flush output every N questions
  * Existing: zh-CN=44, en=54, ja=54
  * So we need: zh-CN +106, en +96, ja +96
  */
-const GENERATION_PLAN: { locale: string; type: "logic" | "math" | "vocab"; count: number }[] = [
+const GENERATION_PLAN: { locale: string; type: "logic" | "math" | "vocab" | "event"; count: number }[] = [
   // zh-CN
-  { locale: "zh-CN", type: "logic", count: 36 },
-  { locale: "zh-CN", type: "math", count: 35 },
-  { locale: "zh-CN", type: "vocab", count: 36 },
+  { locale: "zh-CN", type: "logic", count: 25 },
+  { locale: "zh-CN", type: "math", count: 25 },
+  { locale: "zh-CN", type: "vocab", count: 25 },
+  { locale: "zh-CN", type: "event", count: 25 },
   // en
-  { locale: "en", type: "logic", count: 32 },
-  { locale: "en", type: "math", count: 32 },
-  { locale: "en", type: "vocab", count: 33 },
+  { locale: "en", type: "logic", count: 23 },
+  { locale: "en", type: "math", count: 23 },
+  { locale: "en", type: "vocab", count: 23 },
+  { locale: "en", type: "event", count: 23 },
   // ja
-  { locale: "ja", type: "logic", count: 32 },
-  { locale: "ja", type: "math", count: 32 },
-  { locale: "ja", type: "vocab", count: 33 },
+  { locale: "ja", type: "logic", count: 23 },
+  { locale: "ja", type: "math", count: 23 },
+  { locale: "ja", type: "vocab", count: 23 },
+  { locale: "ja", type: "event", count: 23 },
 ];
 
 /** Difficulty distribution: normal-ish across -3 to +3 */
@@ -76,7 +79,7 @@ const DIFFICULTY_BUCKETS = [
 
 interface GeneratedQuestion {
   id: number;
-  type: "logic" | "math" | "vocab";
+  type: "logic" | "math" | "vocab" | "event";
   category: string;
   question: string;
   options: string[];
@@ -96,7 +99,7 @@ interface GenerationProgress {
 
 interface CellConfig {
   locale: string;
-  type: "logic" | "math" | "vocab";
+  type: "logic" | "math" | "vocab" | "event";
   difficulty: number;
 }
 
@@ -269,6 +272,27 @@ function getCultureGuidance(locale: string, type: string, difficulty: number): s
 - 困难题（1.5 ~ 3）：生僻成语、复杂的语病辨析
 
 确保基于中国文化传统内容。`;
+      case "event":
+        return `题型：事件事理分析（难度：${diffLabel}）
+
+以事件排序题为主（答案唯一确定），亦可包含少量因果推断和论证分析题。
+
+事件排序要求：
+• 提供4-5个事件描述，让答题者按因果关系或时间顺序排列
+• 选项为4种不同的排序，只有1个是正确的
+• 事件之间必须有明确的因果/时序逻辑链条
+• 场景覆盖：商业/经济、历史、日常生活、科技、社会新闻等
+
+因果推断要求：
+• 给一个场景，选最可能的因或果
+• 干扰项要有迷惑性但逻辑上可排除
+
+难度 ${diffLabel}（IRT difficulty ≈ ${difficulty}）：
+- 简单题（-3 ~ -1）：2-3步因果链，事件关系明显
+- 中等题（-0.5 ~ 0.5）：3-4步因果链，需要仔细分析
+- 困难题（1.5 ~ 3）：4-5步复杂因果链，含多重因果或反馈循环
+
+使用中国语境和中文表述。`;
     }
   } else if (locale === "ja") {
     switch (type) {
@@ -320,6 +344,27 @@ function getCultureGuidance(locale: string, type: string, difficulty: number): s
 - 難しい（1.5 ~ 3）：専門的な古典・文学知識
 
 日本の文化・文学・言語に基づいた内容にしてください。`;
+      case "event":
+        return `题型：事象因果分析（難易度：${diffLabel}）
+
+出来事の並べ替え問題を中心に（解答が一意に定まる）、必要に応じて因果推論や論証分析も含めてください。
+
+出来事の並べ替えの要件：
+• 4-5つの出来事を提示し、因果関係または時系列順に並べさせる
+• 選択肢は4通りの並べ替えで、正解は1つのみ
+• 出来事間に明確な因果/時系列の論理チェーンが必要
+• シチュエーション：ビジネス/経済、歴史、日常生活、テクノロジー、社会ニュースなど
+
+因果推論の要件：
+• シナリオを提示し、最も可能性の高い原因または結果を選ばせる
+• 誤答選択肢は魅力的だが論理的に排除可能
+
+難易度 ${diffLabel}（IRT difficulty ≈ ${difficulty}）：
+- 簡単（-3 ~ -1）：2-3ステップの因果連鎖、関係が明確
+- 普通（-0.5 ~ 0.5）：3-4ステップの因果連鎖、注意深い分析が必要
+- 難しい（1.5 ~ 3）：4-5ステップの複雑な因果連鎖、多重因果やフィードバックループを含む
+
+日本の文脈と日本語表現を使用してください。`;
     }
   } else {
     // English
@@ -373,6 +418,31 @@ Difficulty ${diffLabel} (IRT difficulty ≈ ${difficulty})：
 - Hard (1.5 ~ 3): Advanced etymology, obscure literary references, complex grammar
 
 Base questions on English language and Western cultural/literary heritage.`;
+      case "event":
+        return `Type: Event & Causal Reasoning (Difficulty: ${diffLabel})
+
+Prefer event sequencing questions (unambiguous answer). May include some causal inference and argument analysis.
+
+Event sequencing requirements:
+• Present 4-5 events for ordering by cause/effect or timeline
+• Options are 4 different orderings, only 1 is correct
+• Clear causal/temporal logic chain between events
+• Scenarios: business/economics, history, daily life, technology, social news
+
+Causal inference requirements:
+• Present a scenario, choose the most likely cause or outcome
+• Distractors should be plausible but logically eliminable
+
+Argument analysis requirements (for harder questions):
+• Present an argument, identify assumption/flaw/strengthen/weaken
+• Similar to GMAT Critical Reasoning
+
+Difficulty ${diffLabel} (IRT difficulty ≈ ${difficulty})：
+- Easy (-3 ~ -1): 2-3 step causal chain, obvious relationships
+- Medium (-0.5 ~ 0.5): 3-4 step causal chain, requires careful analysis
+- Hard (1.5 ~ 3): 4-5+ step complex chain with multiple causality or feedback loops
+
+Use Western cultural contexts and names.`;
     }
   }
 
@@ -390,10 +460,10 @@ function difficultyLabel(d: number): string {
 
 function buildUserPrompt(locale: string, type: string, difficulty: number, usedQuestions: string[]): string {
   const base = locale === "zh-CN"
-    ? `请生成一道难度约为 ${difficulty} 的${type === "logic" ? "逻辑推理" : type === "math" ? "速算" : "词汇语义"}题。`
+    ? `请生成一道难度约为 ${difficulty} 的${type === "logic" ? "逻辑推理" : type === "math" ? "速算" : type === "vocab" ? "词汇语义" : "事件事理分析"}题。`
     : locale === "ja"
-      ? `難易度 ${difficulty} の${type === "logic" ? "論理推論" : type === "math" ? "暗算" : "語彙意味"}問題を1問生成してください。`
-      : `Generate one ${type} question with difficulty approximately ${difficulty}.`;
+      ? `難易度 ${difficulty} の${type === "logic" ? "論理推論" : type === "math" ? "暗算" : type === "vocab" ? "語彙意味" : "事象因果分析"}問題を1問生成してください。`
+      : `Generate one ${type === "event" ? "event/causal reasoning" : type} question with difficulty approximately ${difficulty}.`;
 
   const avoidText = usedQuestions.length > 0
     ? `\n\n避免与以下题目重复（Avoid duplicating these topics）：\n${usedQuestions.map((q, i) => `${i + 1}. ${q}`).slice(-20).join("\n")}`

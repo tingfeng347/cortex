@@ -31,10 +31,11 @@ export function selectQuestions(n: number, locale = "zh-CN"): Question[] {
   const logic = BANK.filter((q) => q.type === "logic");
   const math = BANK.filter((q) => q.type === "math");
   const vocab = BANK.filter((q) => q.type === "vocab");
+  const event = BANK.filter((q) => q.type === "event");
 
   // Pick at least 1 from each
   const picked = new Set<number>();
-  const pools = [logic, math, vocab];
+  const pools = [logic, math, vocab, event];
   const guaranteed = pools.map((pool) => {
     const idx = Math.floor(Math.random() * pool.length);
     picked.add(pool[idx].id);

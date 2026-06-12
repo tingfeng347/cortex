@@ -18,6 +18,8 @@ import {
   scoreAnswer,
   type TestResult,
   type DimensionScores,
+  normalizeDimensionScores,
+  normalizeThetaByType,
 } from "@/lib/scoring";
 import { AI_CANONICAL_LEVELS } from "@/lib/constants";
 import type { Question } from "@/lib/questions";
@@ -37,7 +39,7 @@ import {
 } from "./helpers"
 import { usePremium } from "../premium/usePremium"
 
-const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
+const COOLDOWN_MS = process.env.NODE_ENV === "development" ? 0 : 7 * 24 * 60 * 60 * 1000
 const LAST_FREE_TEST_KEY = "cortex:last-free-test";
 
 type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
@@ -58,6 +60,17 @@ interface StoredResultSummary {
   theta?: number;
   thetaSE?: number;
   thetaByType?: TestResult["thetaByType"];
+}
+
+/** Patch old-format stored data that may lack newer dimension keys. */
+function normalizeStoredEntry<T extends { dimensionScores?: unknown; thetaByType?: unknown }>(entry: T): T {
+  if (entry.dimensionScores) {
+    entry.dimensionScores = normalizeDimensionScores(entry.dimensionScores)
+  }
+  if (entry.thetaByType) {
+    entry.thetaByType = normalizeThetaByType(entry.thetaByType)
+  }
+  return entry
 }
 
 export function useTestState() {
@@ -163,8 +176,9 @@ export function useTestState() {
           logic: null,
           math: null,
           vocab: null,
+          event: null,
         };
-        for (const dim of ["logic", "math", "vocab"] as const) {
+        for (const dim of ["logic", "math", "vocab", "event"] as const) {
           const dimResponses = responses.filter((r) => r.type === dim);
           if (dimResponses.length >= 3) {
             const est = estimateAbility(dimResponses);
@@ -189,7 +203,7 @@ export function useTestState() {
       try {
         const prevRaw = localStorage.getItem("cognitive-rust-result");
         if (prevRaw) {
-          setPrevResult(JSON.parse(prevRaw));
+          setPrevResult(normalizeStoredEntry(JSON.parse(prevRaw)));
         }
 
         const entry = {
@@ -341,7 +355,7 @@ export function useTestState() {
       try {
         const saved = localStorage.getItem("cognitive-rust-result");
         if (saved) {
-          setSavedResult(JSON.parse(saved));
+          setSavedResult(normalizeStoredEntry(JSON.parse(saved)));
         }
       } catch {
         // ignore
@@ -628,10 +642,16 @@ export function useTestState() {
         result: TestResult;
         aiUsage: number | null;
       };
+      if (fullResult) {
+        fullResult.dimensionScores = normalizeDimensionScores(fullResult.dimensionScores);
+        if (fullResult.thetaByType) {
+          fullResult.thetaByType = normalizeThetaByType(fullResult.thetaByType);
+        }
+      }
 
       // Load prevResult from history for comparison
       const historyRaw = localStorage.getItem("cognitive-rust-history");
-      const historyParsed: StoredResultSummary[] = historyRaw ? JSON.parse(historyRaw) : [];
+      const historyParsed: StoredResultSummary[] = historyRaw ? JSON.parse(historyRaw).map(normalizeStoredEntry) : [];
       if (historyParsed.length >= 2) {
         setPrevResult(historyParsed[historyParsed.length - 2]);
       }
@@ -657,6 +677,7 @@ export function useTestState() {
       logic: n("radar.logic"),
       math: n("radar.math"),
       vocab: n("radar.vocab"),
+      event: n("radar.event"),
       cta: n("landing.title") + " — cortex.hydroroll.team",
     });
     const pageUrl =
@@ -730,6 +751,9 @@ export function useTestState() {
         : "",
       result.dimensionScores.vocab !== null
         ? `${n("radar.vocab")} ${result.dimensionScores.vocab}%`
+        : "",
+      result.dimensionScores.event !== null
+        ? `${n("radar.event")} ${result.dimensionScores.event}%`
         : "",
     ]
       .filter(Boolean)

@@ -124,13 +124,26 @@ const TYPE_PROMPTS: Record<
     "difficulty": -0.3
   }`,
   },
+  event: {
+    zh: "题型：事件事理分析。包括：事件排序（给4-5个事件，选正确的因果关系/时间顺序）、因果推断（根据场景判断最可能的原因或结果）、论证分析（找前提假设、逻辑漏洞、加强/削弱选项）。以事件排序为主，因为答案唯一确定。",
+    en: "Type: Event & Causal Reasoning. Includes: event sequencing (order 4-5 events by cause/effect or timeline), causal inference (identify the most likely cause or outcome from a scenario), argument analysis (find assumptions, logical flaws, strengthen/weaken options). Prefer event sequencing for unambiguous answers.",
+    ja: "题型：事象因果分析。内容：出来事の並べ替え（4-5の事象を因果関係/時系列順に並べる）、因果推論（シナリオから最も可能性の高い原因や結果を選ぶ）、論証分析（前提仮定、論理的欠陥、強化/弱化する選択肢を見つける）。解答が一意に定まる出来事の並べ替え問題を優先してください。",
+    examples: `良好示例（事件排序）：
+  {
+    "question": "将以下事件按因果逻辑排序：\\n① 公司股价大跌\\n② 财报显示季度亏损\\n③ CEO宣布辞职\\n④ 投资者抛售股票\\n\\n正确的因果顺序是什么？",
+    "options": ["②→③→①→④", "③→②→④→①", "①→④→②→③", "④→①→③→②"],
+    "answer": 0,
+    "explanation": "财报亏损是根本原因(②)，导致CEO辞职(③)，引发股价大跌(①)，最终投资者抛售(④)。因果链条为 ②→③→①→④。",
+    "difficulty": -0.2
+  }`,
+  },
 };
 
 /* ─── Assemble Prompt ─── */
 
 export interface GeneratePromptInput {
   locale: string;
-  type: "logic" | "math" | "vocab";
+  type: "logic" | "math" | "vocab" | "event";
   difficulty: number;
   usedQuestions: string[]; // short summaries or IDs to avoid duplicates
 }
@@ -151,7 +164,7 @@ export function buildGeneratePrompt(input: GeneratePromptInput): {
 
   const userPrompt =
     locale === "zh-CN"
-      ? `请生成一道${diffLabel}难度的${type === "logic" ? "逻辑推理" : type === "math" ? "速算" : "词汇语义"}题，IRT difficulty 参数约为 ${difficulty}。${avoidText}
+      ? `请生成一道${diffLabel}难度的${type === "logic" ? "逻辑推理" : type === "math" ? "速算" : type === "vocab" ? "词汇语义" : "事件事理分析"}题，IRT difficulty 参数约为 ${difficulty}。${avoidText}
 
 确保：
 - 题目和选项使用中文
@@ -159,14 +172,14 @@ export function buildGeneratePrompt(input: GeneratePromptInput): {
 - 解析详细、易懂
 - difficulty 保留一位小数`
       : locale === "ja"
-        ? `難易度「${diffLabel}」の${type === "logic" ? "論理推論" : type === "math" ? "暗算" : "語彙意味"}問題を1問生成してください。IRT difficulty パラメータ: 約 ${difficulty}。${avoidText}
+        ? `難易度「${diffLabel}」の${type === "logic" ? "論理推論" : type === "math" ? "暗算" : type === "vocab" ? "語彙意味" : "事象因果分析"}問題を1問生成してください。IRT difficulty パラメータ: 約 ${difficulty}。${avoidText}
 
 確認：
 - 問題文と選択肢は日本語
 - 答えは一意で正しい
 - 解説は詳細で分かりやすい
 - difficulty は小数点以下1桁`
-        : `Generate one ${diffLabel} ${type} question. IRT difficulty parameter: approximately ${difficulty}.${avoidText}
+        : `Generate one ${diffLabel} ${type === "event" ? "event/causal reasoning" : type} question. IRT difficulty parameter: approximately ${difficulty}.${avoidText}
 
 Ensure:
 - Question and options in English

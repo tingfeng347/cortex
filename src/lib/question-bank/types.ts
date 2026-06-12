@@ -1,6 +1,6 @@
 export interface Question {
   id: number;
-  type: "logic" | "math" | "vocab";
+  type: "logic" | "math" | "vocab" | "event";
   category: string; // translation key, e.g. "logic", "sequence", "math", "vocab"
   question: string;
   options: string[];
