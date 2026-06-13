@@ -188,6 +188,7 @@
 		"backToTest": "Back to Test",
 		"activateOrder": "Activate with order number",
 		"loading": "Loading...",
+		"requiresPremium": "This feature requires Premium",
 		"cleared": "License Key Cleared",
 		"clearedDesc": "This device has been restored to free tier. Your License Key is still valid and can be used on other devices.",
 		"reactivate": "Reactivate →",

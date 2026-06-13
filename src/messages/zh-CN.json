@@ -183,6 +183,7 @@
 		"backToTest": "回到测试",
 		"activateOrder": "输入订单号激活",
 		"loading": "加载中...",
+		"requiresPremium": "此功能需要解锁高级版",
 		"cleared": "已清除 License Key",
 		"clearedDesc": "此设备已恢复免费版状态。你的 License Key 仍然有效，可以在其他设备上使用。",
 		"reactivate": "重新激活 →",

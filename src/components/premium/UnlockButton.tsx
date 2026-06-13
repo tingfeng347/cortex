@@ -20,7 +20,7 @@ export function UnlockButton({ variant = "primary", className = "" }: UnlockButt
         rel="noreferrer"
         className={`text-sm font-medium text-primary hover:underline ${className}`}
       >
-        解锁高级版 ¥29.90 →
+        {t("premiumPage.unlockCta")}
       </a>
     )
   }
@@ -33,7 +33,7 @@ export function UnlockButton({ variant = "primary", className = "" }: UnlockButt
         rel="noreferrer"
         className={`inline-block rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors ${className}`}
       >
-        解锁高级版 ¥29.90 →
+        {t("premiumPage.unlockCta")}
       </a>
     )
   }
@@ -45,7 +45,7 @@ export function UnlockButton({ variant = "primary", className = "" }: UnlockButt
       rel="noreferrer"
       className={`inline-block rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground hover:bg-primary/90 transition-colors ${className}`}
     >
-      解锁高级版 ¥29.90 →
+      {t("premiumPage.unlockCta")}
     </a>
   )
 }
