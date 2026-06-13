@@ -2,16 +2,18 @@
 
 import { useEffect, useState } from "react"
 import { Target } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface GoalData {
   avgDegradation: number | null
   totalTests: number
 }
 
-const GOAL = 50 // 目标：全站平均退化指数 < 50
+const GOAL = 50
 
 export function SiteGoal() {
   const [data, setData] = useState<GoalData | null>(null)
+  const t = useTranslations("siteGoal")
 
   useEffect(() => {
     fetch("/api/stats")
@@ -24,8 +26,6 @@ export function SiteGoal() {
 
   const current = data.avgDegradation
   const achieved = current < GOAL
-  // Progress: how close we are (lower is better, so invert)
-  // At degradation 100 (worst) → 0%, at 50 (goal) → 100%, at 0 (best) → 200%
   const progress = Math.min(100, Math.max(0, Math.round(((100 - current) / (100 - GOAL)) * 100)))
 
   return (
@@ -37,16 +37,15 @@ export function SiteGoal() {
       <div className="flex items-center gap-2 mb-2">
         <Target className={`h-4 w-4 ${achieved ? "text-green-600" : "text-amber-600"}`} />
         <span className="text-sm font-semibold">
-          {achieved ? "站点目标已达成！" : "站点目标"}
+          {achieved ? t("achieved") : t("title")}
         </span>
         <span className="text-xs text-muted-foreground">
           {achieved
-            ? `全站平均退化指数 ${current}，低于目标 ${GOAL}`
-            : `全站平均退化指数 ${current} → 目标 < ${GOAL}`}
+            ? t("progressAchieved", { current: current.toFixed(1), goal: GOAL })
+            : t("progressBelow", { current: current.toFixed(1), goal: GOAL })}
         </span>
       </div>
 
-      {/* Progress bar */}
       <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
         <div
           className={`h-full rounded-full transition-all duration-700 ${
@@ -56,7 +55,7 @@ export function SiteGoal() {
         />
       </div>
       <p className="mt-1 text-[10px] text-muted-foreground">
-        已有 {data.totalTests.toLocaleString()} 人次参与测试 · 共同努力降低全站退化指数
+        {t("participants", { count: data.totalTests.toLocaleString() })}
       </p>
     </div>
   )

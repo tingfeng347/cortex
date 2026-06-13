@@ -14,7 +14,7 @@ export default function PremiumPage() {
     document.body.classList.add("hide-top-nav")
     return () => document.body.classList.remove("hide-top-nav")
   }, [])
-  const t = useTranslations()
+  const t = useTranslations("premiumPage")
   const { isPremium, licenseKey, isLoading, error, clearLicense } = usePremium()
   const [copied, setCopied] = useState(false)
   const [cleared, setCleared] = useState(false)
@@ -34,7 +34,7 @@ export default function PremiumPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
-        <p className="text-sm text-muted-foreground">加载中...</p>
+        <p className="text-sm text-muted-foreground">{t("loading")}</p>
       </div>
     )
   }
@@ -45,15 +45,15 @@ export default function PremiumPage() {
         <div className="mx-auto w-full max-w-lg space-y-6">
           <Card>
             <CardContent className="pt-6 text-center">
-              <p className="text-lg font-semibold">已清除 License Key</p>
+              <p className="text-lg font-semibold">{t("cleared")}</p>
               <p className="mt-2 text-sm text-muted-foreground">
-                此设备已恢复免费版状态。你的 License Key 仍然有效，可以在其他设备上使用。
+                {t("clearedDesc")}
               </p>
               <Link
                 href="/unlock"
                 className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
               >
-                重新激活 →
+                {t("reactivate")}
               </Link>
             </CardContent>
           </Card>
@@ -68,23 +68,23 @@ export default function PremiumPage() {
         <div className="mx-auto w-full max-w-lg space-y-6">
           <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
-            回到测试
+            {t("backToTest")}
           </Link>
 
-          <h1 className="text-2xl font-bold tracking-tight">高级版</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
 
           <Card className="border-dashed">
             <CardContent className="pt-6 text-center space-y-4">
               <ShieldCheck className="mx-auto h-12 w-12 text-muted-foreground" />
               <div>
-                <p className="text-lg font-semibold">你还没有解锁高级版</p>
+                <p className="text-lg font-semibold">{t("notPremium")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  一次性赞助 ¥29.90，永久解锁全部功能
+                  {t("notPremiumDesc")}
                 </p>
               </div>
               <UnlockButton className="w-full text-center" />
               <p className="text-xs text-muted-foreground">
-                已付款？<Link href="/unlock" className="text-primary hover:underline">输入订单号激活</Link>
+                {t("paidPrompt")}<Link href="/unlock" className="text-primary hover:underline">{t("activateOrder")}</Link>
               </p>
             </CardContent>
           </Card>
@@ -98,10 +98,10 @@ export default function PremiumPage() {
       <div className="mx-auto w-full max-w-lg space-y-6">
         <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" />
-          回到测试
+          {t("backToTest")}
         </Link>
 
-        <h1 className="text-2xl font-bold tracking-tight">高级版管理</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("titleManage")}</h1>
 
         {/* Status Card */}
         <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950">
@@ -111,8 +111,8 @@ export default function PremiumPage() {
                 <Check className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-green-800 dark:text-green-200">已激活</p>
-                <p className="text-sm text-green-600 dark:text-green-400">永久有效</p>
+                <p className="font-semibold text-green-800 dark:text-green-200">{t("statusActivated")}</p>
+                <p className="text-sm text-green-600 dark:text-green-400">{t("permanent")}</p>
               </div>
             </div>
           </CardContent>
@@ -121,7 +121,7 @@ export default function PremiumPage() {
         {/* License Key Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">License Key</CardTitle>
+            <CardTitle className="text-lg">{t("licenseKeyTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {licenseKey && (
@@ -135,7 +135,7 @@ export default function PremiumPage() {
               </div>
             )}
             <p className="text-xs text-muted-foreground">
-              在其他设备上输入此 Key 即可同步数据和 Premium 身份。最多绑定 3 台设备。
+              {t("licenseKeyDesc")}
             </p>
             {error && (
               <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
@@ -148,29 +148,29 @@ export default function PremiumPage() {
         {/* Features Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">已解锁的功能</CardTitle>
+            <CardTitle className="text-lg">{t("featuresTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-green-600" />
-                无限次测试
+                {t("featureUnlimitedTests")}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-green-600" />
-                云端同步（跨设备）
+                {t("featureCloudSync")}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-green-600" />
-                逐维度深度分析
+                {t("featureAnalysis")}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-green-600" />
-                数据导出 CSV
+                {t("featureExport")}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-green-600" />
-                无水印分享图
+                {t("featureWatermark")}
               </li>
             </ul>
           </CardContent>
@@ -180,14 +180,14 @@ export default function PremiumPage() {
         {licenseKey && (
           <Card className="border-red-200 dark:border-red-800">
             <CardHeader>
-              <CardTitle className="text-base text-red-600 dark:text-red-400">清除此设备上的 License</CardTitle>
+              <CardTitle className="text-base text-red-600 dark:text-red-400">{t("dangerTitle")}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground mb-3">
-                清除后此设备恢复免费版，但 License Key 仍然有效。可用于释放设备名额。
+                {t("dangerDesc")}
               </p>
               <Button variant="outline" size="sm" className="text-red-600" onClick={handleClear}>
-                清除 License
+                {t("dangerButton")}
               </Button>
             </CardContent>
           </Card>

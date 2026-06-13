@@ -180,6 +180,32 @@
 		"licenseKeyLabel": "ライセンスキー（保存してください）:",
 		"autoActivated": "自動アクティベート済み。キーはこのデバイスに保存されました。他のデバイスで入力して同期。"
 	},
+	"premiumPage": {
+		"backToTest": "テストに戻る",
+		"activateOrder": "注文番号でアクティベート",
+		"loading": "読み込み中...",
+		"cleared": "ライセンスキーを消去しました",
+		"clearedDesc": "このデバイスは無料版に戻りました。ライセンスキーは引き続き有効で、他のデバイスで使用できます。",
+		"reactivate": "再アクティベート →",
+		"title": "プレミアム",
+		"titleManage": "プレミアム管理",
+		"notPremium": "まだプレミアムを解除していません",
+		"notPremiumDesc": "一度 ¥29.90 で全機能を永久解除",
+		"paidPrompt": "支払い済み？",
+		"statusActivated": "アクティベート済み",
+		"permanent": "永久有効",
+		"licenseKeyTitle": "License Key",
+		"licenseKeyDesc": "他のデバイスでこのキーを入力すると、データとプレミアムステータスが同期されます。最大3台まで。",
+		"featuresTitle": "解除済み機能",
+		"featureUnlimitedTests": "無制限テスト",
+		"featureCloudSync": "クラウド同期（端末間）",
+		"featureAnalysis": "次元別詳細分析",
+		"featureExport": "データエクスポート CSV",
+		"featureWatermark": "透かしなし共有画像",
+		"dangerTitle": "このデバイスのライセンスを消去",
+		"dangerDesc": "消去後、このデバイスは無料版に戻ります。ライセンスキーは引き続き有効で、デバイス枠を解放できます。",
+		"dangerButton": "ライセンスを消去"
+	},
 	"search": {
 		"title": "問題検索",
 		"placeholder": "キーワードで検索...",
@@ -248,6 +274,13 @@
 		"estimationMixedDesc": "IRT適応型は能力に合わせて問題難易度を調整し、固定パーセントは全問題が同じ重みです。",
 		"estimationIrtOnlyDesc": "現在のところ、すべてのテストでIRT適応型推定が使用されています——問題の難易度がリアルタイムで調整されます。",
 		"estimationPctOnlyDesc": "現在のところ、すべてのテストで固定パーセント評価が使用されています——各問題は同じ重みです。"
+	},
+	"siteGoal": {
+		"achieved": "サイト目標達成！",
+		"title": "サイト目標",
+		"progressAchieved": "平均退化指数 {current}、目標 {goal} 未満達成",
+		"progressBelow": "平均退化指数 {current} → 目標 < {goal}",
+		"participants": "{count} 回のテスト参加 · 協力して平均退化指数を下げよう"
 	},
 	"about": {
 		"title": "このアプリについて",

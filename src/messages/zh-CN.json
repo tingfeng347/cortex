@@ -175,6 +175,32 @@
 		"licenseKeyLabel": "你的 License Key（请保存好）：",
 		"autoActivated": "已自动激活。Key 已保存在此设备。换设备时输入此 Key 即可同步。"
 	},
+	"premiumPage": {
+		"backToTest": "回到测试",
+		"activateOrder": "输入订单号激活",
+		"loading": "加载中...",
+		"cleared": "已清除 License Key",
+		"clearedDesc": "此设备已恢复免费版状态。你的 License Key 仍然有效，可以在其他设备上使用。",
+		"reactivate": "重新激活 →",
+		"title": "高级版",
+		"titleManage": "高级版管理",
+		"notPremium": "你还没有解锁高级版",
+		"notPremiumDesc": "一次性赞助 ¥29.90，永久解锁全部功能",
+		"paidPrompt": "已付款？",
+		"statusActivated": "已激活",
+		"permanent": "永久有效",
+		"licenseKeyTitle": "License Key",
+		"licenseKeyDesc": "在其他设备上输入此 Key 即可同步数据和 Premium 身份。最多绑定 3 台设备。",
+		"featuresTitle": "已解锁的功能",
+		"featureUnlimitedTests": "无限次测试",
+		"featureCloudSync": "云端同步（跨设备）",
+		"featureAnalysis": "逐维度深度分析",
+		"featureExport": "数据导出 CSV",
+		"featureWatermark": "无水印分享图",
+		"dangerTitle": "清除此设备上的 License",
+		"dangerDesc": "清除后此设备恢复免费版，但 License Key 仍然有效。可用于释放设备名额。",
+		"dangerButton": "清除 License"
+	},
 	"search": {
 		"title": "搜题",
 		"placeholder": "输入关键词搜索题目...",
@@ -243,6 +269,13 @@
 		"estimationMixedDesc": "IRT 自适应会根据能力动态调整题目难度；固定百分比每题权重相同。",
 		"estimationIrtOnlyDesc": "目前所有测试均使用 IRT 自适应评估——题目难度根据你的能力水平实时调整。",
 		"estimationPctOnlyDesc": "目前所有测试均使用固定百分比评分——每道题权重相同。"
+	},
+	"siteGoal": {
+		"achieved": "站点目标已达成！",
+		"title": "站点目标",
+		"progressAchieved": "全站平均退化指数 {current}，低于目标 {goal}",
+		"progressBelow": "全站平均退化指数 {current} → 目标 < {goal}",
+		"participants": "已有 {count} 人次参与测试 · 共同努力降低全站退化指数"
 	},
 	"about": {
 		"title": "关于",

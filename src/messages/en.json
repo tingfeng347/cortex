@@ -180,6 +180,32 @@
 		"licenseKeyLabel": "Your License Key (save it):",
 		"autoActivated": "Auto-activated. Key saved on this device. Enter it on other devices to sync."
 	},
+	"premiumPage": {
+		"backToTest": "Back to Test",
+		"activateOrder": "Activate with order number",
+		"loading": "Loading...",
+		"cleared": "License Key Cleared",
+		"clearedDesc": "This device has been restored to free tier. Your License Key is still valid and can be used on other devices.",
+		"reactivate": "Reactivate →",
+		"title": "Premium",
+		"titleManage": "Premium Management",
+		"notPremium": "You haven't unlocked Premium yet",
+		"notPremiumDesc": "One-time ¥29.90, unlock all features forever",
+		"paidPrompt": "Paid already?",
+		"statusActivated": "Activated",
+		"permanent": "Permanent",
+		"licenseKeyTitle": "License Key",
+		"licenseKeyDesc": "Enter this Key on other devices to sync data and Premium status. Max 3 devices.",
+		"featuresTitle": "Unlocked Features",
+		"featureUnlimitedTests": "Unlimited Tests",
+		"featureCloudSync": "Cloud Sync (Cross-device)",
+		"featureAnalysis": "Per-dimension Deep Analysis",
+		"featureExport": "Data Export CSV",
+		"featureWatermark": "Watermark-free Share Image",
+		"dangerTitle": "Clear License on This Device",
+		"dangerDesc": "After clearing, this device reverts to free tier. The License Key remains valid and can free up a device slot.",
+		"dangerButton": "Clear License"
+	},
 	"search": {
 		"title": "Search Questions",
 		"placeholder": "Search by keyword...",
@@ -248,6 +274,13 @@
 		"estimationMixedDesc": "IRT adapts question difficulty to your ability; fixed percentage weights every question equally.",
 		"estimationIrtOnlyDesc": "All tests so far have used IRT adaptive estimation — questions adapt to your ability level in real time.",
 		"estimationPctOnlyDesc": "All tests so far have used fixed-percentage scoring — every question carries equal weight."
+	},
+	"siteGoal": {
+		"achieved": "Site goal achieved!",
+		"title": "Site Goal",
+		"progressAchieved": "Avg degradation {current}, below target {goal}",
+		"progressBelow": "Avg degradation {current} → target < {goal}",
+		"participants": "{count} tests taken · working together to lower the avg degradation index"
 	},
 	"about": {
 		"title": "About",
