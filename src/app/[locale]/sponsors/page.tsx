@@ -75,6 +75,10 @@ function SponsorCard({ entry }: { entry: SponsorEntry }) {
 }
 
 export default function SponsorsPage() {
+  useEffect(() => {
+    document.body.classList.add("hide-top-nav")
+    return () => document.body.classList.remove("hide-top-nav")
+  }, [])
   const t = useTranslations("sponsors")
   const [data, setData] = useState<SponsorsData | null>(null)
   const [loading, setLoading] = useState(true)
