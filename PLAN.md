@@ -6,486 +6,139 @@
 
 核心假设：**当人们看见自己的某项脑力正在因 AI 使用而退化时，他们会在意，并且会分享。**
 
-这个假设是整个项目的 gate——Phase 0 就是要验证它。
-
 ## 技术栈
 
 | 层     | 选型                             | 说明                                      |
 | ------ | -------------------------------- | ----------------------------------------- |
-| 框架   | Next.js (App Router)             | 服务端渲染 + API Routes                   |
-| UI     | React + Tailwind CSS + shadcn/ui | 组件库基于 shadcn/ui，用其 CLI 安装组件   |
-| 数据   | Cloudflare KV（Workers Paid $5/月） | 匿名结果聚合统计（2026-06 从 Upstash Redis 迁移） |
-| 图片   | Vercel OG                        | 服务端生成分享卡片                        |
-| 平台   | Vercel                           | 部署、托管                                |
+| 框架   | Next.js 16 (App Router)          | Turbopack                                 |
+| UI     | React 19 + Tailwind CSS v4 + shadcn/ui |                                    |
+| 数据   | Cloudflare KV + D1               | KV 用于统计/标记计数, D1 用于用户/License/结果 |
+| 平台   | Cloudflare Workers               | opennextjs-cloudflare                     |
 | 包管理 | pnpm                             |                                           |
-| 语言   | TypeScript                       | 严格模式                                  |
+| 语言   | TypeScript                       |                                           |
+
+## 当前状态
+
+**660 题，四维度，三语言，付费 + 免费双轨，全部上线。**
+
+### 题型矩阵
+
+| 维度 | 子类型 | zh-CN | en | ja |
+|------|--------|-------|----|----|
+| 逻辑推理 | logic | 42 | 43 | 44 |
+| 速算 | math | 50 | 47 | 45 |
+| 词汇语义 | vocab | 34 | 52 | 57 |
+| 事件排序 | event | 52 | 50 | 50 |
+| 因果推断 | event-cause | 17 | 15 | 15 |
+| 论证分析 | event-argument | 17 | 15 | 15 |
+| **合计** | | **212** | **222** | **226** |
+
+总计 **660 题**，覆盖 IRT -3.0 ~ +3.0 全难度区间。
+
+### 功能清单
+
+**测试体验**
+- 自适应 IRT 选题（1PL EAP + Fisher 信息量最大）
+- 四维雷达图（逻辑/速算/词汇/事理）
+- 半途保存/恢复（localStorage checkpoint）
+- 40s 倒计时 + 最后 10s 紧迫感动画
+- 退化指数 0-100 + 5 档分级
+- 题目反馈标记（标记后写入 KV，按题目聚合计数）
+
+**数据与统计**
+- `/stats` 全平台统计（正态分布、百分位、AI 使用量分组、等级分布）
+- 个人趋势折线图（四维度切换）
+- 动态 OG 分享卡片 + 客户端 PNG 下载
+- 挑战分享（`?ref=` 参数）
+
+**搜索**
+- `/search` BM25 全文搜索（Intl.Segmenter 中日文分词）
+- 搜索结果展示题目/选项/答案/解析
+- 搜索页也可标记题目反馈
+
+**付费系统**
+- 爱发电支付（微信/支付宝）
+- License Key 激活/设备绑定
+- 免费用户 7 天冷却（本地 dev 关闭）
+- Premium 云端同步（D1）、CSV 导出、逐维度趋势分析
+- 赞助墙（`/sponsors`）
+
+**国际化**
+- 三语言 UI（中文 / English / 日本語）
+- 语言切换器 + 主题切换器（亮/暗）
+- PWA 支持（manifest + Service Worker）
+
+**基础设施**
+- Cloudflare Workers（opennextjs-cloudflare）
+- KV: 统计、标记计数
+- D1: License、设备、测试结果
+- LLM 批量出题管线（DeepSeek, batch-generate.ts + merge-bank.ts）
+- 题目质量审计脚本（regression-check.ts）
+
+### 技术债清理
+
+- Vercel Blob → Upstash Redis → Cloudflare KV 两次迁移完成
+- 中间件迁移 Next.js 16 规范（middleware.ts → proxy.ts）
+- test-flow 组件化拆分（useTestState + 5 阶段组件）
+- LLM 调用日志（traceId + 耗时 + token + 推理过程）
 
 ## 路线图
 
 ### Phase 0：静态验证器 ✅
 
-目标：验证"退化感知"的情绪价值
+固定题库 + 规则评分，验证"退化感知"的情绪价值。
 
-固定题库 + 规则评分，纯前端静态页面。
+### Phase 0.5-0.9：数据基建、留存、国际化、体验 ✅
 
-- [x] 20 道混合题型（逻辑/速算/词汇），从 45 题题库中随机抽取
-- [x] 前端计时（40s/题） + 自我声明（承诺不使用 AI）
-- [x] 退化指数算法（0-100）
-- [x] 结果分级（5 档）
-- [x] 可分享的结果卡
-- [x] localStorage 持久化（上次结果回顾）
-- [x] README / Plan 文档
+统计页面、分享回流、PWA、三语言、中途保存。
 
-P0 核心交付：
-1. ✅ 人们在意吗？→ **已验证。Demo 已传播并获得正向反馈。**
-2. ❓ 他们愿意为此做什么？→ 待收集
-3. ❓ 什么类型的结果分享率最高？→ 待收集
+### Phase 1：动态评估引擎 ✅
 
-### Phase 0.5：数据基建与传播放大 ✅
-
-目标：低成本建立数据闭环，为 Phase 1 的用户画像铺路
-
-在保持 Phase 0 低成本验证的同时，加入数据收集和社区对比维度。
-
-- [x] 题库从 5 题扩至 25 题，随机抽题（复测时题目不同）
-- [x] 数据存储从 Vercel Blob 迁移至 Upstash Redis
-- [x] `/stats` 全平台统计页面（正态分布直方图）
-- [x] 动态 OG 分享图片（`/api/og`）
-- [x] 自托管 Noto Serif CJK TC 字体
-- [x] 移动端适配优化
-- [x] Toast 反馈（锁定提示/复制结果）
-- [x] 修复 Blob 覆盖写入问题
-
-### Phase 0.75：留存与增长 ✅
-
-目标：让用户有理由回来，形成复测习惯 ✅
-
-这一阶段不做复杂算法，专注于行为设计：
-
-1. **个人趋势追踪** ✅
-   - 在 `/stats` 页面展示用户的历史记录（localStorage + URL query 传参）
-   - "上次测试" vs "当前结果" 对比线（结果页 + 统计页）
-   - 多次测试后显示退化指数趋势折线图
-
-2. **分享回流** ✅
-   - 分享卡片链接带 `?ref=` 参数
-   - 打开后显示"你的朋友测得 XX，你能超过他吗？" 的挑战态
-   - 着陆页 CTA 差异（新用户 → "开始测试"；回流用户 → "再测一次"）
-
-3. **轻量提醒** ✅
-   - 结果页引导："7 天后复测，追踪你的变化"
-   - 浏览器 Notification API（"7 天后提醒我"按钮，需用户授权）
-   - 下次访问时自动检查过期提醒
-
-4. **数据洞察** ✅
-   - 统计页增加测试人数展示（已测 N 人）
-   - 你的分数超过 X% 参与者的社交比较
-   - 按 AI 使用量分组的统计数据（人数 + 各组平均退化指数）
-   - 主题颜色切换（浅色/深色）
-
-5. **其他 UI / 基建** ✅
-   - 站点图标改为"?"圆圈（匹配首页设计）
-   - SVG favicon
-   - PWA 支持（manifest.json + Service Worker + 可安装到桌面）
-   - Error Boundary（全局错误捕获 + 重试按钮）
-   - 动态 OG 分享页面（`/share?ref=X` → 服务端生成 meta tags → 客户端跳转）
-   - 客户端结果图片下载（SVG → canvas → PNG，不依赖服务端）
-   - 题库从 25 题扩至 45 题（逻辑/速算/词汇各 15 题）
-
-### Phase 0.8：体验打磨 ✅
-
-目标：修复已知问题，提升完成率，为 Phase 1 铺路 ✅
-
-- [x] 清理死代码——删除 `blob.ts`（全部迁移至 Upstash Redis）
-- [x] 声明页按钮状态联动（需同时选择 AI 使用量 + 勾选声明才可点击）
-- [x] 着陆页文案、SEO meta、OG 图片默认参数全部跟随 `QUESTIONS_PER_TEST` 动态渲染
-- [x] 40s 倒计时后 10 秒紧迫感强化（亮红色 + 脉冲动画 + 数字放大）
-- [x] 测试完成后的过渡动画（`processing` 阶段，加载态提示 → 600ms 后显示结果）
-- [x] 题库质量审核——修复 ID 30 逻辑矛盾、替换 ID 31、删除 ID 45（重复题）；最终 44 题
-- [x] 统计数据页硬编码 `totalQuestions: 5` 修复
-- [x] 中途保存/恢复——localStorage 保存测试进度，着陆页检测并提供"继续上次测试"
-- [x] 修复倒计时自动提交 bug——选完选项后倒计时结束不会跳转下一题
-
-### Phase 0.9：国际化与体验冲刺 ✅
-
-目标：完成多语言支持和最后细节打磨。
-
-- [x] Tier label 集中化——消除 6 处重复定义，为多语言铺路
-- [x] next-intl 接入——middleware + [locale] 路由 + 中/英/日三语言框架
-- [x] 题库多语言拆分——zh-CN (44题) / en (54题) / ja (54题)
-- [x] 全部 ~460 条消息中/英/日三语翻译
-- [x] 语言切换器（中 / EN / 日）
-- [x] 雷达图（多维度认知画像）
-- [x] 字体优化（移除自托管字体，减小体积）
-- [x] 首页 "?" 动画
-- [x] Service Worker 网络优先 fallback 策略
-- [x] SVG favicon
-
-### Phase 1：动态评估引擎 🏗️
-
-**时长**：2-4 周
-**需要 Agent**：开始需要单 Agent
-**核心挑战**：出题质量、能力估计准确度
-**目标**：使用户体验从"做几张固定卷子"变成"一次真正对我有洞察的测量"
-
-动态出题，告别固定题库。
-
-Phase 0 的题目是固定的，用户刷过一次就腻了。要留住人，需要让题目**根据用户的薄弱点动态生成**。
-
-这里开始引入**单 Agent**，职责是：
-- 维护一个用户能力画像（各子维度的估计值）
-- 基于 IRT（项目反应理论）或简单贝叶斯更新，实时选择信息量最大的下一题
-- 用 LLM 动态生成题干和干扰项，避免题库被穷举
-
-**为什么是单 Agent 而不是多 Agent**：
-此时只需要一个"出题+评估"的决策循环，没有多个独立角色需要协作。架构上是：
-```
-用户回答 → 能力估计更新 → LLM生成下一题 → 呈现
-```
-这是一个 Agent、一个闭环。不需要多智能体协作。
-
-#### Week 1: 基础层 — 难度标定 + IRT 引擎 ✅
-
-- [x] Question 类型增加 IRT 参数（difficulty/discrimination/guessing/source）
-- [x] 全部 152 题手动标定 difficulty（-1.2 ~ +1.2）
-- [x] ADAPTIVE_MODE feature flag
-- [x] IRT 类型定义（ResponseRecord/ThetaEstimate/AbilityProfile）
-- [x] IRT 引擎（irf/fisherInfo/estimateAbility with EAP 网格积分）
-- [x] 选题器（最大 Fisher 信息量）
-
-#### Week 2: 自适应测试流程 ✅
-
-- [x] 自适应测试协调器（维度轮换 + 逐题选题）
-- [x] profile-storage.ts（localStorage 能力画像持久化）
-- [x] scoring.ts 添加 abilityToDegradationIndex() 映射
-- [x] TestResult 添加 estimationMethod 字段
-- [x] test-flow.tsx 巨石组件拆分（useTestState + 5 个阶段组件）
-
-#### 修复的 Bug
-
-- [x] Redis 惰性初始化——修复浏览器端 `Redis.fromEnv()` 报错
-- [x] Hydration 不匹配——`loadProgress()` 从 useState 初始化器移到 useEffect
-- [x] `<script>` 标签 React 19 警告——改用 `next/script`
-- [x] 全部语言题库打包——en/ja 改为动态 import
-- [x] 切换语言后题目仍是中文——locale 感知式选题
-
-#### Week 3-4: LLM 题目生成 ✅
-
-- [x] LLM prompt 模板（三语言 × 三题型）
-- [x] OpenAI SDK 结构化生成（JSON response_format）
-- [x] Schema 校验 + 答案一致性检查
-- [x] `/api/generate-questions` API 路由
-- [x] Redis 缓存 + 频率限制
-- [x] SSE 流式请求（stream: true + include_usage + keep-alive 兼容）
-- [x] 请求输入/输出日志（traceId + 耗时 + token 用量 + 推理过程）
+IRT 1PL 引擎 + EAP 能力估计 + 最大信息量选题 + LLM 题目生成。
+660 题题库，四维度，六题型。
 
 ### Phase 2：微干预引擎
 
-**时长**：1-2 个月
-**需要 Agent**：Multi-Agent 雏形（双 Agent）
-**核心挑战**：用户留存、干预有效性
-**目标**：从"告诉你退化了"走向"帮你维持"
+**目标**：从"告诉你退化了"走向"帮你维持"。
 
-当你发现用户的词汇量连续 4 周下降，只告诉他是没用的。你需要给他一套微干预。
-
-这里开始需要两个 Agent 协作：
-- **评测 Agent**（继承了 Phase 1 的能力）：持续评估用户的退化曲线
-- **教练 Agent**：根据退化维度，设计一周的微型训练计划（每天 3 分钟），并不断调整。比如：
-  - 词汇退化 → 推送"每日一词"，3 天后的小测验里用上这个词
-  - 逻辑退化 → 推送推理谜题，难度恰好比当前水平高一点点
-
-**为什么这里是 Multi-Agent 的起点**：
-"评估"和"干预"是两个不同目标、不同数据视角的智能体。评测 Agent 关心测量的信效度；教练 Agent 关心行为的依从性和愉悦度。它们需要**共享同一个用户画像，但以不同方式使用它**，必要时还需要协商——比如评测 Agent 认为需要更严肃的测验，教练 Agent 认为当前用户的倦怠信号太强，应该放水一周。
-
-这是轻量的 Multi-Agent，但已经是本质上的多智能体。
+双 Agent 协作：
+- **评测 Agent**：持续评估用户的退化曲线
+- **教练 Agent**：根据退化维度，设计微型训练计划
 
 ### Phase 3：认知镜像与盲区揭示
 
-**时长**：3-6 个月
-**需要 Agent**：成熟 Multi-Agent
-**核心挑战**：跨域分析、隐私、深度洞察
-**目标**：让你看到自己不知道在退化什么
-
-这才是这个产品的核心洞察——**认知盲区揭示**。
-
-逻辑是这样的：
-- 用户自以为最退化的可能是数学，但实际上他的"论证结构解析能力"正在崩塌——这甚至不在他的意识里
-- 要发现这一点，光靠做题不够，需要 Agent 去分析用户在其他场景的痕迹——比如他最近写的文章、做的决策、参与的讨论
-
-这里需要引入四个独立角色：
-- **观察 Agent**：分析用户授权提供的文本、决策记录（如果用户愿意的话）
-- **建模 Agent**：构建跨技能域的认知图谱，发现相关性（比如论证能力下降通常伴随便条式阅读增加）
-- **呈现 Agent**：把发现用一种不冒犯、但足够触动的方式呈现——"你最近很少完整读完一篇文章，这可能已经影响到了你在沟通中的逻辑链条"
-- **隐私安全 Agent**：确保所有分析都在本地或加密环境完成，不泄露
-
-**这才是真正的 Multi-Agent 架构**，和 MiroFish 的底层逻辑相通：
-> 多个智能体各自承担独立角色，在一个共享环境里持续分析、碰撞，产出单个 Agent 绝对发现不了的洞察。
-
-**隐私基建不是 Phase 3 才该想的**——Phase 0 就应该建立"全部本地处理"的信任。这也是为什么 Phase 0 的所有数据都是匿名的。
+成熟 Multi-Agent：观察 → 建模 → 呈现 → 隐私安全。
 
 ### Phase 4：认知防锈经济
 
-**时长**：6 个月以上
-**需要 Agent**：Multi-Agent + 市场机制
-**核心挑战**：双边网络、信任基础设施
-**目标**：让维护认知健康变成一种有真实回报的行为
-
-这一步还很远，但路线图上有它：
-- **雇主匹配 Agent**：某些企业在招聘时，愿意溢价雇佣那些有"可验证的认知维护记录"的人
-- **保险定价 Agent**：认知健康最终会进入健康险的视野
-- **去中心化认知信用记录**：用户拥有自己的认知维护数据，可以授权使用并获取收益
-
-多智能体系统在这里会变成一个**经济体级别的协调网络**。
+Multi-Agent + 市场机制：雇主匹配、保险定价、去中心化认知信用记录。
 
 ## 路线图总览
 
-| 阶段 | 做什么 | 所需 Agent | 核心挑战 | 预计时长 |
-|------|--------|------------|----------|---------|
-| Phase 0 | 静态验证器（含国际化/留存/打磨） | 无 | 找到情绪钩子 | 已完成 |
-| Phase 1 | 动态评估引擎 | 单 Agent | 出题质量、能力估计准确度 | 2-4 周 |
-| Phase 2 | 微干预引擎 | 双 Agent（评测+教练） | 用户留存、干预有效性 | 1-2 月 |
-| Phase 3 | 认知镜像与盲区揭示 | 成熟 Multi-Agent | 跨域分析、隐私、深度洞察 | 3-6 月 |
-| Phase 4 | 认知防锈经济 | Multi-Agent + 市场 | 双边网络、信任基础设施 | 6 月+ |
-
-## 关键架构原则
-
-### 隐私优先
-
-每个阶段的设计都必须向后兼容本地优先的隐私承诺。
-如果 Phase 0-2 上传数据，Phase 3 突然要求本地分析，用户不会信任。
-
-当前匿名策略：
-- 不存任何用户标识（无 cookie、无 fingerprint）
-- 每个结果是匿名的
-- 数据仅用于生成统计分布
-
-### 关于 Agent 架构
-
-这个路线图的 Agent 不是营销概念，是不得已而为之。
-
-**Agent 需求随阶段递增**：
-
-| 阶段 | Agent 模式 | 为什么 |
-|------|-----------|--------|
-| Phase 0 | 零 Agent | 线性规则——预置题库 + 预设公式 + 条件匹配 |
-| Phase 1 | 单 Agent | 一个"出题+评估"的决策闭环 |
-| Phase 2 | 双 Agent | 评估和干预是两个天然冲突的目标，需要协商 |
-| Phase 3 | 成熟 Multi-Agent | 四个独立角色各自分析同一用户的不同切片 |
-| Phase 4 | Multi-Agent + 市场 | 经济体级别的协调网络 |
-
-**与 MiroFish 的关键区别**：
-MiroFish 的 580 个 Agent 模拟《红楼梦》人物时，每个 Agent 不需要对齐到同一个外部真相；
-而认知防锈的评测 Agent 和教练 Agent **必须对同一个用户的能力状态达成一致理解**。
-这意味着需要一个比 message bus 更强的**共享心智模型层**。
-
-这也是为什么 Phase 3 的壁垒最深——不是 Agent 数量多，而是多个 Agent 要在"同一个用户是谁"这件事上形成共识。
-
-### Phase 0 不做 Agent 的原因
-
-- 固定题库 + 规则评分 = 结果完全可解释、可复现
-- 用户拿到的退化指数是确定的，不是 AI 黑箱
-- 这对信任敏感的场景（告诉用户他的大脑在变差）至关重要
-
-## 当前状态
-
-Phase 0 → 0.9 全部完成。Phase 1 全部完成。✅
-
-项目具备完整闭环：测试 → 中途可暂停 → 自适应评估 → 统计 → 留存。
-
-动态评估引擎已就绪：
-- IRT 1PL 引擎 + EAP 能力估计 + 最大信息量选题
-- 自适应测试协调器（维度轮换 + theta 追踪）
-- 全部题目已标定 difficulty，支持 ADAPTIVE_MODE 切换
-- test-flow 已完成组件化拆分，便于接入选代逻辑
-- LLM 题目生成管线（DeepSeek SSE 流式 + OpenAI SDK + Redis 缓存 + 限频）
-- 自适应测试流程已接入 useTestState（默认关闭）
-- estimationMethod 字段贯穿：storage → API → stats → localStorage
-
-已上线核心能力：
-- 150+/148/146 题三语言题库（zh-CN/en/ja），每测 20 题随机抽取
-- 定时测试（40s/题）+ 自我声明 + 倒计时紧迫感提示
-- 中途保存/恢复（localStorage checkpoint + tab 关闭保护）
-- 退化指数算法 + 5 档分级 + 多维度雷达画像
-- 全平台统计页（正态分布、百分位排名、AI 使用量分组）
-- 个人趋势折线图（等级色带背景、首次→最新摘要）
-- 动态 OG 分享卡片 + SVG→PNG 客户端下载
-- 挑战分享机制（?ref= 参数 + 对比态着陆页）
-- 7 天复测提醒（浏览器 Notification API）
-- PWA 支持（manifest + Service Worker + 可安装）
-- 浅色/深色主题切换
-- 三语言 UI（中文 / English / 日本語），含语言切换器
-- LLM 题目生成（SSE 流式 + 批量生成管线 + 断点续传）
-- LLM 调用日志系统（traceId + 耗时 + token 用量 + 推理过程）
-
-技术债清理：
-- Vercel Blob → Upstash Redis 迁移
-- Upstash Redis → Cloudflare KV 迁移（2026-06）
-- 题库批量生成脚本（scripts/batch-generate.ts + merge-bank.ts）
-- 题库从 44 题扩至 444 题（三语言合计），覆盖 IRT -3.0 ~ +3.0 全难度区间
-
-## 下一步选择
-
-Phase 1 全部完成 ✅。题库已从 44 题扩至 444 题（三语言合计），覆盖 IRT -3.0 ~ +3.0 全难度区间。
-
-### 最近更新
-
-- **2026-06-11**: 题目质量人工审计（进行中）
-  - 已发现并修复 6 处问题：答案索引错误（#77）、前提缺失+剧透（#29）、逻辑约束矛盾（#50）、题干骗题（#21）、解释标注错误（#19）、措辞不当（#97）
-  - 审计方法：逐题通读 → 独立推理验证 → 答案/解释交叉检查
-  - 结论：LLM 批量生成的质量不够稳定，需全量抽检后才能接 Phase 2
-- **2026-06-11**: 代码质量与基础设施
-  - 提取 `metadata-utils.ts`（OG 图片 URL + 分享文案构建器），消除 4 页面重复代码
-  - `scripts/regression-check.ts` 回归检查脚本 + npm test 命令
-  - 死代码清理（6 处未用 import/参数/函数）
-  - `queueMicrotask` 包裹 localStorage 读取，消除 hydration 不匹配警告
-  - 趋势图区域色带方向修复（顶部=严重退化=红色，底部=认知巅峰=绿色）
-  - `StoredResultSummary` 类型提取，替代 3 处内联重复类型
-  - Next.js 16 规范迁移（`middleware.ts` → `proxy.ts`，移除 OG route 的 `edge` runtime）
-  - DeepSeek streaming 类型安全化（`DeepSeekStreamingParams` + `ReasoningDelta`）
-- **2026-06-10**: 存储迁移 — Upstash Redis → Cloudflare KV
-  - Workers Paid Plan ($5/月): KV 10M 读 + 1M 写/月
-  - 同时可用: D1 (5GB SQLite)、Workers AI (10K/天)、Queues (1M/月)、Durable Objects (1M 请求)
-  - 移除 @upstash/redis、@vercel/edge-config 依赖
-- 题库批量生成完成（zh-CN 150 题 / en 148 题 / ja 146 题）
-- `scripts/batch-generate.ts` + `merge-bank.ts` 批量生成与合并管线
-- DeepSeek API 三语言 × 三题型文化适配 prompt
-- 生成断点续传 + 进度保存 + 去重合并
-- `pnpm build` 验证通过
-
-### 接下来做什么？
-
-**当前正在进行: B. 题目质量审核**。LLM 批量生成的 444 题中已发现多类问题（答案索引错、前提缺失、逻辑约束矛盾、题干骗题、解释标注错），正在逐题审计。
-
-审核完成后：
-
-A. **把 LLM 出题接入测试流程**
-  - 在 `useTestState.ts` 中添加 fetch("/api/generate-questions") 调用
-  - Pure AI 模式 / Hybrid 模式 / Adaptive+AI 可选
-  - 需要决定：什么条件下走 LLM？AI 出题比例？
-
-B. **题目质量审核与实证校准** ← 进行中
-  - 人工抽检 LLM 生成题目的准确性和文化适切性
-  - 根据实测数据统计筛选低质量题目
-  - 校准 IRT 参数（difficulty 从预设值→实证值）
-
-C. **监控与稳定性**
-  - LLM 生成成功率、延迟 p50/p95、缓存命中率
-  - SSE 流式超时处理、重试策略调优
-
-### 启动自适应测试
-
-```env
-NEXT_PUBLIC_ADAPTIVE_MODE=true
-```
-
-## 启动命令
-
-```bash
-pnpm create next-app . --typescript --tailwind --app --src-dir --import-alias "@/*"
-pnpm dev
-```
-
----
-
-# 收费模式计划（2026-06 讨论）
-
-## 背景
-
-6 万用户，完全免费，无账户系统。引入 To C 一次性付费模式。
-
-## 核心决策
-
-### 账户：License Key 即身份
-
-**不做传统邮箱/手机注册。** 付款后获得 License Key，输入即激活。Key 就是身份标识。
-
-- 理由：中国用户不常用邮箱，微信登录需企业资质；¥29.9 的价格点，用户容忍度较高
-- 恢复：联系作者通过爱发电私信找回
-
-### 支付：爱发电（微信 + 支付宝）
-
-- 国内平台，零门槛，不需营业执照
-- 创作者创建赞助方案（¥29.90 一次性），用户扫码付款
-- 核心 API：`query-order`（按订单号查订单）、`query-sponsor`（查赞助者列表）
-- 签名方式：`md5(user_id + token + timestamp)` 小写 32 位
-- **不依赖 Webhook**（爱发电 Webhook 无签名验证，不可靠用于发 Key）
-
-### 支付 → Key 兑换流程
-
-```
-用户点"解锁高级版" → 跳转爱发电赞助页 → 微信/支付宝付款
-    → 爱发电显示订单号 → 用户复制订单号
-    → 回到网站输入订单号 → 服务器调用 query-order API 验证
-    → 验证通过 → 生成 License Key → 展示 + 自动激活
-```
-
-### 数据库：D1（新增）+ KV（保留）
-
-- D1：用户数据、License、设备绑定、云端测试记录
-- KV：保留全局统计数据（单 key 极快读取）
-- 全在 Cloudflare 生态内，不增成本
-
-### 现有用户：不迁移
-
-60k 匿名用户数据在 localStorage，无法迁移。免费版加限制（冷却 + 水印），付费用户输入 Key 后升级。
-
-### 功能开关
-
-`NEXT_PUBLIC_PREMIUM_MODE`，关闭时所有人等同 Premium（向后兼容）。
-
----
+| 阶段 | 做什么 | 所需 Agent | 核心挑战 | 状态 |
+|------|--------|------------|----------|------|
+| Phase 0 | 静态验证器 | 无 | 找到情绪钩子 | ✅ |
+| Phase 1 | 动态评估引擎 | 单 Agent | 出题质量、能力估计 | ✅ |
+| Phase 2 | 微干预引擎 | 双 Agent | 留存、干预有效性 | 待开始 |
+| Phase 3 | 认知镜像与盲区 | 成熟 Multi-Agent | 跨域分析、隐私 | 规划中 |
+| Phase 4 | 认知防锈经济 | Multi-Agent + 市场 | 双边网络、信任 | 远期 |
 
 ## 免费 vs 付费
 
 | | 免费 | 付费（¥29.9 一次性） |
 |---|---|---|
 | 测试频率 | 7 天一次 | 无限次 |
-| 数据存储 | localStorage | 云端同步（跨设备） |
+| 数据存储 | localStorage | 云端同步（D1，跨设备） |
 | 维度分析 | 仅总分 | 逐维度趋势 + 改善速度 |
-| 数据导出 | 无 | CSV / PDF |
-| 分享图片 | 带 "免费版" 水印 | 无水印 |
+| 数据导出 | 无 | CSV |
+| 分享图片 | 带水印 | 无水印 |
 | 历史记录 | 最多 20 条 | 全量 + 云端永久 |
-| 个性化训练 | 基础建议 | 弱项针对推送（Phase 2） |
 
----
+## 启动命令
 
-## 实施 6 个 Phase
-
-### Phase 1：基础设施
-- D1 建表（licenses / devices / test_results）+ `d1-client.ts`
-- License 生成/验证/设备管理（`src/lib/auth/license.ts`）
-- 爱发电 API 封装（`src/lib/payment/afdian.ts`）：query-order 订单查询 + 签名逻辑
-- API：`/api/verify-order`（验证爱发电订单号并生成 Key）、`/api/license/validate`
-
-### Phase 2：功能门控
-- `PremiumProvider` + `usePremium` hook
-- 7 天冷却检查（`useTestState.handleStart()`）
-- CooldownBanner + 集成 LandingPhase
-- SVG 水印（下载图）+ 文本水印（分享）+ PremiumGuard
-
-### Phase 3：支付流程 UI
-- UnlockButton → 跳转爱发电赞助页
-- LicenseKeyForm：输入爱发电订单号 → 后端验证 → 拿到 License Key → 自动激活
-- 支付说明页（`/unlock`）：流程图 + 订单号输入 + LicenseKeyForm
-
-### Phase 4：云端同步
-- `GET/POST /api/results/sync` + `sync-engine.ts`
-- 激活时首次全量上传、完成测试即时同步、每 30 分钟自动同步
-
-### Phase 5：付费功能
-- 逐维度分析（趋势线、弱项识别）
-- CSV 导出
-- 统计页 Premium 增强
-
-### Phase 6：上线打磨
-- Turnstile 防刷、速率限制、i18n、错误处理、测试
-
----
-
-## 关键未决问题
-
-1. **爱发电账号** — 需要注册并创建赞助方案。有账号了吗？还是需要新注册？
-2. **Cloudflare D1** — Workers Paid $5/月 已包含，需在 dashboard 创建 D1 数据库
-3. **定价最终确认** — ¥29.90 是否合适？还是 ¥19.90 / ¥39.90？
-4. **Phase 2 微干预** — 训练内容还没做，这影响付费版的价值感。是否需要先把 Phase 2 做出一个 MVP 再上线收费？
-5. **爱发电 API 限制** — `query-order` 按 `out_trade_no` 查询，如果用户输入错误的订单号会查不到。需要错误提示清晰
+```bash
+pnpm dev                      # 本地开发
+pnpm cf:build && pnpm cf:deploy  # 构建 + 部署到 Cloudflare
+npx tsx scripts/batch-generate.ts --env-file=.env  # 批量生成题目
+npx tsx scripts/merge-bank.ts  # 合并生成的题目到题库
+```
