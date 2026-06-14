@@ -15,9 +15,12 @@ export default function PremiumPage() {
     return () => document.body.classList.remove("hide-top-nav")
   }, [])
   const t = useTranslations("premiumPage")
-  const { isPremium, licenseKey, isLoading, error, clearLicense } = usePremium()
+  const { isPremium, licenseKey, isLoading, error, expiresAt, deviceCount, maxDevices, clearLicense } = usePremium()
   const [copied, setCopied] = useState(false)
   const [cleared, setCleared] = useState(false)
+
+  const expiresDate = expiresAt ? new Date(expiresAt) : null
+  const isExpiringSoon = expiresDate && expiresDate.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000
 
   async function copyKey() {
     if (!licenseKey) return
@@ -104,15 +107,21 @@ export default function PremiumPage() {
         <h1 className="text-2xl font-bold tracking-tight">{t("titleManage")}</h1>
 
         {/* Status Card */}
-        <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950">
+        <Card className={`${expiresDate && isExpiringSoon ? "border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950" : "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950"}`}>
           <CardContent>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-600">
+              <div className={`flex h-10 w-10 items-center justify-center rounded-full ${expiresDate && isExpiringSoon ? "bg-yellow-600" : "bg-green-600"}`}>
                 <Check className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-green-800 dark:text-green-200">{t("statusActivated")}</p>
-                <p className="text-sm text-green-600 dark:text-green-400">{t("permanent")}</p>
+                <p className={`font-semibold ${expiresDate && isExpiringSoon ? "text-yellow-800 dark:text-yellow-200" : "text-green-800 dark:text-green-200"}`}>{t("statusActivated")}</p>
+                {expiresDate ? (
+                  <p className={`text-sm ${isExpiringSoon ? "text-yellow-600 dark:text-yellow-400" : "text-green-600 dark:text-green-400"}`}>
+                    {t("expiresAt", { date: expiresDate.toLocaleDateString() })}
+                  </p>
+                ) : (
+                  <p className="text-sm text-green-600 dark:text-green-400">{t("permanent")}</p>
+                )}
               </div>
             </div>
           </CardContent>
@@ -134,6 +143,14 @@ export default function PremiumPage() {
                 </Button>
               </div>
             )}
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span>{t("deviceCount", { count: deviceCount, max: maxDevices })}</span>
+              {deviceCount >= maxDevices && (
+                <span className="text-yellow-600 dark:text-yellow-400">
+                  {t("deviceFull")}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-muted-foreground">
               {t("licenseKeyDesc")}
             </p>

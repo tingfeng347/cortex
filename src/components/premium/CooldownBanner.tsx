@@ -1,6 +1,6 @@
 "use client"
 
-import { X } from "lucide-react"
+import { X, Bug, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
@@ -68,6 +68,33 @@ export function CooldownBanner({ cooldownEndsAt, onClose }: CooldownBannerProps)
           >
             {t("afdianLink")}
           </a>
+        </div>
+
+        <div className="mt-4 space-y-2 border-t border-amber-200 pt-4 dark:border-amber-800">
+          <p className="text-xs font-semibold text-amber-700 dark:text-amber-300">
+            {t("freeKeyTitle")}
+          </p>
+          <div className="space-y-1.5">
+            <a
+              href="https://qm.qq.com/q/q0isaJjLjO"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 rounded-lg bg-amber-100/80 px-3 py-2 text-xs text-amber-800 transition-colors hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-200 dark:hover:bg-amber-800/50"
+            >
+              <Bug className="h-3.5 w-3.5 shrink-0" />
+              <span className="flex-1">{t("freeKeyBugDesc")}</span>
+              <span className="font-medium underline-offset-2 hover:underline">{t("freeKeyCta")}</span>
+            </a>
+            <a
+              href="https://qm.qq.com/q/q0isaJjLjO"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 rounded-lg bg-amber-100/50 px-3 py-2 text-xs text-amber-700 transition-colors hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300 dark:hover:bg-amber-800/30"
+            >
+              <MessageCircle className="h-3.5 w-3.5 shrink-0" />
+              <span>{t("freeKeyLiveDesc")}</span>
+            </a>
+          </div>
         </div>
 
         <p className="mt-3 text-xs text-amber-500/70 dark:text-amber-500/50">

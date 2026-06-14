@@ -1,6 +1,6 @@
 {
   "name": "cortex",
-  "main": ".open-next/worker.js",
+  "main": "cron-wrapper.js",
   "compatibility_date": "2026-01-01",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
@@ -19,5 +19,8 @@
       "database_name": "cortex-db",
       "database_id": "1e4abc9a-cad9-4796-85d0-4c8be768ca2e"
     }
-  ]
+  ],
+  "triggers": {
+    "crons": ["0 3 * * *"]
+  }
 }

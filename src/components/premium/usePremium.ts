@@ -17,6 +17,9 @@ export function usePremium(): PremiumState {
       clearLicense: () => {},
       syncNow: async () => {},
       lastSyncAt: null,
+      expiresAt: null,
+      deviceCount: 0,
+      maxDevices: 3,
     }
   }
 

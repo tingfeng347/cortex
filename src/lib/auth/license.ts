@@ -25,6 +25,7 @@ export interface LicenseInfo {
   deviceCount: number
   maxDevices: number
   createdAt: string
+  expiresAt?: string
 }
 
 export async function validateLicense(
@@ -36,7 +37,8 @@ export async function validateLicense(
     device_count: number
     max_devices: number
     created_at: string
-  }>("SELECT license_key, status, device_count, max_devices, created_at FROM licenses WHERE license_key = ?", [
+    expires_at: string | null
+  }>("SELECT license_key, status, device_count, max_devices, created_at, expires_at FROM licenses WHERE license_key = ?", [
     licenseKey,
   ])
 
@@ -47,6 +49,11 @@ export async function validateLicense(
     return { valid: false, reason: row.status }
   }
 
+  // Check TTL expiry
+  if (row.expires_at && new Date(row.expires_at) < new Date()) {
+    return { valid: false, reason: "expired" }
+  }
+
   return {
     valid: true,
     license: {
@@ -55,6 +62,7 @@ export async function validateLicense(
       deviceCount: row.device_count,
       maxDevices: row.max_devices,
       createdAt: row.created_at,
+      expiresAt: row.expires_at ?? undefined,
     },
   }
 }

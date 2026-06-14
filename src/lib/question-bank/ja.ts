@@ -2515,7 +2515,7 @@ export const bank: Question[] = [
   //  事件事理分析
   // ════════════════════════════════════════════
   {
-    id: 143,
+    id: 147,
     type: "event",
     category: "event",
     question:
@@ -2529,7 +2529,7 @@ export const bank: Question[] = [
       "決算の損失(①)が根本原因であり、CEOの辞任(②)を招き、それが株価の急落(③)を引き起こし、投資家の売却(④)につながる。因果の連鎖は ①→②→③→④。",
   },
   {
-    id: 144,
+    id: 148,
     type: "event",
     category: "event",
     question:
@@ -2543,7 +2543,7 @@ export const bank: Question[] = [
       "まずアプリがユーザーを獲得し(①)、ブランドがそのオーディエンスを追って参加し(②)、プラットフォームがクリエイター向けの収益化を打ち出し(③)、クリエイターが集まる(④)。正しい順序は ①→②→③→④。",
   },
   {
-    id: 145,
+    id: 149,
     type: "event",
     category: "event",
     question:
@@ -2557,7 +2557,7 @@ export const bank: Question[] = [
       "政策変更(①)により利用者が増加し(②)、道路上の車が減少して渋滞が緩和され(③)、その結果大気質が改善する(④)。因果の連鎖は ①→②→③→④。",
   },
   {
-    id: 146,
+    id: 150,
     type: "event",
     category: "event",
     question:
@@ -2576,7 +2576,7 @@ export const bank: Question[] = [
   //  事象因果 23 题
   // ════════════════════════════════════════════
   {
-    id: 147,
+    id: 151,
     type: "event",
     category: "event",
     question:
@@ -2595,7 +2595,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 148,
+    id: 152,
     type: "event",
     category: "event",
     question:
@@ -2614,7 +2614,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 149,
+    id: 153,
     type: "event",
     category: "event",
     question:
@@ -2633,7 +2633,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 150,
+    id: 154,
     type: "event",
     category: "event",
     question:
@@ -2652,7 +2652,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 151,
+    id: 155,
     type: "event",
     category: "event",
     question:
@@ -2671,7 +2671,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 152,
+    id: 156,
     type: "event",
     category: "event",
     question:
@@ -2690,7 +2690,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 153,
+    id: 157,
     type: "event",
     category: "event",
     question:
@@ -2709,7 +2709,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 154,
+    id: 158,
     type: "event",
     category: "event",
     question:
@@ -2728,7 +2728,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 155,
+    id: 159,
     type: "event",
     category: "event",
     question:
@@ -2747,7 +2747,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 156,
+    id: 160,
     type: "event",
     category: "event",
     question:
@@ -2766,7 +2766,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 157,
+    id: 161,
     type: "event",
     category: "event",
     question:
@@ -2785,7 +2785,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 158,
+    id: 162,
     type: "event",
     category: "event",
     question:
@@ -2804,7 +2804,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 159,
+    id: 163,
     type: "event",
     category: "event",
     question:
@@ -2823,7 +2823,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 160,
+    id: 164,
     type: "event",
     category: "event",
     question:
@@ -2842,7 +2842,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 161,
+    id: 165,
     type: "event",
     category: "event",
     question:
@@ -2861,7 +2861,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 162,
+    id: 166,
     type: "event",
     category: "event",
     question:
@@ -2880,7 +2880,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 163,
+    id: 167,
     type: "event",
     category: "event",
     question:
@@ -2899,7 +2899,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 164,
+    id: 168,
     type: "event",
     category: "event",
     question:
@@ -2918,7 +2918,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 165,
+    id: 169,
     type: "event",
     category: "event",
     question:
@@ -2937,7 +2937,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 166,
+    id: 170,
     type: "event",
     category: "event",
     question:
@@ -2956,7 +2956,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 167,
+    id: 171,
     type: "event",
     category: "event",
     question:
@@ -2975,7 +2975,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 168,
+    id: 172,
     type: "event",
     category: "event",
     question:
@@ -2994,7 +2994,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 169,
+    id: 173,
     type: "event",
     category: "event",
     question:
@@ -3015,7 +3015,7 @@ export const bank: Question[] = [
 
   // 因果推論
   {
-    id: 170,
+    id: 174,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3029,7 +3029,7 @@ export const bank: Question[] = [
       "休日を娯楽に使うと満足度は上がるがスキル向上にはつながらず、生産性向上は限定的。Aが最も直接的な説明。Bは人数が減って生産性が同じなら一人当たり生産性は上昇している。Cは満足度も下がるはず。Dは測定方法の問題で結果の説明にならない。",
   },
   {
-    id: 171,
+    id: 175,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3045,7 +3045,7 @@ export const bank: Question[] = [
 
   // 論証分析
   {
-    id: 172,
+    id: 176,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3059,7 +3059,7 @@ export const bank: Question[] = [
       "論証は相関（ペット所有者はリスクが低い）から因果（ペットがリスクを減らす）に飛躍している。この飛躍は、交絡変数がないこと——ペットを選ぶ人がペットとは無関係に健康的な特性を持っているわけではないこと——を前提としている。Aがこの前提を正しく指摘。Bは無関係。Cは方法論の細部。Dは広すぎる。",
   },
   {
-    id: 173,
+    id: 177,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3078,7 +3078,7 @@ export const bank: Question[] = [
   //  出来事並替 23 题、論証分析 13 题、因果推論 13 题
   // ════════════════════════════════════════════
   {
-    id: 174,
+    id: 178,
     type: "event",
     category: "event",
     question:
@@ -3097,7 +3097,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 175,
+    id: 179,
     type: "event",
     category: "event",
     question:
@@ -3116,7 +3116,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 176,
+    id: 180,
     type: "event",
     category: "event",
     question:
@@ -3135,7 +3135,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 177,
+    id: 181,
     type: "event",
     category: "event",
     question:
@@ -3154,7 +3154,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 178,
+    id: 182,
     type: "event",
     category: "event",
     question:
@@ -3173,7 +3173,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 179,
+    id: 183,
     type: "event",
     category: "event",
     question:
@@ -3192,7 +3192,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 180,
+    id: 184,
     type: "event",
     category: "event",
     question:
@@ -3211,7 +3211,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 181,
+    id: 185,
     type: "event",
     category: "event",
     question:
@@ -3230,7 +3230,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 182,
+    id: 186,
     type: "event",
     category: "event",
     question:
@@ -3249,7 +3249,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 183,
+    id: 187,
     type: "event",
     category: "event",
     question:
@@ -3268,7 +3268,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 184,
+    id: 188,
     type: "event",
     category: "event",
     question:
@@ -3287,7 +3287,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 185,
+    id: 189,
     type: "event",
     category: "event",
     question:
@@ -3306,7 +3306,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 186,
+    id: 190,
     type: "event",
     category: "event",
     question:
@@ -3325,7 +3325,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 187,
+    id: 191,
     type: "event",
     category: "event",
     question:
@@ -3344,7 +3344,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 188,
+    id: 192,
     type: "event",
     category: "event",
     question:
@@ -3363,7 +3363,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 189,
+    id: 193,
     type: "event",
     category: "event",
     question:
@@ -3382,7 +3382,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 190,
+    id: 194,
     type: "event",
     category: "event",
     question:
@@ -3401,7 +3401,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 191,
+    id: 195,
     type: "event",
     category: "event",
     question:
@@ -3420,7 +3420,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 192,
+    id: 196,
     type: "event",
     category: "event",
     question:
@@ -3439,7 +3439,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 193,
+    id: 197,
     type: "event",
     category: "event",
     question:
@@ -3458,7 +3458,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 194,
+    id: 198,
     type: "event",
     category: "event",
     question:
@@ -3477,7 +3477,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 195,
+    id: 199,
     type: "event",
     category: "event",
     question:
@@ -3496,7 +3496,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 196,
+    id: 200,
     type: "event",
     category: "event",
     question:
@@ -3515,7 +3515,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 197,
+    id: 201,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3534,7 +3534,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 198,
+    id: 202,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3553,7 +3553,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 199,
+    id: 203,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3572,7 +3572,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 200,
+    id: 204,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3591,7 +3591,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 201,
+    id: 205,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3610,7 +3610,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 202,
+    id: 206,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3629,7 +3629,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 203,
+    id: 207,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3648,7 +3648,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 204,
+    id: 208,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3667,7 +3667,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 205,
+    id: 209,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3686,7 +3686,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 206,
+    id: 210,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3705,7 +3705,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 207,
+    id: 211,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3724,7 +3724,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 208,
+    id: 212,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3743,7 +3743,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 209,
+    id: 213,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3762,7 +3762,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 210,
+    id: 214,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3781,7 +3781,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 211,
+    id: 215,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3800,7 +3800,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 212,
+    id: 216,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3819,7 +3819,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 213,
+    id: 217,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3838,7 +3838,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 214,
+    id: 218,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3857,7 +3857,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 215,
+    id: 219,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3876,7 +3876,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 216,
+    id: 220,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3895,7 +3895,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 217,
+    id: 221,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3914,7 +3914,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 218,
+    id: 222,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3933,7 +3933,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 219,
+    id: 223,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3952,7 +3952,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 220,
+    id: 224,
     type: "event-argument",
     category: "event-argument",
     question:
@@ -3971,7 +3971,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 221,
+    id: 225,
     type: "event-cause",
     category: "event-cause",
     question:
@@ -3990,7 +3990,7 @@ export const bank: Question[] = [
     guessing: 0.25,
   },
   {
-    id: 222,
+    id: 226,
     type: "event-cause",
     category: "event-cause",
     question:
