@@ -384,12 +384,22 @@ export function ResultPhase({
           return null;
         })()}
 
-        {/* Logic game suggestion for low logic scores */}
-        {result.dimensionScores.logic !== null &&
-          result.dimensionScores.logic < 60 && (
+        {/* Game suggestion for low logic / event scores */}
+        {(() => {
+          const logicLow = result.dimensionScores.logic !== null && result.dimensionScores.logic < 60
+          const eventLow = result.dimensionScores.event !== null && result.dimensionScores.event < 60
+          if (!logicLow && !eventLow) return null
+
+          const title = logicLow && eventLow
+            ? n("result.logicEventGameTitle")
+            : logicLow
+              ? n("result.logicGameTitle")
+              : n("result.eventGameTitle")
+
+          return (
             <div className="rounded-lg border border-dashed border-blue-300/30 bg-blue-50/50 p-4 text-center dark:bg-blue-950/10">
               <p className="text-sm font-medium text-foreground">
-                {n("result.logicGameTitle")}
+                {title}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {n.rich("result.logicGameDesc", {
@@ -406,7 +416,8 @@ export function ResultPhase({
                 })}
               </p>
             </div>
-          )}
+          )
+        })()}
 
         {/* LCTI suggestion for good logic scores */}
         {result.dimensionScores.logic !== null &&
