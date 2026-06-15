@@ -39,6 +39,7 @@ interface LandingPhaseProps {
   handleViewLastResult: () => void;
   cooldownEndsAt: number;
   cooldownVersion: number;
+  freeTestUsedCount: number;
   children?: ReactNode;
 }
 
@@ -52,6 +53,7 @@ export function LandingPhase({
   handleViewLastResult,
   cooldownEndsAt,
   cooldownVersion,
+  freeTestUsedCount,
 }: LandingPhaseProps) {
   const n = useTranslations();
   const locale = useLocale();
@@ -268,17 +270,40 @@ export function LandingPhase({
                   {n("landing.restartButton")}
                 </Button>
               </>
-            ) : (
-              <Button
-                size="lg"
-                className="w-full text-base"
-                onClick={handleStart}
-              >
-                {savedResult
-                  ? n("landing.retakeButton")
-                  : n("landing.ctaButton")}
-              </Button>
-            )}
+            ) : (() => {
+              const cooldownRemaining = cooldownEndsAt > Date.now() ? cooldownEndsAt - Date.now() : 0
+              const cooldownText = cooldownRemaining > 0
+                ? (() => {
+                    const h = Math.ceil(cooldownRemaining / (1000 * 60 * 60))
+                    const d = Math.floor(h / 24)
+                    const rh = h % 24
+                    return d > 0 && rh > 0 ? `${d}d${rh}h`
+                         : d > 0 ? `${d}d`
+                         : `${rh}h`
+                  })()
+                : null
+              const badgeText = isPremium
+                ? null
+                : isCoolingDown
+                  ? ` (${cooldownText})`
+                  : ` (${freeTestUsedCount}/7)`
+              return (
+                <Button
+                  size="lg"
+                  className="w-full text-base"
+                  onClick={handleStart}
+                >
+                  {savedResult
+                    ? n("landing.retakeButton")
+                    : n("landing.ctaButton")}
+                  {badgeText && (
+                    <span className="ml-2 text-sm tabular-nums opacity-70">
+                      {badgeText}
+                    </span>
+                  )}
+                </Button>
+              )
+            })()}
             <Link
               href="/stats"
               className="text-xs text-muted-foreground underline-offset-4 hover:underline"

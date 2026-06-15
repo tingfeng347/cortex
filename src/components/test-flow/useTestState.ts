@@ -105,6 +105,18 @@ function recordFreeTest(): void {
   } catch { /* ignore */ }
 }
 
+function getFreeTestUsedCount(): number {
+  try {
+    migrateOldCooldown()
+    const timestamps = readTimestamps()
+    const now = Date.now()
+    const windowStart = now - FREE_LIMIT_WINDOW_MS
+    return timestamps.filter(ts => ts > windowStart).length
+  } catch {
+    return 0
+  }
+}
+
 type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
 
 type ToastState = string | { message: string; action: { label: string; onPress: () => void } } | null;
@@ -170,6 +182,7 @@ export function useTestState() {
   const adaptiveSessionRef = useRef<AdaptiveTestSession | null>(null);
   const [cooldownEndsAt, setCooldownEndsAt] = useState<number>(0);
   const [cooldownVersion, setCooldownVersion] = useState(0);
+  const [freeTestUsedCount, setFreeTestUsedCount] = useState(0);
   const [flaggedIds, setFlaggedIds] = useState<Set<number>>(new Set());
   const [hasFlaggedBefore, setHasFlaggedBefore] = useState(false);
 
@@ -377,6 +390,7 @@ export function useTestState() {
         // Track free test count within rolling 7-day window
         if (!isPremium) {
           recordFreeTest()
+          setFreeTestUsedCount(getFreeTestUsedCount())
         }
         // Sync to cloud for premium users
         if (isPremium) {
@@ -523,6 +537,7 @@ export function useTestState() {
   useEffect(() => {
     if (isPremium) {
       setCooldownEndsAt(0)
+      setFreeTestUsedCount(0)
       localStorage.removeItem(FREE_TEST_TIMESTAMPS_KEY)
       localStorage.removeItem(OLD_FREE_TEST_KEY)
     }
@@ -594,6 +609,7 @@ export function useTestState() {
         if (cooldownEnd !== null && Date.now() < cooldownEnd) {
           setCooldownEndsAt(cooldownEnd)
         }
+        setFreeTestUsedCount(getFreeTestUsedCount())
       }
     });
     return () => {
@@ -644,6 +660,7 @@ export function useTestState() {
         setCooldownVersion((v) => v + 1)
         return // blocked by limit
       }
+      setFreeTestUsedCount(getFreeTestUsedCount())
     }
     clearProgress();
     setSavedProgress(null);
@@ -1050,6 +1067,7 @@ export function useTestState() {
     totalQuestions: QUESTIONS_PER_TEST,
     cooldownEndsAt,
     cooldownVersion,
+    freeTestUsedCount,
     flaggedIds,
     hasFlaggedBefore,
     toggleFlag,

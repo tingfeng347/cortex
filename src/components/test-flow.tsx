@@ -25,6 +25,7 @@ export default function TestFlow() {
             handleViewLastResult={s.handleViewLastResult}
             cooldownEndsAt={s.cooldownEndsAt}
             cooldownVersion={s.cooldownVersion}
+            freeTestUsedCount={s.freeTestUsedCount}
           />
         )}
         {s.phase === "declaration" && (
