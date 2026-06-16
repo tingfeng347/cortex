@@ -192,6 +192,7 @@ export function useTestState() {
   const adaptiveSessionRef = useRef<AdaptiveTestSession | null>(null);
   const aiSlotIndicesRef = useRef<Set<number>>(new Set());
   const lastAiSourceRef = useRef<"generated" | "pool" | null>(null);
+  const pendingAiQuestionRef = useRef<Question | null>(null);
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [cooldownEndsAt, setCooldownEndsAt] = useState<number>(0);
   const [cooldownVersion, setCooldownVersion] = useState(0);
@@ -903,7 +904,7 @@ export function useTestState() {
     }
   }
 
-  async function submitAnswer(answer: number | null | number[]) {
+  function submitAnswer(answer: number | null | number[]) {
     const timedOut = answer === null && timeLeft === 0;
     stopTimer();
     setAnswers((prev) => [...prev, answer]);
@@ -924,44 +925,59 @@ export function useTestState() {
         );
       }
       if (!isTestComplete(adaptiveSessionRef.current)) {
+        // Check for a pending AI question first (插队)
+        const pending = pendingAiQuestionRef.current;
+        if (pending) {
+          pendingAiQuestionRef.current = null;
+          lastAiSourceRef.current = "generated";
+          setQuestions((prev) => [...prev, pending]);
+          return;
+        }
+
         const nextSlot = adaptiveSessionRef.current.currentStep;
         const isAiSlot = aiSlotIndicesRef.current.has(nextSlot);
 
         if (isAiSlot) {
-          // AI question path: try pool + generate
+          // Immediately add a pool question so the test never blocks
+          const pool = adaptivePoolRef.current.length > 0 ? adaptivePoolRef.current : allQuestions;
+          const nextQ = selectNextQuestion(
+            adaptiveSessionRef.current,
+            pool.length > 0 ? pool : questions,
+          );
+          if (nextQ) {
+            setQuestions((prev) => [...prev, nextQ]);
+          }
+
+          // Fire AI generation in background
           setIsAiGenerating(true);
           const session = adaptiveSessionRef.current;
           const theta = session.thetaEstimate?.theta ?? 0;
           const type = getCurrentDimension(session);
           const recentTypes = session.responses.slice(-20).map((r) => r.type);
 
-          try {
-            const res = await fetch("/api/ai/generate-question", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                ...(licenseKey ? { Authorization: `Bearer ${licenseKey}` } : {}),
-              },
-              body: JSON.stringify({
-                locale,
-                type,
-                theta: Math.round(theta * 100) / 100,
-                recentTypes,
-                recentKeywords: [],
-              }),
-            });
-            const data = await res.json();
-            if (data.question) {
-              lastAiSourceRef.current = data.sourceType;
-              setQuestions((prev) => [...prev, data.question]);
-            } else {
-              // Fallback: normal question
-              fallbackNextQuestion(session);
-            }
-          } catch {
-            fallbackNextQuestion(session);
-          }
-          setIsAiGenerating(false);
+          fetch("/api/ai/generate-question", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(licenseKey ? { Authorization: `Bearer ${licenseKey}` } : {}),
+            },
+            body: JSON.stringify({
+              locale,
+              type,
+              theta: Math.round(theta * 100) / 100,
+              recentTypes,
+              recentKeywords: [],
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.question) {
+                pendingAiQuestionRef.current = data.question;
+              }
+              // else: pool question stays, AI silently fails
+            })
+            .catch(() => {})
+            .finally(() => setIsAiGenerating(false));
         } else {
           // Normal question (pool includes AI pool via adaptivePoolRef)
           const pool = adaptivePoolRef.current.length > 0 ? adaptivePoolRef.current : allQuestions;
