@@ -119,14 +119,19 @@ export async function POST(request: Request) {
         )
         if ((env as any).AI) {
           console.log("[ai/interpret] method=env.AI", logCtx)
-          const result = await (env as any).AI.run("@cf/qwen/qwen3-30b-a3b-fp8", {
-            messages: [
-              { role: "system", content: sysPrompt },
-              { role: "user", content: prompt },
-            ],
-            max_tokens: 512,
-            temperature: 0.5,
-          })
+          const result = await Promise.race([
+            (env as any).AI.run("@cf/qwen/qwen3-30b-a3b-fp8", {
+              messages: [
+                { role: "system", content: sysPrompt },
+                { role: "user", content: prompt },
+              ],
+              max_tokens: 512,
+              temperature: 0.5,
+            }),
+            new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error("env.AI timeout")), 5000)
+            ),
+          ])
           const analysisLen = (result as { response: string }).response.length
           const elapsed = Date.now() - startTs
           console.log("[ai/interpret] method=env.AI ok", { ...logCtx, analysisLen, elapsed })
@@ -191,7 +196,7 @@ export async function POST(request: Request) {
       throw new Error("ai_unavailable")
     }
 
-    const analysis = await callAI()
+    const analysis = (await callAI()).trim()
     const elapsed = Date.now() - startTs
     console.log("[ai/interpret] response ok", { ...logCtx, analysisLen: analysis.length, analysisPreview: analysis.slice(0, 50), elapsed })
     return NextResponse.json({ analysis })
