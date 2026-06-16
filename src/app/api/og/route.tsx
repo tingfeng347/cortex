@@ -1,4 +1,3 @@
-import satori from "satori"
 import { QUESTIONS_PER_TEST } from "@/lib/questions"
 import { RESULT_TIERS } from "@/lib/scoring"
 
@@ -7,143 +6,42 @@ for (const t of RESULT_TIERS) {
   TIER_CONFIG[t.tierKey] = { label: t.label, color: t.ringColor }
 }
 
-// Module-scoped font cache - fetched once per Worker isolate
-let fontData: ArrayBuffer | null = null
-
-async function getFont(): Promise<ArrayBuffer> {
-  if (fontData) return fontData
-  const res = await fetch(
-    "https://cdn.jsdelivr.net/npm/@canvas-fonts/notosanssc@1.0.0/NotoSansSC-Regular.ttf",
-  )
-  if (!res.ok) throw new Error(`Font fetch failed: ${res.status}`)
-  fontData = await res.arrayBuffer()
-  return fontData!
+function esc(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-
-  const index = Math.min(100, Math.max(0, Number(searchParams.get("i") ?? 50)))
-  const tierLabel = searchParams.get("t") ?? "moderateDecline"
-  const correct = searchParams.get("c") ?? "?"
-  const total = searchParams.get("n") ?? String(QUESTIONS_PER_TEST)
-
-  const tier = TIER_CONFIG[tierLabel] ?? TIER_CONFIG["moderateDecline"]
-  const challengeText = searchParams.get("challenge") ?? ""
-
   try {
-    const font = await getFont()
+    const { searchParams } = new URL(request.url)
+    const index = Math.min(100, Math.max(0, Number(searchParams.get("i") ?? 50)))
+    const tierKey = searchParams.get("t") ?? "moderateDecline"
+    const correct = searchParams.get("c") ?? "?"
+    const total = searchParams.get("n") ?? String(QUESTIONS_PER_TEST)
+    const challengeText = searchParams.get("challenge") ?? ""
 
-    const svg = await satori(
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(to bottom, #fafafa, #f0f0f0)",
-          fontFamily: '"Noto Sans SC", sans-serif',
-          padding: "60px",
-        }}
-      >
-        {/* Top section */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          <span style={{ fontSize: "28px", color: "#888", fontWeight: 500 }}>
-            认知防锈 · 基线测试
-          </span>
-        </div>
+    const tier = TIER_CONFIG[tierKey] ?? TIER_CONFIG["moderateDecline"]
 
-        {/* Degradation index circle */}
-        <div
-          style={{
-            marginTop: "32px",
-            width: "200px",
-            height: "200px",
-            borderRadius: "50%",
-            border: `12px solid ${tier.color}`,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "white",
-          }}
-        >
-          <span style={{ fontSize: "72px", fontWeight: 800, color: "#111", lineHeight: 1 }}>
-            {index}
-          </span>
-          <span style={{ fontSize: "18px", color: "#888", marginTop: "4px" }}>/ 100</span>
-        </div>
+    const svg = `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#f0f0f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="600" y="90" text-anchor="middle" font-size="28" fill="#888" font-weight="500" font-family="sans-serif">认知防锈 · 基线测试</text>
 
-        {/* Tier badge */}
-        <div
-          style={{
-            marginTop: "24px",
-            padding: "8px 24px",
-            borderRadius: "9999px",
-            background: tier.color,
-            color: "white",
-            fontSize: "20px",
-            fontWeight: 600,
-          }}
-        >
-          {tier.label}
-        </div>
+  <circle cx="600" cy="260" r="100" fill="white" stroke="${esc(tier.color)}" stroke-width="12"/>
+  <text x="600" y="245" text-anchor="middle" font-size="72" font-weight="800" fill="#111" font-family="sans-serif">${index}</text>
+  <text x="600" y="278" text-anchor="middle" font-size="18" fill="#888" font-family="sans-serif">/ 100</text>
 
-        {/* Correct count */}
-        <div style={{ marginTop: "16px", fontSize: "18px", color: "#666" }}>
-          {correct} / {total} 正确
-        </div>
+  <rect x="${600 - (esc(tier.label).length * 14 + 48) / 2}" y="350" width="${esc(tier.label).length * 14 + 48}" height="42" rx="21" fill="${esc(tier.color)}"/>
+  <text x="600" y="378" text-anchor="middle" font-size="20" font-weight="600" fill="white" font-family="sans-serif">${esc(tier.label)}</text>
 
-        {/* Challenge text */}
-        {challengeText && (
-          <div
-            style={{
-              marginTop: "20px",
-              fontSize: "20px",
-              color: "#444",
-              textAlign: "center",
-              maxWidth: "600px",
-              padding: "0 40px",
-            }}
-          >
-            {challengeText}
-          </div>
-        )}
-
-        {/* Footer URL */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "40px",
-            fontSize: "16px",
-            color: "#aaa",
-          }}
-        >
-          cortex.hydroroll.team
-        </div>
-      </div>,
-      {
-        width: 1200,
-        height: 630,
-        fonts: [
-          {
-            name: "Noto Sans SC",
-            data: Buffer.from(font),
-            weight: 400,
-            style: "normal",
-          },
-        ],
-      },
-    )
+  <text x="600" y="428" text-anchor="middle" font-size="18" fill="#666" font-family="sans-serif">${esc(correct)} / ${esc(total)} 正确</text>
+${challengeText ? `  <text x="600" y="478" text-anchor="middle" font-size="20" fill="#444" font-family="sans-serif">${esc(challengeText)}</text>\n` : ""}
+  <text x="600" y="580" text-anchor="middle" font-size="16" fill="#aaa" font-family="sans-serif">cortex.hydroroll.team</text>
+</svg>`
 
     return new Response(svg, {
       headers: {
