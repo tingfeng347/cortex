@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import Script from "next/script"
-import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/language-toggle"
 import { ServiceWorkerRegister } from "@/components/service-worker-register"
 import { PremiumWrapper } from "@/components/premium/PremiumWrapper"
+import { IntlErrorBoundary } from "@/components/IntlErrorBoundary"
 import { Link } from "@/i18n/navigation"
 import { QUESTIONS_PER_TEST } from "@/lib/questions"
 import { RESULT_TIERS } from "@/lib/scoring"
@@ -91,11 +91,7 @@ export default async function LocaleLayout({
   const navT = await getTranslations({ locale, namespace: "nav" })
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages} onError={(error) => {
-      // Suppress INVALID_MESSAGE during HMR — benign, handled by getMessageFallback
-      if (error.code === "INVALID_MESSAGE") return;
-      console.error(error);
-    }}>
+    <IntlErrorBoundary locale={locale} messages={messages}>
       <Script
         id="css-cache-buster"
         strategy="afterInteractive"
@@ -119,6 +115,6 @@ export default async function LocaleLayout({
       </div>
       <ServiceWorkerRegister />
       <PremiumWrapper>{children}</PremiumWrapper>
-    </NextIntlClientProvider>
+    </IntlErrorBoundary>
   )
 }
