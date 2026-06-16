@@ -91,7 +91,11 @@ export default async function LocaleLayout({
   const navT = await getTranslations({ locale, namespace: "nav" })
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
+    <NextIntlClientProvider locale={locale} messages={messages} onError={(error) => {
+      // Suppress INVALID_MESSAGE during HMR — benign, handled by getMessageFallback
+      if (error.code === "INVALID_MESSAGE") return;
+      console.error(error);
+    }}>
       <Script
         id="css-cache-buster"
         strategy="afterInteractive"
