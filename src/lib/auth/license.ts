@@ -251,6 +251,17 @@ export async function saveAbilityProfile(
   );
 }
 
+/** Count active (non-expired, non-dev) licenses for premium user statistics */
+export async function countActiveLicenses(): Promise<number> {
+  const row = await d1First<{ count: number }>(
+    `SELECT COUNT(*) AS count FROM licenses
+     WHERE status = 'active'
+     AND license_key != 'cx_DEV_DEV_DEV_DEV_DEV_DEV_DEV'
+     AND (expires_at IS NULL OR expires_at > datetime('now'))`,
+  )
+  return row?.count ?? 0
+}
+
 export async function getLicenseResults(licenseKey: string) {
   return d1Query<{
     id: number

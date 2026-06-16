@@ -67,6 +67,9 @@ export function QuestionCard({
   const question = questions[currentQ];
   if (!question) return null;
 
+  const questionSource = (question as any).source;
+  const isAiQuestion = questionSource === "llm" || questionSource === "llm-pool";
+  const aiBadgeLabel = questionSource === "llm-pool" ? n("testing.aiPoolBadge") : n("testing.aiGeneratedBadge");
   const isMulti = Array.isArray(question.answer);
 
   return (
@@ -96,6 +99,11 @@ export function QuestionCard({
                 {n("question.multiSelect")}
               </Badge>
             )}
+            {isAiQuestion && (
+              <Badge variant="default" className="bg-blue-600 text-white text-xs">
+                {aiBadgeLabel}
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -105,7 +113,9 @@ export function QuestionCard({
               className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors ${
                 flaggedIds.has(question.id)
                   ? "text-amber-600 bg-amber-50 dark:bg-amber-950 dark:text-amber-400"
-                  : "text-muted-foreground/40 hover:text-amber-500 hover:bg-muted"
+                  : isAiQuestion
+                    ? "text-muted-foreground/60 hover:text-amber-500 hover:bg-muted animate-pulse"
+                    : "text-muted-foreground/40 hover:text-amber-500 hover:bg-muted"
               }`}
             >
               <Flag className={`h-3.5 w-3.5 ${flaggedIds.has(question.id) ? "fill-amber-400" : ""}`} />

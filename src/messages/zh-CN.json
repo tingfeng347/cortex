@@ -73,7 +73,10 @@
 		"flagTip": "帮助我们更好的改进题目与题库",
 		"flagged": "已反馈",
 		"flagAdded": "已反馈题目有问题",
-		"flagRemoved": "已取消反馈"
+		"flagRemoved": "已取消反馈",
+		"aiQuestionToast": "这道题由 AI 生成，如答案有误请点击旗标反馈",
+		"aiPoolBadge": "AI题库",
+		"aiGeneratedBadge": "AI生成"
 	},
 	"processing": {
 		"title": "测试完成",

@@ -73,7 +73,10 @@
 		"flagTip": "問題の改善にご協力ください",
 		"flagged": "報告済み",
 		"flagAdded": "問題を報告しました",
-		"flagRemoved": "報告をキャンセルしました"
+		"flagRemoved": "報告をキャンセルしました",
+		"aiQuestionToast": "この問題はAIによって生成されました。答えが間違っていると思われる場合は旗をクリックして報告してください。",
+		"aiPoolBadge": "AIプール",
+		"aiGeneratedBadge": "AI生成"
 	},
 	"processing": {
 		"title": "テスト完了",

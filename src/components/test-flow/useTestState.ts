@@ -29,6 +29,7 @@ import {
   selectNextQuestion,
   recordResponse,
   isTestComplete,
+  getCurrentDimension,
 } from "@/lib/adaptive-test";
 import type { AdaptiveTestSession } from "@/lib/adaptive-test";
 import { estimateAbility } from "@/lib/irt/engine";
@@ -187,7 +188,11 @@ export function useTestState() {
   const [aiUsage, setAiUsage] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
+  const adaptivePoolRef = useRef<Question[]>([]); // static + AI pool questions
   const adaptiveSessionRef = useRef<AdaptiveTestSession | null>(null);
+  const aiSlotIndicesRef = useRef<Set<number>>(new Set());
+  const lastAiSourceRef = useRef<"generated" | "pool" | null>(null);
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [cooldownEndsAt, setCooldownEndsAt] = useState<number>(0);
   const [cooldownVersion, setCooldownVersion] = useState(0);
   const [freeTestUsedCount, setFreeTestUsedCount] = useState(0);
@@ -242,18 +247,31 @@ export function useTestState() {
 
       if (ADAPTIVE_MODE) {
         const all = getAllQuestions(locale);
+        let mapped: Question[];
         if (hasParams) {
-          setAllQuestions(
-            all.map((q) => ({
-              ...q,
-              difficulty: calibratedParams[q.id]?.b ?? q.difficulty,
-              discrimination: calibratedParams[q.id]?.a ?? q.discrimination,
-              guessing: calibratedParams[q.id]?.c ?? q.guessing,
-            })),
-          );
+          mapped = all.map((q) => ({
+            ...q,
+            difficulty: calibratedParams[q.id]?.b ?? q.difficulty,
+            discrimination: calibratedParams[q.id]?.a ?? q.discrimination,
+            guessing: calibratedParams[q.id]?.c ?? q.guessing,
+          }));
         } else {
-          setAllQuestions(all);
+          mapped = all;
         }
+        setAllQuestions(mapped);
+        adaptivePoolRef.current = mapped;
+
+        // Load AI pool questions from D1 and merge into adaptive pool
+        fetch("/api/ai/generate-question?locale=" + locale)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.questions?.length > 0) {
+              const merged = [...mapped, ...data.questions];
+              setAllQuestions(merged);
+              adaptivePoolRef.current = merged;
+            }
+          })
+          .catch(() => {});
       } else {
         let qs = selectQuestions(QUESTIONS_PER_TEST, locale);
         if (hasParams) {
@@ -581,6 +599,22 @@ export function useTestState() {
     }
   }, [isPremium])
 
+  // Show toast when AI question appears
+  const notifiedAiIds = useRef<Set<number>>(new Set());
+  useEffect(() => {
+    if (phase !== "testing") return;
+    if (questions.length === 0) return;
+    const lastQ = questions[questions.length - 1];
+    const qSource = (lastQ as any).source;
+    if (
+      (qSource === "llm" || qSource === "llm-pool") &&
+      !notifiedAiIds.current.has(lastQ.id)
+    ) {
+      notifiedAiIds.current.add(lastQ.id);
+      showToast(n("testing.aiQuestionToast"), 4000);
+    }
+  }, [questions.length, phase]);
+
   // Load saved progress + previous result from localStorage (after hydration)
   useEffect(() => {
     let cancelled = false;
@@ -777,6 +811,7 @@ export function useTestState() {
     setTimeouts([]);
     setSelected(null);
     handSlipsRef.current = 0;
+    lastAiSourceRef.current = null;
 
     if (ADAPTIVE_MODE) {
       const session = createTestSession(QUESTIONS_PER_TEST);
@@ -790,8 +825,20 @@ export function useTestState() {
         };
       }
 
+      // Determine AI question slots
+      const aiSlots = new Set<number>();
+      const aiCount = isPremium ? 2 : 1;
+      const indices = Array.from({ length: QUESTIONS_PER_TEST }, (_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      for (let i = 0; i < aiCount; i++) aiSlots.add(indices[i]);
+      aiSlotIndicesRef.current = aiSlots;
+
       adaptiveSessionRef.current = session;
-      const firstQ = selectNextQuestion(session, allQuestions);
+      const pool = adaptivePoolRef.current.length > 0 ? adaptivePoolRef.current : allQuestions;
+      const firstQ = selectNextQuestion(session, pool);
       setQuestions(firstQ ? [firstQ] : selectQuestions(1, locale));
 
       // Premium users: async refresh profile from cloud and update session
@@ -847,7 +894,16 @@ export function useTestState() {
     setSelected(index);
   }
 
-  function submitAnswer(answer: number | null | number[]) {
+  /** Fallback: pick a normal question from the adaptive pool */
+  function fallbackNextQuestion(session: AdaptiveTestSession): void {
+    const pool = adaptivePoolRef.current.length > 0 ? adaptivePoolRef.current : allQuestions;
+    const nextQ = selectNextQuestion(session, pool.length > 0 ? pool : questions);
+    if (nextQ) {
+      setQuestions((prev) => [...prev, nextQ]);
+    }
+  }
+
+  async function submitAnswer(answer: number | null | number[]) {
     const timedOut = answer === null && timeLeft === 0;
     stopTimer();
     setAnswers((prev) => [...prev, answer]);
@@ -868,12 +924,54 @@ export function useTestState() {
         );
       }
       if (!isTestComplete(adaptiveSessionRef.current)) {
-        const nextQ = selectNextQuestion(
-          adaptiveSessionRef.current,
-          allQuestions.length > 0 ? allQuestions : questions,
-        );
-        if (nextQ) {
-          setQuestions((prev) => [...prev, nextQ]);
+        const nextSlot = adaptiveSessionRef.current.currentStep;
+        const isAiSlot = aiSlotIndicesRef.current.has(nextSlot);
+
+        if (isAiSlot) {
+          // AI question path: try pool + generate
+          setIsAiGenerating(true);
+          const session = adaptiveSessionRef.current;
+          const theta = session.thetaEstimate?.theta ?? 0;
+          const type = getCurrentDimension(session);
+          const recentTypes = session.responses.slice(-20).map((r) => r.type);
+
+          try {
+            const res = await fetch("/api/ai/generate-question", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(licenseKey ? { Authorization: `Bearer ${licenseKey}` } : {}),
+              },
+              body: JSON.stringify({
+                locale,
+                type,
+                theta: Math.round(theta * 100) / 100,
+                recentTypes,
+                recentKeywords: [],
+              }),
+            });
+            const data = await res.json();
+            if (data.question) {
+              lastAiSourceRef.current = data.sourceType;
+              setQuestions((prev) => [...prev, data.question]);
+            } else {
+              // Fallback: normal question
+              fallbackNextQuestion(session);
+            }
+          } catch {
+            fallbackNextQuestion(session);
+          }
+          setIsAiGenerating(false);
+        } else {
+          // Normal question (pool includes AI pool via adaptivePoolRef)
+          const pool = adaptivePoolRef.current.length > 0 ? adaptivePoolRef.current : allQuestions;
+          const nextQ = selectNextQuestion(
+            adaptiveSessionRef.current,
+            pool.length > 0 ? pool : questions,
+          );
+          if (nextQ) {
+            setQuestions((prev) => [...prev, nextQ]);
+          }
         }
       }
     }
