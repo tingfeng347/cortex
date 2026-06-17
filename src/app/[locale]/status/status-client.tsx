@@ -332,9 +332,6 @@ export default function StatusClient() {
         )}
 
         {/* Footer */}
-        <p className="text-xs text-muted-foreground text-center mt-8 mb-4">
-          {t("autoRefresh")}
-        </p>
         <SiteFooter namespace="stats" />
       </div>
     </div>
