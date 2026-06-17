@@ -55,23 +55,69 @@ function formatNumber(n: number): string {
   return n.toLocaleString()
 }
 
-function miniBarChart(data: [number, number][], maxVal: number, color: string) {
+function HourlyChart({ data }: { data: [number, number][] }) {
   if (data.length === 0) return null
+  const maxVal = Math.max(...data.map(([, v]) => v), 1)
+
+  // Round up to a nice number
+  const yMax = maxVal < 10 ? 10 : Math.ceil(maxVal / (10 ** Math.floor(Math.log10(maxVal)) / 2)) * (10 ** Math.floor(Math.log10(maxVal)) / 2)
+  const steps = 4
+
+  // Layout
+  const padLeft = 40, padRight = 8, padTop = 8, padBottom = 22
+  const w = 600, h = 160
+  const chartW = w - padLeft - padRight
+  const chartH = h - padTop - padBottom
+  const barW = Math.max(2, chartW / data.length - 2)
+
   return (
-    <div className="flex items-end gap-0.5 h-16">
-      {data.map(([hour, val]) => (
-        <div
-          key={hour}
-          className="flex-1 rounded-t-sm transition-all"
-          style={{
-            height: `${Math.max(2, (val / maxVal) * 100)}%`,
-            backgroundColor: color,
-            opacity: val > 0 ? 0.85 : 0.15,
-          }}
-          title={`${String(hour).padStart(2, "0")}:00 — ${val.toLocaleString()}`}
-        />
-      ))}
-    </div>
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-auto" role="img" aria-label="Hourly traffic chart">
+      {/* Grid lines + Y labels */}
+      {Array.from({ length: steps + 1 }, (_, i) => {
+        const y = padTop + (chartH * i / steps)
+        const val = yMax * (1 - i / steps)
+        const label = val >= 1000 ? (val / 1000).toFixed(0) + "K" : String(Math.round(val))
+        return (
+          <g key={i}>
+            <line x1={padLeft} y1={y} x2={w - padRight} y2={y} stroke="var(--border)" strokeWidth="0.5" />
+            <text x={padLeft - 4} y={y + 4} textAnchor="end" fontSize="10" fill="var(--muted-foreground)">{label}</text>
+          </g>
+        )
+      })}
+
+      {/* Bars */}
+      {data.map(([hour, val]) => {
+        const x = padLeft + (hour / 23) * chartW
+        const barH = Math.max(1, (val / yMax) * chartH)
+        const y = padTop + chartH - barH
+        const isPeak = val === maxVal && val > 0
+        return (
+          <g key={hour}>
+            <rect
+              x={x}
+              y={y}
+              width={barW}
+              height={barH}
+              rx={barW / 2}
+              fill={isPeak ? "var(--primary)" : "var(--primary)"}
+              opacity={val > 0 ? (isPeak ? 1 : 0.55) : 0.12}
+            >
+              <title>{String(hour).padStart(2, "0")}:00 — {val.toLocaleString()} requests</title>
+            </rect>
+          </g>
+        )
+      })}
+
+      {/* X axis labels */}
+      {[0, 6, 12, 18, 23].map((hour) => {
+        const x = padLeft + (hour / 23) * chartW
+        return (
+          <text key={hour} x={x} y={h - 4} textAnchor="middle" fontSize="10" fill="var(--muted-foreground)">
+            {String(hour).padStart(2, "0")}:00
+          </text>
+        )
+      })}
+    </svg>
   )
 }
 
@@ -199,16 +245,7 @@ export default function StatusClient() {
                   <CardTitle className="text-sm flex items-center gap-1"><Clock className="size-4" />{t("hourlyTraffic")} (UTC)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-1">
-                    {miniBarChart(
-                      data.traffic.requestsPerHour,
-                      Math.max(...data.traffic.requestsPerHour.map(([, v]) => v), 1),
-                      "var(--primary)"
-                    )}
-                  </div>
-                  <div className="flex justify-between text-[10px] text-muted-foreground">
-                    <span>00</span><span>06</span><span>12</span><span>18</span><span>23</span>
-                  </div>
+                  <HourlyChart data={data.traffic.requestsPerHour} />
                 </CardContent>
               </Card>
             )}
