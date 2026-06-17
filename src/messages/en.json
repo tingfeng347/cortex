@@ -539,6 +539,7 @@
     "neuronsUsed": "Neurons Used",
     "neuronsRemaining": "Neurons Remaining",
     "ofLimit": "of {limit}",
+    "tokensToday": "Tokens Today",
     "poolSize": "Pool Size",
     "generatedToday": "{count} generated today",
     "avgNeuronCost": "Avg Cost",

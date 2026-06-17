@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { getDB } from "@/lib/auth/d1-client"
 import { getCloudflareContext } from "@opennextjs/cloudflare"
-import { readDailyQuota } from "@/lib/ai/quota-kv"
 import { countActiveLicenses } from "@/lib/auth/license"
 import { getStats } from "@/lib/storage"
 
@@ -20,7 +19,7 @@ interface CfMetrics {
 }
 
 interface InternalMetrics {
-  ai: { neuronsUsed: number; neuronsLimit: number; neuronsRemaining: number; questionsInPool: number; questionsGeneratedToday: number; avgNeuronCost: number; totalInputTokens: number; totalOutputTokens: number }
+  ai: { tokensToday: number; questionsInPool: number; questionsGeneratedToday: number }
   app: { totalTests: number; activeLicenses: number; itemResponses: number; degradationAvg: number | null; degradationTrend: [string, number][] }
 }
 
@@ -162,26 +161,20 @@ async function fetchCloudflareMetrics(): Promise<CfMetrics> {
 async function fetchInternalMetrics(): Promise<InternalMetrics> {
   const today = new Date().toISOString().slice(0, 10)
 
-  // AI neuron quota
-  const quota = await readDailyQuota()
-  const NEURON_LIMIT = 10000
-
   // AI questions pool stats
   let questionsInPool = 0
   let questionsGeneratedToday = 0
-  let totalInputTokens = 0
-  let totalOutputTokens = 0
+  let tokensToday = 0
   try {
     const db = await getDB()
     const poolRow = await db.prepare("SELECT COUNT(*) AS count FROM ai_generated_questions").first<{ count: number }>()
     questionsInPool = poolRow?.count ?? 0
 
     const todayRow = await db.prepare(
-      "SELECT COUNT(*) AS count, SUM(input_tokens) AS inputSum, SUM(output_tokens) AS outputSum FROM ai_generated_questions WHERE DATE(created_at) = ?",
-    ).bind(today).first<{ count: number; inputSum: number | null; outputSum: number | null }>()
+      "SELECT COUNT(*) AS count, SUM(input_tokens + output_tokens) AS totalTokens FROM ai_generated_questions WHERE DATE(created_at) = ?",
+    ).bind(today).first<{ count: number; totalTokens: number | null }>()
     questionsGeneratedToday = todayRow?.count ?? 0
-    totalInputTokens = todayRow?.inputSum ?? 0
-    totalOutputTokens = todayRow?.outputSum ?? 0
+    tokensToday = todayRow?.totalTokens ?? 0
   } catch { /* D1 query failure — return zeros */ }
 
   // Item responses count
@@ -221,14 +214,9 @@ async function fetchInternalMetrics(): Promise<InternalMetrics> {
 
   return {
     ai: {
-      neuronsUsed: Math.round(quota.totalNeurons),
-      neuronsLimit: NEURON_LIMIT,
-      neuronsRemaining: Math.max(0, NEURON_LIMIT - Math.round(quota.totalNeurons)),
+      tokensToday,
       questionsInPool,
       questionsGeneratedToday,
-      avgNeuronCost: quota.totalQuestions > 0 ? Math.round(quota.totalNeurons / quota.totalQuestions * 10) / 10 : 0,
-      totalInputTokens,
-      totalOutputTokens,
     },
     app: {
       totalTests,
@@ -300,7 +288,7 @@ export async function GET() {
     kv: { reads: 0, writes: 0, lists: 0, deletes: 0 },
   }
   const fallbackInternal: InternalMetrics = {
-    ai: { neuronsUsed: 0, neuronsLimit: 10000, neuronsRemaining: 10000, questionsInPool: 0, questionsGeneratedToday: 0, avgNeuronCost: 0, totalInputTokens: 0, totalOutputTokens: 0 },
+    ai: { tokensToday: 0, questionsInPool: 0, questionsGeneratedToday: 0 },
     app: { totalTests: 0, activeLicenses: 0, itemResponses: 0, degradationAvg: null, degradationTrend: [] },
   }
 

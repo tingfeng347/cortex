@@ -34,14 +34,9 @@ interface StatusData {
     deletes: number
   }
   ai: {
-    neuronsUsed: number
-    neuronsLimit: number
-    neuronsRemaining: number
+    tokensToday: number
     questionsInPool: number
     questionsGeneratedToday: number
-    avgNeuronCost: number
-    totalInputTokens: number
-    totalOutputTokens: number
   }
   app: {
     totalTests: number
@@ -256,14 +251,9 @@ export default function StatusClient() {
             <div className="grid grid-cols-2 gap-3 mb-6">
               <Card>
                 <CardContent className="p-4">
-                  <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><Brain className="size-3" />{t("neuronsRemaining")}</div>
-                  <div className="text-2xl font-bold tabular-nums">{formatNumber(data.ai.neuronsRemaining)}</div>
-                  <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-                    <div
-                      className="bg-primary h-1.5 rounded-full transition-all"
-                      style={{ width: `${Math.min(100, (data.ai.neuronsUsed / data.ai.neuronsLimit) * 100)}%` }}
-                    />
-                  </div>
+                  <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><HardDrive className="size-3" />{t("tokensToday")}</div>
+                  <div className="text-2xl font-bold tabular-nums">{formatNumber(data.ai.tokensToday)}</div>
+                  <div className="text-xs text-muted-foreground mt-1">tokens (input+output)</div>
                 </CardContent>
               </Card>
               <Card>

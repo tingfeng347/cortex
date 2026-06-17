@@ -539,6 +539,7 @@
     "neuronsUsed": "使用済みニューロン",
     "neuronsRemaining": "残りニューロン",
     "ofLimit": "/ {limit}",
+    "tokensToday": "本日のトークン",
     "poolSize": "プールサイズ",
     "generatedToday": "本日 {count} 問生成",
     "avgNeuronCost": "平均コスト",

@@ -851,7 +851,7 @@ export function useTestState() {
 
       // Determine AI question slots
       const aiSlots = new Set<number>();
-      const aiCount = isPremium ? 2 : 1;
+      const aiCount = isPremium ? 2 : 0;
       const indices = Array.from({ length: QUESTIONS_PER_TEST }, (_, i) => i);
       for (let i = indices.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));

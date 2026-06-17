@@ -539,6 +539,7 @@
     "neuronsUsed": "今日已用神经元",
     "neuronsRemaining": "今日剩余神经元",
     "ofLimit": "/ {limit}",
+    "tokensToday": "今日 Token 用量",
     "poolSize": "AI题目池大小",
     "generatedToday": "今日生成 {count} 题",
     "avgNeuronCost": "平均成本",
