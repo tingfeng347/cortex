@@ -553,6 +553,7 @@
     "live": "Live",
     "error": "Failed to load",
     "retry": "Retry",
-    "autoRefresh": "Auto-refreshes every 5 min · Data from Cloudflare API"
+    "autoRefresh": "Auto-refreshes every 5 min · Data from Cloudflare API",
+    "requestsMonth": "30-Day Requests"
   }
 }

@@ -553,6 +553,7 @@
     "live": "ライブ",
     "error": "読み込み失敗",
     "retry": "再試行",
-    "autoRefresh": "5分ごとに自動更新 · Cloudflare APIデータ"
+    "autoRefresh": "5分ごとに自動更新 · Cloudflare APIデータ",
+    "requestsMonth": "30日リクエスト"
   }
 }

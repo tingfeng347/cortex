@@ -14,6 +14,7 @@ interface StatusData {
   cachedAt: string
   traffic: {
     requestsToday: number
+    requestsTotal: number
     requestsPerHour: [number, number][]
     cpuP50: number
     cpuP99: number
@@ -211,7 +212,13 @@ export default function StatusClient() {
         {data && (
           <>
             {/* Top stat cards — Traffic */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><BarChart3 className="size-3" />{t("requestsMonth")}</div>
+                  <div className="text-2xl font-bold tabular-nums">{formatNumber(data.traffic.requestsTotal)}</div>
+                </CardContent>
+              </Card>
               <Card>
                 <CardContent className="p-4">
                   <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><BarChart3 className="size-3" />{t("requestsToday")}</div>

@@ -14,7 +14,7 @@ const STATUS_CACHE_KEY = "status:dashboard"
 const CACHE_TTL = 300 // 5 minutes
 
 interface CfMetrics {
-  traffic: { requestsToday: number; requestsPerHour: [number, number][]; cpuP50: number; cpuP99: number; errors: number }
+  traffic: { requestsToday: number; requestsTotal: number; requestsPerHour: [number, number][]; cpuP50: number; cpuP99: number; errors: number }
   d1: { readQueries: number; writeQueries: number; rowsRead: number; rowsWritten: number }
   kv: { reads: number; writes: number; lists: number; deletes: number }
 }
@@ -60,11 +60,12 @@ async function fetchCloudflareMetrics(): Promise<CfMetrics> {
   const accountId = env.CLOUDFLARE_ACCOUNT_ID ?? process.env.CLOUDFLARE_ACCOUNT_ID ?? "d6b620c5ad2c4ca81de6c0b76c719995"
 
   let totalReq = 0, totalErrors = 0, cpuP50 = 0, cpuP99 = 0
+  let allTimeReq = 0
   let requestsPerHour: [number, number][] = []
   let d1Data = { readQueries: 0, writeQueries: 0, rowsRead: 0, rowsWritten: 0 }
   let kvReads = 0, kvWrites = 0, kvLists = 0, kvDeletes = 0
 
-  // Workers — hourly + totals
+  // Workers — hourly + today totals
   try {
     const w = await graphql(
       `{ viewer { accounts(filter: { accountTag: "${accountId}" }) {
@@ -92,6 +93,21 @@ async function fetchCloudflareMetrics(): Promise<CfMetrics> {
     cpuP99 = a.total[0]?.quantiles?.cpuTimeP99 ?? 0
   } catch (e) {
     console.error("[status] workers query failed:", e instanceof Error ? e.message : String(e))
+  }
+
+  // All-time total — workersInvocationsAdaptive max ~31 day range
+  try {
+    const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    const at = await graphql(
+      `{ viewer { accounts(filter: { accountTag: "${accountId}" }) {
+        allTime: workersInvocationsAdaptive(filter: { datetime_gt: "${monthAgo}", datetime_lt: "${end}" }, limit: 1) {
+          sum { requests }
+        }
+      }}}`,
+    ) as { viewer: { accounts: [{ allTime: Array<{ sum: { requests: number } }> }] } }
+    allTimeReq = at.viewer.accounts[0].allTime[0]?.sum?.requests ?? 0
+  } catch (e) {
+    console.error("[status] all-time query failed:", e instanceof Error ? e.message : String(e))
   }
 
   // D1
@@ -132,6 +148,7 @@ async function fetchCloudflareMetrics(): Promise<CfMetrics> {
   return {
     traffic: {
       requestsToday: totalReq,
+      requestsTotal: allTimeReq,
       requestsPerHour,
       cpuP50: Math.round(cpuP50 / 1000 * 10) / 10,
       cpuP99: Math.round(cpuP99 / 1000 * 10) / 10,
@@ -265,7 +282,7 @@ export async function GET() {
   ])
 
   const fallbackCf: CfMetrics = {
-    traffic: { requestsToday: 0, requestsPerHour: [], cpuP50: 0, cpuP99: 0, errors: 0 },
+    traffic: { requestsToday: 0, requestsTotal: 0, requestsPerHour: [], cpuP50: 0, cpuP99: 0, errors: 0 },
     d1: { readQueries: 0, writeQueries: 0, rowsRead: 0, rowsWritten: 0 },
     kv: { reads: 0, writes: 0, lists: 0, deletes: 0 },
   }
