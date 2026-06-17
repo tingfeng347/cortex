@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
-import { ArrowLeft, RefreshCw, BarChart3, Database, FileJson, Brain, Users, Zap, HardDrive, Clock, TrendingUp } from "lucide-react"
+import { ArrowLeft, RefreshCw, BarChart3, Database, Brain, Users, Zap, HardDrive, Clock, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -233,8 +233,8 @@ export default function StatusClient() {
               </Card>
             )}
 
-            {/* D1 + KV section */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            {/* D1 section */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
               <Card>
                 <CardContent className="p-4">
                   <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><Database className="size-3" />{t("d1Reads")}</div>
@@ -247,21 +247,9 @@ export default function StatusClient() {
                   <div className="text-2xl font-bold tabular-nums">{formatNumber(data.d1.writeQueries)}</div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><FileJson className="size-3" />{t("kvReads")}</div>
-                  <div className="text-2xl font-bold tabular-nums">{formatNumber(data.kv.reads)}</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><FileJson className="size-3" />{t("kvWrites")}</div>
-                  <div className="text-2xl font-bold tabular-nums">{formatNumber(data.kv.writes)}</div>
-                </CardContent>
-              </Card>
             </div>
 
-            {/* D1 detail rows */}
+            {/* D1 detail */}
             <Card className="mb-6">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-1"><Database className="size-4" />{t("d1Detail")}</CardTitle>
@@ -269,8 +257,6 @@ export default function StatusClient() {
               <CardContent className="grid grid-cols-2 gap-3 text-sm">
                 <div><span className="text-muted-foreground">{t("rowsRead")}: </span><strong className="tabular-nums">{formatNumber(data.d1.rowsRead)}</strong></div>
                 <div><span className="text-muted-foreground">{t("rowsWritten")}: </span><strong className="tabular-nums">{formatNumber(data.d1.rowsWritten)}</strong></div>
-                <div><span className="text-muted-foreground">{t("kvLists")}: </span><strong className="tabular-nums">{formatNumber(data.kv.lists)}</strong></div>
-                <div><span className="text-muted-foreground">{t("kvDeletes")}: </span><strong className="tabular-nums">{formatNumber(data.kv.deletes)}</strong></div>
               </CardContent>
             </Card>
 
