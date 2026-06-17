@@ -277,14 +277,21 @@ export async function GET() {
     app: { totalTests: 0, activeLicenses: 0, itemResponses: 0, degradationAvg: null },
   }
 
+  let cfError: string | null = null
+  if (cfMetrics.status === "rejected") {
+    cfError = cfMetrics.reason instanceof Error ? cfMetrics.reason.message : String(cfMetrics.reason)
+    console.error("[status] Cloudflare metrics failed:", cfError)
+  }
+
   const cf = cfMetrics.status === "fulfilled" ? cfMetrics.value : fallbackCf
   const internal = internalMetrics.status === "fulfilled" ? internalMetrics.value : fallbackInternal
 
-  const payload: StatusPayload = {
+  const payload: StatusPayload & { _cfError?: string | null } = {
     cached: false,
     cachedAt: new Date().toISOString(),
     ...cf,
     ...internal,
+    _cfError: cfError,
   }
 
   // Write cache in background
