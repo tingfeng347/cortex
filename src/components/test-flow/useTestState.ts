@@ -619,7 +619,12 @@ export function useTestState() {
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed.flaggedIds?.length > 0) setHasFlaggedBefore(true);
-          setSavedResult(normalizeStoredEntry(parsed));
+          // Don't show "last test" banner for first-time test takers
+          const histRaw = localStorage.getItem("cognitive-rust-history");
+          const history = histRaw ? JSON.parse(histRaw) : [];
+          if (Array.isArray(history) && history.length >= 2) {
+            setSavedResult(normalizeStoredEntry(parsed));
+          }
         }
         // Also check history for any past flags
         if (!hasFlaggedBefore) {
