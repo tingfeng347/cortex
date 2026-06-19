@@ -9,7 +9,7 @@ interface GoalData {
   totalTests: number
 }
 
-const GOAL = 50
+const GOAL = 40
 
 export function SiteGoal() {
   const [data, setData] = useState<GoalData | null>(null)
