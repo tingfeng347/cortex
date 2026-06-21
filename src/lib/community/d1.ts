@@ -133,6 +133,22 @@ export async function deleteAdmin(id: number): Promise<void> {
   await d1Run("DELETE FROM admin_sessions WHERE admin_id = ?", [id])
 }
 
+export async function updateAdmin(id: number, data: { passwordHash?: string; role?: string }): Promise<void> {
+  const sets: string[] = []
+  const vals: (string | number)[] = []
+  if (data.passwordHash) {
+    sets.push("password_hash = ?")
+    vals.push(data.passwordHash)
+  }
+  if (data.role) {
+    sets.push("role = ?")
+    vals.push(data.role)
+  }
+  if (sets.length === 0) return
+  vals.push(id)
+  await d1Run(`UPDATE admins SET ${sets.join(", ")} WHERE id = ?`, vals)
+}
+
 // --- Sessions ---
 
 export async function createSession(sessionId: string, adminId: number): Promise<void> {
