@@ -605,7 +605,13 @@
     "errorOptions": "At least 2 options are required",
     "errorAnswer": "Please select the correct answer",
     "errorEmail": "Please use a valid QQ email or Gmail address",
-    "errorNetwork": "Network error, please try again later"
+    "errorNetwork": "Network error, please try again later",
+    "questionHint_logic": "Describe a logical reasoning scenario: crime investigation, contradictory testimonies, scheduling conflicts, etc.\nKey: The answer must be uniquely provable; distractors should be plausible but flawed.\nExample: A says \"I didn't do it,\" B says \"C did it,\" C says \"I didn't do it.\" Only one is telling the truth. Who is the culprit?",
+    "questionHint_math": "Create a real-world mental math problem solvable in 30 seconds.\nPrefer: discount splitting, time estimation, ratio reasoning, order-of-magnitude comparison.\nAvoid: problems requiring equations.\nExample: An item costs $120. After a 20% discount and an additional $10 off, how much do you pay?",
+    "questionHint_vocab": "Write a sentence with a blank for a word/idiom. Choose the best fit.\nTests: easily confused words, contextual appropriateness, word precision.\nExample: He always acts ______, never considering the consequences. (A. cautiously B. recklessly C. deliberately D. timidly)",
+    "questionHint_event": "Give multiple events or sentences and ask for the correct chronological order.\nKey: Distractors should appear plausible but require careful analysis.\nExample: ① He opened the fridge ② He went to the store ③ He put milk in the fridge ④ He drank the milk — what is the correct order?",
+    "questionHint_event-cause": "Describe a causal scenario. Ask to identify the correct causal chain or explanation.\nKey: Distinguish correlation from causation, eliminate alternative explanations.\nExample: In a city, ice cream sales and drowning rates both rise in summer. Which best explains this?",
+    "questionHint_event-argument": "Present an argument and ask to analyze its structure or identify logical fallacies.\nKey: Evaluate argument validity, not personal opinion.\nExample: \"All swans are white because every swan I've seen is white.\" What logical flaw does this argument have?"
   },
   "admin": {
     "login": "Admin Login",

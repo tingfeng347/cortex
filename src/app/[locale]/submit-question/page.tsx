@@ -120,6 +120,8 @@ export default function SubmitQuestionPage() {
     return label !== key ? label : type
   }
 
+  const questionHint = t(`questionHint_${type}` as any) || t("questionLabel")
+
   if (success) {
     return (
       <div className="mx-auto max-w-xl px-4 py-12">
@@ -183,7 +185,7 @@ export default function SubmitQuestionPage() {
             onChange={(e) => setQuestion(e.target.value)}
             rows={4}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            placeholder={t("questionLabel")}
+            placeholder={questionHint}
           />
         </div>
 
