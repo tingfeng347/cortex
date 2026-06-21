@@ -308,7 +308,9 @@
 		"otherXingce": "另一个行测",
 		"estimationMixedDesc": "IRT 自适应会根据能力动态调整题目难度；固定百分比每题权重相同。",
 		"estimationIrtOnlyDesc": "目前所有测试均使用 IRT 自适应评估——题目难度根据你的能力水平实时调整。",
-		"estimationPctOnlyDesc": "目前所有测试均使用固定百分比评分——每道题权重相同。"
+		"estimationPctOnlyDesc": "目前所有测试均使用固定百分比评分——每道题权重相同。",
+		"abuseWarningTitle": "数据真实性提示",
+		"abuseWarningDesc": "近期监测到有脚本批量刷分行为，统计数据中包含未经校验的测试结果，部分档位数据可能存在偏差。我们已采取防护措施，感谢你的理解。"
 	},
 	"siteGoal": {
 		"achieved": "目标已达成！",

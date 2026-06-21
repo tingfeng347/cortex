@@ -118,6 +118,14 @@ export default function StatsClient() {
         <SiteGoal />
       </div>
 
+      {/* Abuse warning banner */}
+      <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800/30 dark:bg-amber-950/30 dark:text-amber-200">
+        <p className="font-medium">{t("abuseWarningTitle")}</p>
+        <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+          {t("abuseWarningDesc")}
+        </p>
+      </div>
+
       {loading && (
         <div className="flex items-center justify-center py-20 text-sm text-muted-foreground">
           {t("loading")}

@@ -12,10 +12,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "forbidden" }, { status: 403 })
     }
 
-    // ---- Rate limiting (IP + rolling 7-day window via KV) ----
+    // ---- Hard-block known abusive IPs ----
     const ip = request.headers.get("cf-connecting-ip")
       ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
       ?? "unknown"
+    const blockedIPs = [
+      "240b:10:bf05:5f01:20c:29ff:fe54:a4d1",
+      "2001:1af8:4700:a0df:6::112",
+      "2607:5300:20b:2b01::1",
+      "15.235.117.43",
+    ]
+    if (blockedIPs.includes(ip)) {
+      console.warn(`[abuse] blocked request from known abusive IP: ${ip}`)
+      return NextResponse.json({ error: "blocked" }, { status: 403 })
+    }
+
+    // ---- Rate limiting (IP + rolling 7-day window via KV) ----
     const rateLimitKey = `rl7:${ip}`
     const SEVEN_DAYS_SEC = 604_800
 

@@ -314,7 +314,9 @@
     "otherXingce": "Another XingCe",
     "estimationMixedDesc": "IRT adapts question difficulty to your ability; fixed percentage weights every question equally.",
     "estimationIrtOnlyDesc": "All tests so far have used IRT adaptive estimation — questions adapt to your ability level in real time.",
-    "estimationPctOnlyDesc": "All tests so far have used fixed-percentage scoring — every question carries equal weight."
+    "estimationPctOnlyDesc": "All tests so far have used fixed-percentage scoring — every question carries equal weight.",
+    "abuseWarningTitle": "Data Authenticity Notice",
+    "abuseWarningDesc": "We have detected automated script submissions that may have affected some statistics. Results may include unverified test data in certain tiers. Protective measures have been implemented. Thank you for your understanding."
   },
   "siteGoal": {
     "achieved": "Site goal achieved!",
