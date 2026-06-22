@@ -492,7 +492,7 @@ export function useTestState() {
         tierLabel: r.tier.tierKey,
         correctCount: r.correctCount,
         totalQuestions: r.totalQuestions,
-        aiUsageLevel: aiUsage !== null ? AI_CANONICAL_LEVELS[aiUsage] : null,
+        aiUsageLevel: aiUsage !== null ? AI_CANONICAL_LEVELS[aiUsage >= AI_CANONICAL_LEVELS.length ? 0 : aiUsage] : null,
         estimationMethod: r.estimationMethod,
         elapsedMs,
         theta: r.theta ?? null,
