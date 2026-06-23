@@ -23,6 +23,11 @@ export async function POST(
       return NextResponse.json({ error: "not found" }, { status: 404 })
     }
 
+    // Only super_admin can re-review a question that's already been reviewed
+    if (question.status !== "pending" && admin.role !== "super_admin") {
+      return NextResponse.json({ error: "forbidden: question already reviewed" }, { status: 403 })
+    }
+
     const { status, adminNotes } = await request.json()
     if (status !== "approved" && status !== "rejected") {
       return NextResponse.json({ error: "status must be 'approved' or 'rejected'" }, { status: 400 })

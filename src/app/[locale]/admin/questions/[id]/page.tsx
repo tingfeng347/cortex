@@ -380,22 +380,28 @@ export default function AdminQuestionReviewPage() {
           </div>
         )}
 
-        <div className="flex gap-3">
-          <button
-            onClick={() => handleReview("approved")}
-            disabled={actionLoading}
-            className="flex-1 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
-          >
-            {actionLoading ? "处理中..." : "通过"}
-          </button>
-          <button
-            onClick={() => handleReview("rejected")}
-            disabled={actionLoading}
-            className="flex-1 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-          >
-            {actionLoading ? "处理中..." : "拒绝"}
-          </button>
-        </div>
+        {question.status !== "pending" && admin?.role !== "super_admin" ? (
+          <div className="rounded-md border border-muted bg-muted/30 px-4 py-3 text-sm text-muted-foreground text-center">
+            该题目已审核，仅超级管理员可修改审核结果
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleReview("approved")}
+              disabled={actionLoading}
+              className="flex-1 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+            >
+              {actionLoading ? "处理中..." : "通过"}
+            </button>
+            <button
+              onClick={() => handleReview("rejected")}
+              disabled={actionLoading}
+              className="flex-1 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              {actionLoading ? "处理中..." : "拒绝"}
+            </button>
+          </div>
+        )}
 
         {admin?.role === "super_admin" && !editing && (
           <button
