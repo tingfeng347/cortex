@@ -4,6 +4,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/language-toggle"
 import { FestivalWrapper } from "@/components/festival/FestivalWrapper"
+import { Bulletin } from "@/components/bulletin"
 import { ServiceWorkerRegister } from "@/components/service-worker-register"
 import { PremiumWrapper } from "@/components/premium/PremiumWrapper"
 import { IntlErrorBoundary } from "@/components/IntlErrorBoundary"
@@ -110,17 +111,22 @@ export default async function LocaleLayout({
         <div className="flex-1" />
         <div className="flex items-center gap-3">
           <Link href="/search" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="mr-0.5 inline h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            {navT("search")}
+            <svg xmlns="http://www.w3.org/2000/svg" className="inline h-3.5 w-3.5 sm:mr-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span className="hidden sm:inline">{navT("search")}</span>
           </Link>
           <Link href="/submit-question" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="mr-0.5 inline h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            {navT("submit")}
+            <svg xmlns="http://www.w3.org/2000/svg" className="inline h-3.5 w-3.5 sm:mr-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span className="hidden sm:inline">{navT("submit")}</span>
+          </Link>
+          <Link href="/community/marketplace" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" className="inline h-3.5 w-3.5 sm:mr-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span className="hidden sm:inline">{navT("marketplace")}</span>
           </Link>
           <LanguageToggle />
           <ThemeToggle />
         </div>
       </div>
+      <Bulletin locale={locale} />
       <ServiceWorkerRegister />
       <FestivalWrapper>
         <PremiumWrapper>{children}</PremiumWrapper>
