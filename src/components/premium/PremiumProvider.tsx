@@ -65,22 +65,31 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   }, [licenseKey]);
 
   // Restore cached premium status on mount (seconds-fast UI, no server call).
-  // Validation only happens on explicit premium actions (activate, test start).
+  // Then, in background, validate with server to catch revocations / expiry changes.
   useEffect(() => {
     const cached = localStorage.getItem(PREMIUM_KEY);
     const cachedKey = localStorage.getItem(STORAGE_KEY);
+
+    let cachedKeyForBg: string | null = null;
 
     if (cached && cachedKey) {
       try {
         const data = JSON.parse(cached);
         if (data.version === CACHE_VERSION) {
-          /* eslint-disable react-hooks/set-state-in-effect */
-          setIsPremium(true);
-          setLicenseKey(cachedKey);
-          setExpiresAt(data.expiresAt ?? null);
-          setDeviceCount(data.deviceCount ?? 0);
-          setMaxDevices(data.maxDevices ?? 3);
-          /* eslint-enable react-hooks/set-state-in-effect */
+          // Phase 1 — local expiry check (instant, no network)
+          if (data.expiresAt && new Date(data.expiresAt) < new Date()) {
+            localStorage.removeItem(PREMIUM_KEY);
+            localStorage.removeItem(STORAGE_KEY);
+          } else {
+            /* eslint-disable react-hooks/set-state-in-effect */
+            setIsPremium(true);
+            setLicenseKey(cachedKey);
+            setExpiresAt(data.expiresAt ?? null);
+            setDeviceCount(data.deviceCount ?? 0);
+            setMaxDevices(data.maxDevices ?? 3);
+            /* eslint-enable react-hooks/set-state-in-effect */
+            cachedKeyForBg = cachedKey;
+          }
         }
       } catch {
         /* ignore */
@@ -88,6 +97,31 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     }
 
     setIsLoading(false);
+
+    // Phase 2 — background server validation (silent, no loading/error state)
+    if (cachedKeyForBg) {
+      const deviceId = generateDeviceId();
+      fetch("/api/license/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ licenseKey: cachedKeyForBg, deviceId }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.valid) {
+            setIsPremium(false);
+            setLicenseKey(null);
+            setExpiresAt(null);
+            setDeviceCount(0);
+            setMaxDevices(3);
+            localStorage.removeItem(PREMIUM_KEY);
+            localStorage.removeItem(STORAGE_KEY);
+          }
+        })
+        .catch(() => {
+          /* network error — keep cached state until next page load */
+        });
+    }
   }, []);
 
   const activateLicense = useCallback(async (key: string): Promise<boolean> => {
@@ -121,13 +155,6 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
         );
         localStorage.setItem(STORAGE_KEY, key);
 
-        // Device limit hit: key is valid but this device wasn't registered
-        if (data.device?.reason === "device_limit") {
-          setError("此设备未绑定（已达设备上限）。请在其他设备上解除绑定后再试。");
-          setIsLoading(false);
-          return false;
-        }
-
         // Trigger initial cloud sync in background
         performSync(key)
           .then(() => setLastSyncAt(Date.now()))
@@ -142,6 +169,8 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
           setError("License Key 已过期。");
         } else if (data.reason === "inactive") {
           setError("License Key 已失效。");
+        } else if (data.reason === "device_limit") {
+          setError("此设备未绑定（已达设备上限）。请在其他设备上解除绑定后再试。");
         } else {
           setError("激活失败，请稍后重试。");
         }

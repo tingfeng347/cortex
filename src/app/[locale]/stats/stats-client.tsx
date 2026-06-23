@@ -4,13 +4,8 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { normalizeDimensionScores, normalizeThetaByType } from "@/lib/scoring";
 import { SiteGoal } from "@/components/site-goal";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DistributionChart from "@/components/distribution-chart";
 import { Link } from "@/i18n/navigation";
@@ -18,6 +13,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { ArrowLeft, Users, Brain, BarChart3 } from "lucide-react";
 import { TIER_COLOR_MAP, TIER_KEYS } from "@/lib/scoring";
 import { AI_CANONICAL_LEVELS } from "@/lib/constants";
+import { usePremium } from "@/components/premium/usePremium";
 
 interface StatsPageData {
   totalTests: number;
@@ -53,6 +49,7 @@ export default function StatsClient() {
   const tierLabel = useTranslations("tier");
   const decl = useTranslations("declaration");
 
+  const { isPremium } = usePremium();
   const [data, setData] = useState<StatsPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -81,13 +78,16 @@ export default function StatsClient() {
         if (raw) {
           const parsed: HistoryEntry[] = JSON.parse(raw);
           parsed.forEach((h) => {
-            if (h.dimensionScores) h.dimensionScores = normalizeDimensionScores(h.dimensionScores)
+            if (h.dimensionScores) h.dimensionScores = normalizeDimensionScores(h.dimensionScores);
           });
           setHistory(parsed);
         }
         const resultRaw = localStorage.getItem("cognitive-rust-result");
         if (resultRaw) {
-          const parsed = JSON.parse(resultRaw) as UserResult & { dimensionScores?: unknown; thetaByType?: unknown };
+          const parsed = JSON.parse(resultRaw) as UserResult & {
+            dimensionScores?: unknown;
+            thetaByType?: unknown;
+          };
           setUserScore(parsed.degradationIndex);
           setUserTier(parsed.tier);
         }
@@ -107,9 +107,7 @@ export default function StatsClient() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-lg font-semibold tracking-tight">
-            {t("pageTitle")}
-          </h1>
+          <h1 className="text-lg font-semibold tracking-tight">{t("pageTitle")}</h1>
           <p className="text-xs text-muted-foreground">{t("pageSubtitle")}</p>
         </div>
       </div>
@@ -121,9 +119,7 @@ export default function StatsClient() {
       {/* Abuse warning banner */}
       <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800/30 dark:bg-amber-950/30 dark:text-amber-200">
         <p className="font-medium">{t("abuseWarningTitle")}</p>
-        <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
-          {t("abuseWarningDesc")}
-        </p>
+        <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">{t("abuseWarningDesc")}</p>
       </div>
 
       {loading && (
@@ -153,9 +149,7 @@ export default function StatsClient() {
               <BarChart3 className="h-6 w-6 text-muted-foreground" />
             </div>
             <CardTitle>{t("emptyTitle")}</CardTitle>
-            <CardDescription className="mt-2">
-              {t("emptyDesc")}
-            </CardDescription>
+            <CardDescription className="mt-2">{t("emptyDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <Link
@@ -178,9 +172,7 @@ export default function StatsClient() {
                   <Users className="h-5 w-5 text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xs text-muted-foreground truncate">
-                    {t("totalTests")}
-                  </div>
+                  <div className="text-xs text-muted-foreground truncate">{t("totalTests")}</div>
                   <div className="text-xl font-bold tracking-tight truncate">
                     {data.totalTests.toLocaleString()}
                   </div>
@@ -212,10 +204,7 @@ export default function StatsClient() {
                 const above = total - below - same;
                 const pct = total > 0 ? Math.round((above / total) * 100) : 0;
                 const tierColorMap = TIER_COLOR_MAP;
-                const c =
-                  userTier?.color ??
-                  tierColorMap[userTier?.label ?? ""] ??
-                  "#888";
+                const c = userTier?.color ?? tierColorMap[userTier?.label ?? ""] ?? "#888";
                 return (
                   <Card className="col-span-2">
                     <CardContent className="flex items-center gap-3 p-4 min-w-0">
@@ -233,19 +222,23 @@ export default function StatsClient() {
                       <span className="text-muted-foreground/20 text-lg">|</span>
                       <div className="flex-1 min-w-0">
                         <div className="text-xs text-muted-foreground">
-                          {t("yourRank")}{same > 0 ? `（${t("tied", { count: same })}）` : ""}
+                          {t("yourRank")}
+                          {same > 0 ? `（${t("tied", { count: same })}）` : ""}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {t("ranking", { count: above })} · {t("rankedBehind", { count: below })}
                         </div>
+                        {isPremium && (
+                          <span className="mt-0.5 inline-block rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                            ✦ Premium
+                          </span>
+                        )}
                         {userTier && (
                           <span
                             className="mt-0.5 inline-block rounded-full px-1.5 py-0.5 text-[10px] font-medium text-white"
                             style={{ backgroundColor: c }}
                           >
-                            {TIER_KEYS.includes(
-                              userTier.label as (typeof TIER_KEYS)[number],
-                            )
+                            {TIER_KEYS.includes(userTier.label as (typeof TIER_KEYS)[number])
                               ? tierLabel(userTier.label)
                               : userTier.label}
                           </span>
@@ -260,15 +253,11 @@ export default function StatsClient() {
           {/* Distribution chart */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">
-                {t("distributionTitle")}
-              </CardTitle>
+              <CardTitle className="text-base">{t("distributionTitle")}</CardTitle>
               <CardDescription>{t("distributionDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <DistributionChart
-                distribution={data.distribution}
-              />
+              <DistributionChart distribution={data.distribution} />
             </CardContent>
           </Card>
 
@@ -276,37 +265,25 @@ export default function StatsClient() {
           {Object.keys(data.aiUsageCounts).length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">
-                  {t("aiGroupTitle")}
-                </CardTitle>
+                <CardTitle className="text-base">{t("aiGroupTitle")}</CardTitle>
                 <CardDescription>{t("aiGroupDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {Object.entries(data.aiUsageCounts).map(
-                    ([level, count]) => {
-                      const idx = AI_CANONICAL_LEVELS.indexOf(
-                        level as (typeof AI_CANONICAL_LEVELS)[number],
-                      );
-                      const label =
-                        idx >= 0
-                          ? (decl.raw("aiLevels") as string[])[idx]
-                          : level;
-                      return (
-                        <div
-                          key={level}
-                          className="flex items-center justify-between text-sm"
-                        >
-                          <span className="text-muted-foreground">
-                            {label}
-                          </span>
-                          <span className="font-medium tabular-nums">
-                            {count} {t("aiLevelSuffix")}
-                          </span>
-                        </div>
-                      );
-                    },
-                  )}
+                  {Object.entries(data.aiUsageCounts).map(([level, count]) => {
+                    const idx = AI_CANONICAL_LEVELS.indexOf(
+                      level as (typeof AI_CANONICAL_LEVELS)[number],
+                    );
+                    const label = idx >= 0 ? (decl.raw("aiLevels") as string[])[idx] : level;
+                    return (
+                      <div key={level} className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">{label}</span>
+                        <span className="font-medium tabular-nums">
+                          {count} {t("aiLevelSuffix")}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -320,42 +297,39 @@ export default function StatsClient() {
             <CardContent>
               <div className="space-y-2">
                 {Object.entries(data.tierCounts).map(([label, count]) => (
-                  <div
-                    key={label}
-                    className="flex items-center gap-3 text-sm"
-                  >
-                    <span className="w-20 shrink-0 text-muted-foreground">
-                      {tierLabel(label)}
-                      </span>
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{
-                            width: `${(count / data.totalTests) * 100}%`,
-                            backgroundColor: TIER_COLOR_MAP[label] ?? "#888",
-                          }}
-                        />
-                      </div>
-                      <span className="w-10 text-right font-medium tabular-nums">
-                        {count}
-                      </span>
+                  <div key={label} className="flex items-center gap-3 text-sm">
+                    <span className="w-20 shrink-0 text-muted-foreground">{tierLabel(label)}</span>
+                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${(count / data.totalTests) * 100}%`,
+                          backgroundColor: TIER_COLOR_MAP[label] ?? "#888",
+                        }}
+                      />
                     </div>
-                  ))}
+                    <span className="w-10 text-right font-medium tabular-nums">{count}</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
+        </div>
+      )}
 
-          </div>
-        )}
-
-        {/* Personal trend */}
-        {history.length >= 2 && (
+      {/* Personal trend */}
+      {history.length >= 2 && (
         <Card className="mt-6">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">{t("trendTitle")}</CardTitle>
-            <CardDescription>
-              {t("trendDesc", { count: history.length })}
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base">{t("trendTitle")}</CardTitle>
+              {isPremium && (
+                <Badge variant="default" className="bg-amber-500 text-white text-xs">
+                  ✦ Premium
+                </Badge>
+              )}
+            </div>
+            <CardDescription>{t("trendDesc", { count: history.length })}</CardDescription>
             {/* Dimension toggle */}
             <div className="mt-2 flex flex-wrap gap-1.5">
               {(["overall", "logic", "math", "vocab", "event"] as const).map((dim) => {
@@ -373,8 +347,7 @@ export default function StatsClient() {
                 if (dim !== "overall") {
                   const hasData = history.some(
                     (h) =>
-                      h.dimensionScores?.[dim] !== undefined &&
-                      h.dimensionScores?.[dim] !== null,
+                      h.dimensionScores?.[dim] !== undefined && h.dimensionScores?.[dim] !== null,
                   );
                   if (!hasData) return null;
                 }
@@ -382,10 +355,11 @@ export default function StatsClient() {
                   <button
                     key={dim}
                     onClick={() => setTrendDimension(dim)}
-                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${trendDimension === dim
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                      trendDimension === dim
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground hover:bg-muted/80"
-                      }`}
+                    }`}
                   >
                     {label}
                   </button>
@@ -408,14 +382,7 @@ export default function StatsClient() {
                 { y: 132, h: 44, fill: "#65a30d15" },
                 { y: 176, h: 44, fill: "#16a34a15" },
               ].map((zone, zi) => (
-                <rect
-                  key={zi}
-                  x="40"
-                  y={zone.y}
-                  width="520"
-                  height={zone.h}
-                  fill={zone.fill}
-                />
+                <rect key={zi} x="40" y={zone.y} width="520" height={zone.h} fill={zone.fill} />
               ))}
 
               {/* Tier zone labels: reversed so top=severeDecline, bottom=cognitivePeak */}
@@ -467,22 +434,10 @@ export default function StatsClient() {
                     <g key={i}>
                       {i > 0 &&
                         (() => {
-                          const px =
-                            45 +
-                            ((i - 1) / Math.max(history.length - 1, 1)) * 515;
-                          const py =
-                            20 +
-                            ((100 - history[i - 1].degradationIndex) / 100) *
-                            160;
+                          const px = 45 + ((i - 1) / Math.max(history.length - 1, 1)) * 515;
+                          const py = 20 + ((100 - history[i - 1].degradationIndex) / 100) * 160;
                           return (
-                            <line
-                              x1={px}
-                              y1={py}
-                              x2={x}
-                              y2={y}
-                              stroke="#888"
-                              strokeWidth="2"
-                            />
+                            <line x1={px} y1={py} x2={x} y2={y} stroke="#888" strokeWidth="2" />
                           );
                         })()}
                       <circle
@@ -503,28 +458,22 @@ export default function StatsClient() {
                         {h.degradationIndex}
                       </text>
                       {/* Date label — first, last, and every third */}
-                      {(i === 0 ||
-                        i === history.length - 1 ||
-                        i % 3 === 0) && (
-                          <text
-                            x={x}
-                            y={205}
-                            textAnchor={
-                              i === 0
-                                ? "start"
-                                : i === history.length - 1
-                                  ? "end"
-                                  : "middle"
-                            }
-                            fontSize="8"
-                            className="fill-muted-foreground/60"
-                          >
-                            {new Date(h.timestamp).toLocaleDateString("zh-CN", {
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </text>
-                        )}
+                      {(i === 0 || i === history.length - 1 || i % 3 === 0) && (
+                        <text
+                          x={x}
+                          y={205}
+                          textAnchor={
+                            i === 0 ? "start" : i === history.length - 1 ? "end" : "middle"
+                          }
+                          fontSize="8"
+                          className="fill-muted-foreground/60"
+                        >
+                          {new Date(h.timestamp).toLocaleDateString("zh-CN", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </text>
+                      )}
                     </g>
                   );
                 })}
@@ -549,34 +498,16 @@ export default function StatsClient() {
                     <g key={i}>
                       {i > 0 &&
                         (() => {
-                          const prevVal =
-                            history[i - 1].dimensionScores?.[trendDimension];
-                          if (prevVal === undefined || prevVal === null)
-                            return null;
+                          const prevVal = history[i - 1].dimensionScores?.[trendDimension];
+                          if (prevVal === undefined || prevVal === null) return null;
                           const prevDimIndex = 100 - prevVal;
-                          const px =
-                            45 +
-                            ((i - 1) / Math.max(history.length - 1, 1)) * 515;
+                          const px = 45 + ((i - 1) / Math.max(history.length - 1, 1)) * 515;
                           const py = 20 + ((100 - prevDimIndex) / 100) * 160;
                           return (
-                            <line
-                              x1={px}
-                              y1={py}
-                              x2={x}
-                              y2={y}
-                              stroke={dimColor}
-                              strokeWidth="2"
-                            />
+                            <line x1={px} y1={py} x2={x} y2={y} stroke={dimColor} strokeWidth="2" />
                           );
                         })()}
-                      <circle
-                        cx={x}
-                        cy={y}
-                        r="5"
-                        fill={dimColor}
-                        stroke="white"
-                        strokeWidth="2"
-                      />
+                      <circle cx={x} cy={y} r="5" fill={dimColor} stroke="white" strokeWidth="2" />
                       <text
                         x={x}
                         y={y - 10}
@@ -612,24 +543,16 @@ export default function StatsClient() {
                 return (
                   <div className="mt-2 flex items-center justify-center gap-4 text-xs text-muted-foreground">
                     <span>
-                      {t("trendFirst")}{" "}
-                      <span className="font-medium text-foreground">
-                        {first}
-                      </span>
+                      {t("trendFirst")} <span className="font-medium text-foreground">{first}</span>
                     </span>
                     <span className="text-muted-foreground/40">→</span>
                     <span>
-                      {t("trendLatest")}{" "}
-                      <span className="font-medium text-foreground">
-                        {last}
-                      </span>
+                      {t("trendLatest")} <span className="font-medium text-foreground">{last}</span>
                     </span>
                     <span
                       className={`${improved ? "text-green-600" : diff > 0 ? "text-red-600" : "text-muted-foreground"}`}
                     >
-                      {diff === 0
-                        ? t("trendFlat")
-                        : `${improved ? "↓" : "↑"} ${Math.abs(diff)}`}
+                      {diff === 0 ? t("trendFlat") : `${improved ? "↓" : "↑"} ${Math.abs(diff)}`}
                     </span>
                   </div>
                 );

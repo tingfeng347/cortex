@@ -73,9 +73,6 @@ export function ResultPhase({
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [showPremiumPrompt, setShowPremiumPrompt] = useState(false);
-
-  // Load cached AI analysis for this test session
   useEffect(() => {
     try {
       const raw = localStorage.getItem("cognitive-rust-result");
@@ -126,10 +123,7 @@ export function ResultPhase({
   const isFirstTest = testCount === 1;
 
   async function handleAiInterpret() {
-    if (!isPremium) {
-      setShowPremiumPrompt(true);
-      return;
-    }
+    if (!isPremium) return;
     setAiLoading(true);
     setAiError(null);
     try {
@@ -296,6 +290,11 @@ export function ResultPhase({
                 >
                   IRT
                 </Link>
+              )}
+              {isPremium && (
+                <Badge variant="default" className="bg-amber-500 text-white text-xs">
+                  ✦ Premium
+                </Badge>
               )}
             </div>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
@@ -723,6 +722,22 @@ export function ResultPhase({
           </div>
         )}
 
+        {/* Premium placeholder — user has history but no premium */}
+        {!analysis && !isFirstTest && !isPremium && (
+          <div className="rounded-xl border border-dashed border-muted-foreground/30 bg-muted/20 p-6 text-center">
+            <p className="text-sm font-medium text-muted-foreground">逐维度趋势分析</p>
+            <p className="mt-1 text-xs text-muted-foreground/60">
+              升级 Premium 后查看各维度认知变化趋势与改善建议
+            </p>
+            <Link
+              href="/unlock"
+              className="mt-3 inline-block rounded-full bg-foreground px-5 py-1.5 text-xs font-medium text-background hover:opacity-90 transition-opacity"
+            >
+              解锁 Premium
+            </Link>
+          </div>
+        )}
+
         {!isFirstTest && (
           /* AI Interpretation */
           <div className="rounded-xl border border-violet-200 bg-violet-50/50 p-4 dark:border-violet-800 dark:bg-violet-950/20">
@@ -731,24 +746,34 @@ export function ResultPhase({
                 {n("result.aiInterpretTitle")}
                 <sup className="ml-0.5 text-sm text-amber-500">*</sup>
               </p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs"
-                onClick={handleAiInterpret}
-                disabled={aiLoading}
-              >
-                {aiAnalysis ? n("result.aiInterpretRegenerate") : n("result.aiInterpretButton")}
-              </Button>
+              {isPremium ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 text-xs"
+                  onClick={handleAiInterpret}
+                  disabled={aiLoading}
+                >
+                  {aiAnalysis ? n("result.aiInterpretRegenerate") : n("result.aiInterpretButton")}
+                </Button>
+              ) : null}
             </div>
 
-            {showPremiumPrompt && !isPremium && (
-              <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50/80 p-3 text-center text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-400">
-                {n("result.aiInterpretPremiumOnly")}
+            {!isPremium && (
+              <div className="mt-2 rounded-lg border border-dashed border-amber-200 bg-amber-50/60 p-3 text-center dark:border-amber-800 dark:bg-amber-950/20">
+                <p className="text-xs text-amber-700 dark:text-amber-400">
+                  Premium 专属 · 基于你的测试数据生成个性化认知分析报告
+                </p>
+                <Link
+                  href="/unlock"
+                  className="mt-1.5 inline-block text-xs font-medium text-amber-600 underline-offset-2 hover:underline dark:text-amber-400"
+                >
+                  升级查看 →
+                </Link>
               </div>
             )}
 
-            {!aiAnalysis && !aiLoading && !aiError && !showPremiumPrompt && (
+            {isPremium && !aiAnalysis && !aiLoading && !aiError && (
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 {n("result.aiInterpretDesc")}
               </p>
