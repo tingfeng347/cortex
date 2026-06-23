@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, Link } from "@/i18n/navigation"
-import { LogOut, Loader2, KeyRound } from "lucide-react"
+import { LogOut, Loader2 } from "lucide-react"
 
 export default function AdminDashboard() {
   const router = useRouter()
-  const [admin, setAdmin] = useState<{ id: number; username: string; role: string } | null>(null)
+  const [admin, setAdmin] = useState<{ id: number; username: string; role: string; nickname: string | null } | null>(null)
   const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0 })
   const [loading, setLoading] = useState(true)
   const [showPwdForm, setShowPwdForm] = useState(false)
@@ -15,6 +15,9 @@ export default function AdminDashboard() {
   const [confirmPwd, setConfirmPwd] = useState("")
   const [pwdLoading, setPwdLoading] = useState(false)
   const [pwdMsg, setPwdMsg] = useState("")
+  const [nickname, setNickname] = useState("")
+  const [nickLoading, setNickLoading] = useState(false)
+  const [nickMsg, setNickMsg] = useState("")
 
   useEffect(() => {
     Promise.all([
@@ -26,6 +29,7 @@ export default function AdminDashboard() {
         return
       }
       setAdmin(auth.admin)
+      setNickname(auth.admin.nickname ?? "")
       const qs = questions.questions || []
       setStats({
         pending: qs.filter((q: { status: string }) => q.status === "pending").length,
@@ -82,6 +86,29 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleNicknameSave = async () => {
+    setNickMsg("")
+    setNickLoading(true)
+    try {
+      const res = await fetch("/api/admin/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nickname: nickname.trim() || null }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setNickMsg(data.error === "nickname already exists" ? "昵称已被使用" : data.error || "保存失败")
+        return
+      }
+      setNickMsg("昵称已更新 ✓")
+      setAdmin((prev) => prev ? { ...prev, nickname: data.nickname } : prev)
+    } catch {
+      setNickMsg("网络错误")
+    } finally {
+      setNickLoading(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -97,6 +124,7 @@ export default function AdminDashboard() {
           <h1 className="text-xl font-bold">管理后台</h1>
           <p className="text-sm text-muted-foreground">
             {admin?.username} ({admin?.role === "super_admin" ? "超级管理员" : "审题员"})
+            {admin?.nickname && <span className="ml-1">· {admin.nickname}</span>}
           </p>
         </div>
         <button
@@ -149,6 +177,36 @@ export default function AdminDashboard() {
             <p className="text-sm text-muted-foreground">创建或删除审题员账户</p>
           </Link>
         )}
+        <div className="rounded-lg border border-input p-4">
+          <p className="font-medium">显示昵称</p>
+          <p className="text-sm text-muted-foreground">设置后将在审题信息中优先显示此昵称</p>
+          <div className="mt-3 flex gap-2">
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => { setNickname(e.target.value); setNickMsg("") }}
+              placeholder="输入昵称（留空则显示用户名）"
+              className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              maxLength={50}
+            />
+            <button
+              onClick={handleNicknameSave}
+              disabled={nickLoading}
+              className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 disabled:opacity-50"
+            >
+              {nickLoading ? "保存中..." : "保存"}
+            </button>
+          </div>
+          {nickMsg && (
+            <p className={`mt-2 text-xs ${
+              nickMsg.includes("✓")
+                ? "text-green-600 dark:text-green-400"
+                : "text-red-600 dark:text-red-400"
+            }`}>
+              {nickMsg}
+            </p>
+          )}
+        </div>
         <button
           onClick={() => setShowPwdForm(!showPwdForm)}
           className="w-full rounded-lg border border-input p-4 text-left transition-colors hover:bg-muted/50"

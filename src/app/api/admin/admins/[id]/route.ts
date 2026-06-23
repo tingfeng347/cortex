@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { getCurrentAdmin, hashPassword } from "@/lib/community/auth"
-import { deleteAdmin, updateAdmin } from "@/lib/community/d1"
+import { deleteAdmin, getAdminByUsernameOrNickname, updateAdmin } from "@/lib/community/d1"
 
 export async function PATCH(
   request: Request,
@@ -22,13 +22,27 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const updates: { passwordHash?: string; role?: string } = {}
+    const updates: { passwordHash?: string; role?: string; nickname?: string | null } = {}
 
     if (body.password) {
       updates.passwordHash = await hashPassword(body.password)
     }
     if (body.role && (body.role === "super_admin" || body.role === "reviewer")) {
       updates.role = body.role
+    }
+    if (body.nickname !== undefined) {
+      const finalNickname =
+        body.nickname === null || body.nickname === ""
+          ? null
+          : String(body.nickname).trim()
+      // Check uniqueness across nickname and username columns
+      if (finalNickname !== null) {
+        const existing = await getAdminByUsernameOrNickname(finalNickname)
+        if (existing && existing.id !== adminId) {
+          return NextResponse.json({ error: "nickname already exists" }, { status: 409 })
+        }
+      }
+      updates.nickname = finalNickname
     }
 
     if (Object.keys(updates).length === 0) {

@@ -9,22 +9,25 @@ interface AdminUser {
   id: number
   username: string
   role: string
+  nickname: string | null
   created_at: string
 }
 
 export default function AdminAdminsPage() {
   const router = useRouter()
-  const [admin, setAdmin] = useState<{ id: number; username: string; role: string } | null>(null)
+  const [admin, setAdmin] = useState<{ id: number; username: string; role: string; nickname: string | null } | null>(null)
   const [admins, setAdmins] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
   const [newUsername, setNewUsername] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [newRole, setNewRole] = useState("reviewer")
+  const [newNickname, setNewNickname] = useState("")
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState("")
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editPassword, setEditPassword] = useState("")
   const [editRole, setEditRole] = useState("reviewer")
+  const [editNickname, setEditNickname] = useState("")
   const [saving, setSaving] = useState(false)
 
   const fetchAdmins = async () => {
@@ -64,15 +67,17 @@ export default function AdminAdminsPage() {
           username: newUsername.trim(),
           password: newPassword,
           role: newRole,
+          nickname: newNickname.trim() || undefined,
         }),
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error === "username already exists" ? "用户名已存在" : data.error || "创建失败")
+        setError(data.error === "username already exists" || data.error === "username or nickname already exists" ? "用户名或昵称已存在" : data.error || "创建失败")
         return
       }
       setNewUsername("")
       setNewPassword("")
+      setNewNickname("")
       setNewRole("reviewer")
       await fetchAdmins()
     } catch {
@@ -92,9 +97,10 @@ export default function AdminAdminsPage() {
     setSaving(true)
     setError("")
     try {
-      const body: { password?: string; role?: string } = {}
+      const body: { password?: string; role?: string; nickname?: string | null } = {}
       if (editPassword.trim()) body.password = editPassword.trim()
       if (editRole) body.role = editRole
+      body.nickname = editNickname.trim() || null
       const res = await fetch(`/api/admin/admins/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -157,6 +163,13 @@ export default function AdminAdminsPage() {
               placeholder="密码"
               className="rounded-md border border-input bg-background px-3 py-2 text-sm sm:flex-1"
             />
+            <input
+              type="text"
+              value={newNickname}
+              onChange={(e) => setNewNickname(e.target.value)}
+              placeholder="昵称（可选）"
+              className="rounded-md border border-input bg-background px-3 py-2 text-sm sm:w-36"
+            />
             <select
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
@@ -184,7 +197,10 @@ export default function AdminAdminsPage() {
             <div key={a.id} className="rounded-lg border border-input">
               <div className="flex items-center justify-between p-3">
                 <div>
-                  <p className="text-sm font-medium">{a.username}</p>
+                  <p className="text-sm font-medium">
+                    {a.username}
+                    {a.nickname && <span className="ml-1.5 text-xs text-muted-foreground">({a.nickname})</span>}
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {roleLabel(a.role)} · 创建于 {a.created_at?.slice(0, 10)}
                   </p>
@@ -197,6 +213,7 @@ export default function AdminAdminsPage() {
                           setEditingId(isEditing ? null : a.id)
                           setEditPassword("")
                           setEditRole(a.role)
+                          setEditNickname(a.nickname ?? "")
                           setError("")
                         }}
                         className="text-sm text-muted-foreground hover:text-foreground"
@@ -218,6 +235,13 @@ export default function AdminAdminsPage() {
               {isEditing && (
                 <div className="border-t border-input px-3 pb-3 pt-3">
                   <div className="flex flex-col gap-2 sm:flex-row">
+                    <input
+                      type="text"
+                      value={editNickname}
+                      onChange={(e) => setEditNickname(e.target.value)}
+                      placeholder="昵称（留空则显示用户名）"
+                      className="rounded-md border border-input bg-background px-3 py-2 text-sm sm:w-36"
+                    />
                     <input
                       type="password"
                       value={editPassword}

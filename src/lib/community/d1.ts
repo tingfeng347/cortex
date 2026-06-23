@@ -21,6 +21,7 @@ export interface AdminRow {
   username: string
   password_hash: string
   role: "super_admin" | "reviewer"
+  nickname: string | null
   created_at: string
 }
 
@@ -136,7 +137,7 @@ export async function getQuestionsWithVotes(): Promise<QuestionWithVotes[]> {
       q.*,
       COALESCE(SUM(CASE WHEN v.vote = 1 THEN 1 ELSE 0 END), 0) as upvotes,
       COALESCE(SUM(CASE WHEN v.vote = -1 THEN 1 ELSE 0 END), 0) as downvotes,
-      a.username as reviewer_name
+      COALESCE(a.nickname, a.username) as reviewer_name
     FROM community_questions q
     LEFT JOIN question_votes v ON v.question_id = q.id
     LEFT JOIN admins a ON a.id = q.reviewed_by
@@ -230,13 +231,13 @@ export async function getAdminById(id: number): Promise<AdminRow | null> {
 }
 
 export async function getAllAdmins(): Promise<AdminRow[]> {
-  return d1Query<AdminRow>("SELECT id, username, role, created_at FROM admins ORDER BY id")
+  return d1Query<AdminRow>("SELECT id, username, role, nickname, created_at FROM admins ORDER BY id")
 }
 
-export async function createAdmin(username: string, passwordHash: string, role: string): Promise<void> {
+export async function createAdmin(username: string, passwordHash: string, role: string, nickname?: string): Promise<void> {
   await d1Run(
-    "INSERT INTO admins (username, password_hash, role) VALUES (?, ?, ?)",
-    [username, passwordHash, role]
+    "INSERT INTO admins (username, password_hash, role, nickname) VALUES (?, ?, ?, ?)",
+    [username, passwordHash, role, nickname ?? null]
   )
 }
 
@@ -245,9 +246,9 @@ export async function deleteAdmin(id: number): Promise<void> {
   await d1Run("DELETE FROM admin_sessions WHERE admin_id = ?", [id])
 }
 
-export async function updateAdmin(id: number, data: { passwordHash?: string; role?: string }): Promise<void> {
+export async function updateAdmin(id: number, data: { passwordHash?: string; role?: string; nickname?: string | null }): Promise<void> {
   const sets: string[] = []
-  const vals: (string | number)[] = []
+  const vals: (string | number | null)[] = []
   if (data.passwordHash) {
     sets.push("password_hash = ?")
     vals.push(data.passwordHash)
@@ -255,6 +256,10 @@ export async function updateAdmin(id: number, data: { passwordHash?: string; rol
   if (data.role) {
     sets.push("role = ?")
     vals.push(data.role)
+  }
+  if (data.nickname !== undefined) {
+    sets.push("nickname = ?")
+    vals.push(data.nickname)
   }
   if (sets.length === 0) return
   vals.push(id)
@@ -267,6 +272,17 @@ export async function getAdminPasswordHash(id: number): Promise<string | null> {
     [id]
   )
   return row?.password_hash ?? null
+}
+
+export async function getAdminByNickname(nickname: string): Promise<AdminRow | null> {
+  return d1First<AdminRow>("SELECT * FROM admins WHERE nickname = ?", [nickname])
+}
+
+export async function getAdminByUsernameOrNickname(value: string): Promise<AdminRow | null> {
+  return d1First<AdminRow>(
+    "SELECT * FROM admins WHERE username = ? OR nickname = ?",
+    [value, value]
+  )
 }
 
 // --- Sessions ---

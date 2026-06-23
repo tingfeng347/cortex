@@ -38,7 +38,7 @@ export function generateSessionId(): string {
  * Get the current admin from the session cookie.
  * Returns { id, username, role } or null if not authenticated.
  */
-export async function getCurrentAdmin(): Promise<{ id: number; username: string; role: string } | null> {
+export async function getCurrentAdmin(): Promise<{ id: number; username: string; role: string; nickname: string | null } | null> {
   try {
     const cookieStore = await cookies()
     const sessionId = cookieStore.get(SESSION_COOKIE)?.value
@@ -50,7 +50,7 @@ export async function getCurrentAdmin(): Promise<{ id: number; username: string;
     const admin = await getAdminById(session.admin_id)
     if (!admin) return null
 
-    return { id: admin.id, username: admin.username, role: admin.role }
+    return { id: admin.id, username: admin.username, role: admin.role, nickname: admin.nickname }
   } catch {
     return null
   }
