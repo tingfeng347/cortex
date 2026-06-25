@@ -708,13 +708,26 @@ export function useTestState() {
         window.history.replaceState({}, "", window.location.pathname);
       }
 
-      // Check 7-day / 7-test limit for free users
+      // Check 7-day / 3-test limit for free users (client + server)
       if (!isPremium) {
         const cooldownEnd = getFreeTestCooldownEndsAt();
         if (cooldownEnd !== null && Date.now() < cooldownEnd) {
           setCooldownEndsAt(cooldownEnd);
         }
-        setFreeTestUsedCount(getFreeTestUsedCount());
+        const localCount = getFreeTestUsedCount();
+        setFreeTestUsedCount(localCount);
+
+        // Sync with server-side IP-based count so clearing localStorage doesn't reset display
+        fetch("/api/results")
+          .then((r) => r.json())
+          .then((data) => {
+            const serverCount = typeof data.count === "number" ? data.count : 0;
+            const merged = Math.max(localCount, serverCount);
+            setFreeTestUsedCount(merged);
+          })
+          .catch(() => {
+            /* network error, keep local count */
+          });
       }
     });
     return () => {
@@ -781,7 +794,7 @@ export function useTestState() {
       }
     }
 
-    // Check 7-day / 7-test limit for free users
+    // Check 7-day / 3-test limit for free users
     if (!isPremium) {
       const cooldownEnd = getFreeTestCooldownEndsAt();
       if (cooldownEnd !== null && Date.now() < cooldownEnd) {
@@ -790,6 +803,20 @@ export function useTestState() {
         return; // blocked by limit
       }
       setFreeTestUsedCount(getFreeTestUsedCount());
+
+      // Server-side check: catch users who cleared localStorage
+      try {
+        const res = await fetch("/api/results");
+        const data = await res.json();
+        if (typeof data.count === "number" && data.count >= MAX_FREE_TESTS) {
+          setFreeTestUsedCount(data.count);
+          setCooldownEndsAt(Date.now() + FREE_LIMIT_WINDOW_MS);
+          setCooldownVersion((v) => v + 1);
+          return; // blocked by server limit
+        }
+      } catch {
+        /* network error — proceed with client check only */
+      }
     }
     clearProgress();
     setSavedProgress(null);
