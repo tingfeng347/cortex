@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 24
 
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile --ignore-scripts
 
       - run: pnpm build
 
