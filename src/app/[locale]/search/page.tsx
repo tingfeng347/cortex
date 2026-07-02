@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Search, Loader2, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { search as bm25Search } from "@/lib/search";
 
 interface SearchResult {
   id: number;
@@ -54,14 +55,24 @@ export default function SearchPage() {
       }
       setLoading(true);
       setSearched(true);
-      fetch(`/api/search?q=${encodeURIComponent(q)}&locale=${locale}&limit=20`)
-        .then((r) => r.json())
-        .then((d) => {
-          setResults(d.results ?? []);
-          setExpanded(new Set());
-        })
-        .catch(() => setResults([]))
-        .finally(() => setLoading(false));
+      // Client-side BM25 search over the static question bank
+      const bankResults = bm25Search(q, locale, 20);
+      setResults(
+        bankResults.map((r) => ({
+          id: r.question.id,
+          type: r.question.type,
+          category: r.question.category,
+          question: r.question.question,
+          options: r.question.options,
+          answer: r.question.answer,
+          explanation: r.question.explanation,
+          difficulty: r.question.difficulty,
+          score: r.score,
+          source: "static",
+        })),
+      );
+      setExpanded(new Set());
+      setLoading(false);
     },
     [locale],
   );
@@ -169,7 +180,6 @@ export default function SearchPage() {
                         <span className="text-[10px] text-muted-foreground/40">
                           {n("search.scoreLabel", { score: r.score })}
                         </span>
-
                       </div>
                     </CardHeader>
                     <CardContent className="pb-3 pt-1">

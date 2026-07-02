@@ -48,10 +48,32 @@ async function getCloudflareEnv(): Promise<CloudflareEnv> {
   }
 }
 
+// ---- In-memory fallback (local dev without D1 binding) ----
+// Returns empty results for SELECTs and no-ops for writes, so the app
+// runs locally without a D1 database (AI question pool is simply empty).
+
+const memoryStmt: D1PreparedStatement = {
+  all<T = unknown>(): Promise<{ results: T[] }> {
+    return Promise.resolve({ results: [] });
+  },
+  bind(): D1PreparedStatement {
+    return memoryStmt;
+  },
+};
+const memoryDb: D1Database = {
+  prepare(): D1PreparedStatement {
+    return memoryStmt;
+  },
+  batch(): Promise<unknown[]> {
+    return Promise.resolve([]);
+  },
+};
+
 export async function getDB(): Promise<D1Database> {
   const env = await getCloudflareEnv();
   if (!env.CORTEX_DB) {
-    throw new Error("CORTEX_DB binding not available — is the D1 database configured?");
+    // Local dev without D1 binding — degrade to in-memory no-op store.
+    return memoryDb;
   }
   return env.CORTEX_DB as D1Database;
 }

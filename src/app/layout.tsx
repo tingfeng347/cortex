@@ -3,6 +3,9 @@ import Script from "next/script";
 import "./globals.css";
 import "./festival/dragonboat.css";
 import { SITE_URL } from "@/lib/site-config";
+import { routing } from "@/i18n/routing";
+
+const LOCALES_JSON = JSON.stringify(routing.locales);
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -24,13 +27,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className="antialiased" suppressHydrationWarning>
+    <html lang={routing.defaultLocale} className="antialiased" suppressHydrationWarning>
       <head>
         <Script
           id="theme-init"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){var t=localStorage.getItem('cortex-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})()`,
+          }}
+        />
+        <Script
+          id="lang-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var s=window.location.pathname.split('/')[1];var L=${LOCALES_JSON};if(L.indexOf(s)>=0){document.documentElement.lang=s}})()`,
           }}
         />
       </head>

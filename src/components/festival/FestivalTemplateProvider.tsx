@@ -53,8 +53,14 @@ export function FestivalTemplateProvider({ children }: { children: ReactNode }) 
       resolved = active.length > 0 ? active[0] : null;
     }
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setActiveTemplateState(resolved);
+    // Defer setState to avoid "chunk.reason.enqueueModel is not a function"
+    // crash when this fires during RSC Flight stream processing on
+    // client-side navigation (vercel/next.js#92362).
+    const schedule =
+      typeof requestIdleCallback === "function"
+        ? requestIdleCallback
+        : (cb: () => void) => setTimeout(cb, 0);
+    schedule(() => setActiveTemplateState(resolved));
 
     // Cleanup on unmount
     if (resolved) {

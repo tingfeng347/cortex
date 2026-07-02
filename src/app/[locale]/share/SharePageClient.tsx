@@ -1,26 +1,22 @@
-"use client"
+"use client";
 
-import { useEffect, use } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Link } from "@/i18n/navigation"
-import { parseRefParam } from "@/lib/url-utils"
+import { useEffect, use } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import { parseRefParam } from "@/lib/url-utils";
 
-export function SharePageClient({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale } = use(params)
-  const router = useRouter()
-  const searchParams = useSearchParams()
+export function SharePageClient({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = use(params);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const ref = parseRefParam(searchParams.get("ref") ?? undefined)
-  const refStr = ref !== null ? String(ref) : ""
+  const ref = parseRefParam(searchParams.get("ref") ?? undefined);
+  const refStr = ref !== null ? String(ref) : "";
 
   useEffect(() => {
-    const dest = "/" + (refStr ? "?ref=" + refStr : "")
-    router.replace(dest)
-  }, [router, refStr])
+    const dest = "/" + (refStr ? "?ref=" + refStr : "");
+    router.replace(dest);
+  }, [router, refStr]);
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-4 p-4 text-center">
@@ -39,5 +35,5 @@ export function SharePageClient({
         </Link>
       )}
     </div>
-  )
+  );
 }

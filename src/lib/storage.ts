@@ -15,6 +15,14 @@ function cfAuth(): Record<string, string> {
   };
 }
 
+function hasRestCredentials(): boolean {
+  return !!(CF_ACCOUNT_ID && CF_KV_NS && process.env.CLOUDFLARE_API_TOKEN);
+}
+
+// ---- In-memory fallback (local dev without Cloudflare bindings) ----
+
+const memoryStore = new Map<string, string>();
+
 // ---- Types ----
 
 interface StatsStore {
@@ -52,7 +60,12 @@ async function kvGet(key: string): Promise<string | null> {
       return await env.CORTEX_KV.get(key);
     }
   } catch {
-    // binding not available, fall back to REST API
+    // binding not available, fall back
+  }
+
+  // In-memory fallback (local dev without credentials)
+  if (!hasRestCredentials()) {
+    return memoryStore.get(key) ?? null;
   }
 
   // REST API fallback
@@ -79,7 +92,18 @@ async function kvGetJson<T>(key: string): Promise<T | null> {
       }
     }
   } catch {
-    // binding not available, fall back to REST API
+    // binding not available, fall back
+  }
+
+  // In-memory fallback (local dev without credentials)
+  if (!hasRestCredentials()) {
+    const raw = memoryStore.get(key);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
   }
 
   // REST API fallback
@@ -100,7 +124,13 @@ async function kvPut(key: string, value: string, ttl?: number): Promise<void> {
       return;
     }
   } catch {
-    // binding not available, fall back to REST API
+    // binding not available, fall back
+  }
+
+  // In-memory fallback (local dev without credentials)
+  if (!hasRestCredentials()) {
+    memoryStore.set(key, value);
+    return;
   }
 
   // REST API fallback
