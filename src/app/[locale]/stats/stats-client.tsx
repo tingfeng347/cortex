@@ -13,6 +13,7 @@ import { ArrowLeft, Users, Brain, BarChart3 } from "lucide-react";
 import { TIER_COLOR_MAP, TIER_KEYS } from "@/lib/scoring";
 import { AI_CANONICAL_LEVELS } from "@/lib/constants";
 import { PremiumBadge } from "@/components/premium-seam";
+import { withBasePath } from "@/lib/site-config";
 
 interface StatsPageData {
   totalTests: number;
@@ -59,7 +60,7 @@ export default function StatsClient() {
   >("overall");
 
   useEffect(() => {
-    fetch("/api/stats")
+    fetch(withBasePath("/api/stats"))
       .then((r) => r.json())
       .then((json) => {
         setData(json as StatsPageData);

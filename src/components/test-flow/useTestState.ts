@@ -49,16 +49,14 @@ import {
   FREE_LIMIT_WINDOW_MS,
   type StoredAbilityProfile,
 } from "@/lib/premium-seam";
-import { SITE_HOST } from "@/lib/site-config";
+import { SITE_HOST, withBasePath } from "@/lib/site-config";
 
 export { MAX_FREE_TESTS } from "@/lib/premium-seam";
 
 type Phase = "landing" | "declaration" | "testing" | "processing" | "result";
 
 type ToastState =
-  | string
-  | { message: string; action: { label: string; onPress: () => void } }
-  | null;
+  string | { message: string; action: { label: string; onPress: () => void } } | null;
 
 interface StoredResultSummary {
   degradationIndex: number;
@@ -136,7 +134,7 @@ export function useTestState() {
       // Fetch calibrated IRT params (best-effort)
       let calibratedParams: Record<string, { a: number; b: number; c?: number }> = {};
       try {
-        const res = await fetch("/api/question-params");
+        const res = await fetch(withBasePath("/api/question-params"));
         if (res.ok) calibratedParams = await res.json();
       } catch {}
 
@@ -396,7 +394,7 @@ export function useTestState() {
         deviceId,
         responses: responseRecords.length > 0 ? responseRecords : undefined,
       };
-      fetch("/api/results", {
+      fetch(withBasePath("/api/results"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -552,7 +550,7 @@ export function useTestState() {
                     ? n("tier." + reminder.tierLabelKey)
                     : reminder.tierLabel,
                 }),
-                icon: "/favicon.ico",
+                icon: withBasePath("/favicon.ico"),
               });
             }
           }
@@ -579,7 +577,7 @@ export function useTestState() {
         setFreeTestUsedCount(localCount);
 
         // Sync with server-side IP-based count so clearing localStorage doesn't reset display
-        fetch("/api/results")
+        fetch(withBasePath("/api/results"))
           .then((r) => r.json())
           .then((data) => {
             const serverCount = typeof data.count === "number" ? data.count : 0;
@@ -648,7 +646,7 @@ export function useTestState() {
 
       // Server-side check: catch users who cleared localStorage
       try {
-        const res = await fetch("/api/results");
+        const res = await fetch(withBasePath("/api/results"));
         const data = await res.json();
         if (typeof data.count === "number" && data.count >= MAX_FREE_TESTS) {
           setFreeTestUsedCount(data.count);
@@ -729,7 +727,7 @@ export function useTestState() {
     if (aiUsage === null) return;
 
     // Load AI pool questions on demand (deferred from mount to avoid wasting D1 reads on idle visitors)
-    fetch("/api/ai/generate-question?locale=" + locale)
+    fetch(withBasePath("/api/ai/generate-question?locale=" + locale))
       .then((r) => r.json())
       .then((data) => {
         if (data.questions?.length > 0) {
@@ -894,7 +892,7 @@ export function useTestState() {
           const type = getCurrentDimension(session);
           const recentTypes = session.responses.slice(-20).map((r) => r.type);
 
-          fetch("/api/ai/generate-question", {
+          fetch(withBasePath("/api/ai/generate-question"), {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1016,7 +1014,7 @@ export function useTestState() {
       event: n("radar.event"),
       cta: n("landing.title") + " — " + SITE_HOST,
     });
-    const pageUrl = window.location.origin + "/share?ref=" + result.degradationIndex;
+    const pageUrl = window.location.origin + withBasePath("/share?ref=" + result.degradationIndex);
 
     if (navigator.share) {
       try {

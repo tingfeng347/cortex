@@ -1,9 +1,9 @@
-export const dynamic = "force-static"
+export const dynamic = "force-static";
 
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/site-config";
+import { SITE_URL, BASE_PATH } from "@/lib/site-config";
 
-const BASE_URL = SITE_URL;
+const BASE_URL = `${SITE_URL}${BASE_PATH}`;
 
 const LOCALES = ["zh-CN", "en", "ja"] as const;
 

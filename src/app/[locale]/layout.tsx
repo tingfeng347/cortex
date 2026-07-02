@@ -3,7 +3,7 @@ import Script from "next/script";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 
 export function generateStaticParams() {
-  return [{ locale: "zh-CN" }, { locale: "en" }, { locale: "ja" }]
+  return [{ locale: "zh-CN" }, { locale: "en" }, { locale: "ja" }];
 }
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -15,11 +15,11 @@ import { IntlErrorBoundary } from "@/components/IntlErrorBoundary";
 import { Link } from "@/i18n/navigation";
 import { QUESTIONS_PER_TEST } from "@/lib/questions";
 import { RESULT_TIERS } from "@/lib/scoring";
-import { SITE_URL } from "@/lib/site-config";
+import { SITE_URL, BASE_PATH } from "@/lib/site-config";
 
 const OG_DEFAULT_TIER_LABEL = RESULT_TIERS[Math.floor(RESULT_TIERS.length / 2)].label;
 
-const BASE_URL = SITE_URL;
+const BASE_URL = `${SITE_URL}${BASE_PATH}`;
 
 function jsonLdWebApplication(locale: string) {
   const inLanguage = locale === "zh-CN" ? "zh-Hans" : locale === "ja" ? "ja" : "en";
@@ -57,7 +57,7 @@ export async function generateMetadata({
       { rel: "icon", url: "/favicon.svg", type: "image/svg+xml" },
       { rel: "apple-touch-icon", url: "/favicon-180.png" },
     ],
-    metadataBase: new URL(BASE_URL),
+    metadataBase: new URL(SITE_URL),
     alternates: {
       canonical: locale === "zh-CN" ? BASE_URL : `${BASE_URL}/${locale}`,
       languages: {

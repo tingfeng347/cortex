@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import "./festival/dragonboat.css";
-import { SITE_URL } from "@/lib/site-config";
+import { SITE_URL, BASE_PATH } from "@/lib/site-config";
 import { routing } from "@/i18n/routing";
 
 const LOCALES_JSON = JSON.stringify(routing.locales);
+const BASE_PATH_JS = JSON.stringify(BASE_PATH);
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -40,7 +41,7 @@ export default function RootLayout({
           id="lang-init"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(){var s=window.location.pathname.split('/')[1];var L=${LOCALES_JSON};if(L.indexOf(s)>=0){document.documentElement.lang=s}})()`,
+            __html: `(function(){var p=window.location.pathname;var bp=${BASE_PATH_JS};if(bp&&p.startsWith(bp))p=p.substring(bp.length);var s=p.split('/')[1];var L=${LOCALES_JSON};if(L.indexOf(s)>=0){document.documentElement.lang=s}})()`,
           }}
         />
       </head>
