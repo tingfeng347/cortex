@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url>
+<loc>http://localhost:3000</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>1</priority>
+</url>
+<url>
+<loc>http://localhost:3000/en</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>1</priority>
+</url>
+<url>
+<loc>http://localhost:3000/ja</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>1</priority>
+</url>
+<url>
+<loc>http://localhost:3000/about</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/about" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/about" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/about" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>http://localhost:3000/en/about</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/about" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/about" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/about" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>http://localhost:3000/ja/about</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/about" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/about" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/about" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>http://localhost:3000/stats</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/stats" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/stats" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/stats" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>http://localhost:3000/en/stats</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/stats" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/stats" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/stats" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>http://localhost:3000/ja/stats</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/stats" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/stats" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/stats" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>http://localhost:3000/share</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/share" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/share" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/share" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>http://localhost:3000/en/share</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/share" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/share" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/share" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>http://localhost:3000/ja/share</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/share" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/share" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/share" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>http://localhost:3000/search</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/search" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/search" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/search" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.4</priority>
+</url>
+<url>
+<loc>http://localhost:3000/en/search</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/search" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/search" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/search" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.4</priority>
+</url>
+<url>
+<loc>http://localhost:3000/ja/search</loc>
+<xhtml:link rel="alternate" hreflang="zh-CN" href="http://localhost:3000/search" />
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en/search" />
+<xhtml:link rel="alternate" hreflang="ja" href="http://localhost:3000/ja/search" />
+<lastmod>2026-07-02T15:04:44.212Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.4</priority>
+</url>
+</urlset>

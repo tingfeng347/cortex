@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[25355,["/_next/static/chunks/188w1bld7brvh.js","/_next/static/chunks/3n3yvff_6qsfw.js"],"ViewportBoundary"]
+3:I[25355,["/_next/static/chunks/188w1bld7brvh.js","/_next/static/chunks/3n3yvff_6qsfw.js"],"MetadataBoundary"]
+4:"$Sreact.suspense"
+5:I[39780,["/_next/static/chunks/188w1bld7brvh.js","/_next/static/chunks/3n3yvff_6qsfw.js"],"IconMark"]
+0:{"rsc":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","meta","0",{"name":"theme-color","content":"#1a1a1a"}],["$","meta","1",{"property":"og:locale","content":"zh_CN"}],["$","meta","2",{"property":"og:locale:alternate","content":"en_US"}],["$","meta","3",{"property":"og:locale:alternate","content":"ja_JP"}],["$","meta","4",{"name":"twitter:card","content":"summary"}],["$","link","5",{"rel":"icon","href":"/favicon.svg"}],["$","$L5","6",{}]]}]}]}],null]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"aZ1cZtZ7F1gcxHPA8gMlT"}

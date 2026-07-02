@@ -1,0 +1,6 @@
+1:I[76073,["/_next/static/chunks/188w1bld7brvh.js","/_next/static/chunks/3n3yvff_6qsfw.js"],"LoadingBoundaryProvider"]
+2:"$Sreact.fragment"
+3:I[76073,["/_next/static/chunks/188w1bld7brvh.js","/_next/static/chunks/3n3yvff_6qsfw.js"],"default"]
+4:I[60135,["/_next/static/chunks/188w1bld7brvh.js","/_next/static/chunks/3n3yvff_6qsfw.js"],"default"]
+5:[]
+0:{"rsc":["$","$L1",null,{"loading":[["$","div","l",{"className":"mx-auto max-w-4xl animate-pulse space-y-6 px-4 py-8","children":[["$","div",null,{"className":"h-8 w-48 rounded bg-muted"}],["$","div",null,{"className":"grid gap-4 sm:grid-cols-3","children":[["$","div","0",{"className":"h-32 rounded-xl bg-muted"}],["$","div","1",{"className":"h-32 rounded-xl bg-muted"}],["$","div","2",{"className":"h-32 rounded-xl bg-muted"}]]}],["$","div",null,{"className":"h-64 rounded-xl bg-muted"}],["$","div",null,{"className":"h-48 rounded-xl bg-muted"}]]}],[],[]],"children":["$","$2","c",{"children":[null,["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]]}]}],"isPartial":false,"staleTime":300,"varyParams":"$W5","buildId":"aZ1cZtZ7F1gcxHPA8gMlT"}
