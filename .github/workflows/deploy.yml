@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy:
+    if: github.repository == 'HsiangNianian/cortex'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +25,6 @@ jobs:
       - run: pnpm test
         env:
           NEXT_PUBLIC_ADAPTIVE_MODE: "true"
-          NEXT_PUBLIC_PREMIUM_MODE: "true"
 
       - run: pnpm lint --quiet
         continue-on-error: true
@@ -32,7 +32,6 @@ jobs:
       - run: pnpm cf:build
         env:
           NEXT_PUBLIC_ADAPTIVE_MODE: true
-          NEXT_PUBLIC_PREMIUM_MODE: true
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 

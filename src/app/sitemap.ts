@@ -14,12 +14,9 @@ const STATIC_PATHS: {
   { path: "/about", priority: 0.5, changeFreq: "monthly" as const },
   { path: "/stats", priority: 0.7, changeFreq: "daily" as const },
   { path: "/share", priority: 0.8, changeFreq: "weekly" as const },
-  { path: "/sponsors", priority: 0.5, changeFreq: "weekly" as const },
   { path: "/articles", priority: 0.6, changeFreq: "weekly" as const },
   { path: "/search", priority: 0.4, changeFreq: "monthly" as const },
   { path: "/community/marketplace", priority: 0.5, changeFreq: "daily" as const },
-  { path: "/unlock", priority: 0.6, changeFreq: "monthly" as const },
-  { path: "/premium", priority: 0.5, changeFreq: "monthly" as const },
   { path: "/submit-question", priority: 0.4, changeFreq: "monthly" as const },
 ];
 

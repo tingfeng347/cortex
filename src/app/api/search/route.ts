@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { search } from "@/lib/search";
-import { d1Query } from "@/lib/auth/d1-client";
+import { d1Query } from "@/lib/db";
 import type { Question } from "@/lib/question-bank/types";
 
 export async function GET(request: Request) {

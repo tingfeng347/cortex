@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { saveResult } from "@/lib/storage";
-import { getDB } from "@/lib/auth/d1-client";
+import { getDB } from "@/lib/db";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { TIER_KEYS } from "@/lib/scoring";
 import { AI_CANONICAL_LEVELS } from "@/lib/constants";

@@ -1,0 +1,21 @@
+# LLM Generation (DeepSeek via OpenAI-compatible API)
+OPENAI_BASE_URL=https://api.deepseek.com/
+OPENAI_API_KEY=sk-your-deepseek-api-key
+OPENAI_MODEL=deepseek-v4-flash
+
+# Thinking mode: "enabled" or "disabled" (default: enabled)
+OPENAI_THINKING_ENABLED=enabled
+# Reasoning effort: "low", "high", or "max" (default: low)
+OPENAI_REASONING_EFFORT=low
+
+# Site URL (required for share cards, sitemap, etc.)
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# AI access key (optional — set to require a bearer token on /api/ai/* endpoints)
+AI_ACCESS_KEY=
+
+# Cloudflare infrastructure IDs (for local dev KV/D1 access)
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+CLOUDFLARE_API_TOKEN=your-cloudflare-api-token
+CORTEX_KV_ID=your-kv-namespace-id
+CORTEX_DB_ID=your-d1-database-id

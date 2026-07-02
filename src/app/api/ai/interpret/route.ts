@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { validateLicense } from "@/lib/auth/license";
+import { validateAICall } from "@/lib/ai-auth";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 const INTERPRET_DAILY_LIMIT = 1;
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
       console.log("[ai/interpret] missing_license", logCtx);
       return NextResponse.json({ error: "missing_license" }, { status: 401 });
     }
-    const license = await validateLicense(licenseKey);
+    const license = await validateAICall(licenseKey);
     logCtx.licenseValid = license.valid;
     if (!license.valid) {
       console.log("[ai/interpret] invalid_license", {

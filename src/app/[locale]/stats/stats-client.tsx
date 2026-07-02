@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { normalizeDimensionScores, normalizeThetaByType } from "@/lib/scoring";
 import { SiteGoal } from "@/components/site-goal";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DistributionChart from "@/components/distribution-chart";
 import { Link } from "@/i18n/navigation";
