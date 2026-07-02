@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, use } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Link } from "@/i18n/navigation"
 import { parseRefParam } from "@/lib/url-utils"
@@ -10,15 +10,11 @@ export function SharePageClient({
 }: {
   params: Promise<{ locale: string }>
 }) {
-  const [locale, setLocale] = useState<string | null>(null)
+  const { locale } = use(params)
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  useEffect(() => {
-    params.then((p) => setLocale(p.locale))
-  }, [params])
-
-  const ref = parseRefParam(searchParams.get("ref"))
+  const ref = parseRefParam(searchParams.get("ref") ?? undefined)
   const refStr = ref !== null ? String(ref) : ""
 
   useEffect(() => {
