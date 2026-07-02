@@ -4,7 +4,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { FestivalWrapper } from "@/components/festival/FestivalWrapper";
-import { Bulletin } from "@/components/bulletin";
+
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import { PremiumWrapper } from "@/components/premium-seam";
 import { IntlErrorBoundary } from "@/components/IntlErrorBoundary";
@@ -140,7 +140,6 @@ export default async function LocaleLayout({
           <ThemeToggle />
         </div>
       </div>
-      <Bulletin locale={locale} />
       <ServiceWorkerRegister />
       <FestivalWrapper>
         <PremiumWrapper>{children}</PremiumWrapper>

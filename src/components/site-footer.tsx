@@ -42,6 +42,15 @@ export function SiteFooter({ namespace }: { namespace: FooterNamespace }) {
           >
             {t("aboutLink")}
           </Link>
+          <span className="text-muted-foreground/40">|</span>
+          <a
+            href="https://github.com/HsiangNianian/cortex"
+            target="_blank"
+            rel="noreferrer"
+            className="footer-links transition-colors hover:text-foreground hover:underline underline-offset-4"
+          >
+            GitHub
+          </a>
         </div>
       </footer>
     </>

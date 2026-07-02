@@ -127,35 +127,33 @@ export default async function AboutPage() {
             <p className="text-sm leading-relaxed text-muted-foreground">{t("disclaimerP3")}</p>
           </section>
 
-          {/* Roadmap */}
+          {/* Open Source */}
           <section className="space-y-2">
-            <h2 className="text-sm font-semibold text-foreground">{t("roadmapTitle")}</h2>
-            <div className="space-y-3 text-sm">
-              <div>
-                <p className="font-medium text-foreground">{t("roadmapDone")}</p>
-                <ul className="mt-1 space-y-1 text-muted-foreground">
-                  {(t.raw("roadmapDoneItems") as string[]).map((item: string) => (
-                    <li key={item}>• {item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <p className="font-medium text-foreground">{t("roadmapNear")}</p>
-                <ul className="mt-1 space-y-1 text-muted-foreground">
-                  {(t.raw("roadmapNearItems") as string[]).map((item: string) => (
-                    <li key={item}>• {item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <p className="font-medium text-foreground">{t("roadmapLong")}</p>
-                <ul className="mt-1 space-y-1 text-muted-foreground">
-                  {(t.raw("roadmapLongItems") as string[]).map((item: string) => (
-                    <li key={item}>• {item}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <h2 className="text-sm font-semibold text-foreground">{t("ossTitle")}</h2>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t.rich("ossP1", {
+                officialSite: (chunks) => (
+                  <a
+                    href="https://cortex.hydroroll.team"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-4 hover:text-foreground"
+                  >
+                    {chunks}
+                  </a>
+                ),
+                github: (chunks) => (
+                  <a
+                    href="https://github.com/HsiangNianian/cortex"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-4 hover:text-foreground"
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </p>
           </section>
         </div>
 

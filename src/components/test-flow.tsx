@@ -65,9 +65,6 @@ export default function TestFlow() {
             selected={s.selected}
             isLastQuestion={s.isLastQuestion}
             totalQuestions={s.totalQuestions}
-            flaggedIds={s.flaggedIds}
-            hasFlaggedBefore={s.hasFlaggedBefore}
-            onToggleFlag={s.toggleFlag}
             handleSelectOption={s.handleSelectOption}
             handleNext={s.handleNext}
             onExitTest={s.handleRestart}

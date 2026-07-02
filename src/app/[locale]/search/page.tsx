@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Search, Loader2, ChevronDown, ChevronUp, ArrowLeft, Flag } from "lucide-react";
+import { Search, Loader2, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,44 +42,8 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
-  const [flaggedIds, setFlaggedIds] = useState<Set<number>>(new Set());
-  const [hasFlaggedBefore, setHasFlaggedBefore] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Check if user has flagged before
-  useEffect(() => {
-    try {
-      const hist = localStorage.getItem("cognitive-rust-history");
-      type HistoryEntry = { flaggedIds?: number[] };
-      if (
-        hist &&
-        (JSON.parse(hist) as HistoryEntry[]).some((h) => (h.flaggedIds?.length ?? 0) > 0)
-      ) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setHasFlaggedBefore(true);
-      }
-    } catch {}
-  }, []);
-
-  function toggleFlag(qId: number) {
-    setFlaggedIds((prev) => {
-      const next = new Set(prev);
-      const adding = !next.has(qId);
-      if (adding) next.add(qId);
-      else next.delete(qId);
-      if (adding) {
-        fetch("/api/flags", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionId: `${locale}:${qId}` }),
-        }).catch(() => {});
-      }
-      setToast(adding ? n("testing.flagAdded") : n("testing.flagRemoved"));
-      setTimeout(() => setToast(null), 2000);
-      return next;
-    });
-  }
 
   const doSearch = useCallback(
     (q: string) => {
@@ -205,28 +169,7 @@ export default function SearchPage() {
                         <span className="text-[10px] text-muted-foreground/40">
                           {n("search.scoreLabel", { score: r.score })}
                         </span>
-                        <button
-                          type="button"
-                          title={n("testing.flagTip")}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFlag(r.id);
-                          }}
-                          className={`flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] transition-colors ${
-                            flaggedIds.has(r.id)
-                              ? "text-amber-600 bg-amber-50 dark:bg-amber-950 dark:text-amber-400"
-                              : "text-muted-foreground/50 hover:text-amber-500 hover:bg-muted"
-                          }`}
-                        >
-                          <Flag
-                            className={`h-3 w-3 ${flaggedIds.has(r.id) ? "fill-amber-400" : ""}`}
-                          />
-                          {!hasFlaggedBefore && (
-                            <span className="hidden sm:inline">
-                              {flaggedIds.has(r.id) ? n("testing.flagged") : n("testing.flagLabel")}
-                            </span>
-                          )}
-                        </button>
+
                       </div>
                     </CardHeader>
                     <CardContent className="pb-3 pt-1">

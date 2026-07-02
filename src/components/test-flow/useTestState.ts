@@ -74,7 +74,6 @@ interface StoredResultSummary {
   theta?: number;
   thetaSE?: number;
   thetaByType?: TestResult["thetaByType"];
-  flaggedIds?: number[];
 }
 
 /** Patch old-format stored data that may lack newer dimension keys. */
@@ -129,51 +128,6 @@ export function useTestState() {
   const [cooldownEndsAt, setCooldownEndsAt] = useState<number>(0);
   const [cooldownVersion, setCooldownVersion] = useState(0);
   const [freeTestUsedCount, setFreeTestUsedCount] = useState(0);
-  const [flaggedIds, setFlaggedIds] = useState<Set<number>>(new Set());
-  const [hasFlaggedBefore, setHasFlaggedBefore] = useState(false);
-
-  function toggleFlag(questionId: number) {
-    setFlaggedIds((prev) => {
-      const next = new Set(prev);
-      const adding = !next.has(questionId);
-      if (adding) next.add(questionId);
-      else next.delete(questionId);
-
-      // Fire-and-forget persist on result page (catch browser close/refresh)
-      if (phase === "result") {
-        const ids = [...next];
-        try {
-          const saved = localStorage.getItem("cognitive-rust-result");
-          if (saved) {
-            const e = JSON.parse(saved);
-            e.flaggedIds = ids;
-            localStorage.setItem("cognitive-rust-result", JSON.stringify(e));
-          }
-          const fullRaw = localStorage.getItem("cognitive-rust-full-result");
-          if (fullRaw) {
-            const f = JSON.parse(fullRaw);
-            if (f.result) f.result.flaggedIds = ids;
-            localStorage.setItem("cognitive-rust-full-result", JSON.stringify(f));
-          }
-        } catch {
-          /* ignore */
-        }
-        // Toast feedback
-        showToast(adding ? n("testing.flagAdded") : n("testing.flagRemoved"), 2000);
-      }
-
-      // Report to KV (aggregate by question, not by user)
-      if (adding) {
-        fetch("/api/flags", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionId: `${locale}:${questionId}` }),
-        }).catch(() => {});
-      }
-      return next;
-    });
-  }
-
   // Initialise questions on mount + regenerate when locale changes
   // (except mid-test — questions are frozen once the test starts)
   useEffect(() => {
@@ -321,7 +275,6 @@ export function useTestState() {
       } else {
         r = calculateResult(answers, timeouts, questions);
       }
-      r.flaggedIds = [...flaggedIds];
       setResult(r);
 
       try {
@@ -344,7 +297,6 @@ export function useTestState() {
           theta: r.theta,
           thetaSE: r.thetaSE,
           thetaByType: r.thetaByType,
-          flaggedIds: [...flaggedIds],
         };
         localStorage.setItem("cognitive-rust-result", JSON.stringify(entry));
         setSavedResult(entry);
@@ -577,21 +529,10 @@ export function useTestState() {
         const saved = localStorage.getItem("cognitive-rust-result");
         if (saved) {
           const parsed = JSON.parse(saved);
-          if ((parsed.flaggedIds?.length ?? 0) > 0) setHasFlaggedBefore(true);
-          // Don't show "last test" banner for first-time test takers
           const histRaw = localStorage.getItem("cognitive-rust-history");
           const history = histRaw ? JSON.parse(histRaw) : [];
           if (Array.isArray(history) && history.length >= 2) {
             setSavedResult(normalizeStoredEntry(parsed));
-          }
-        }
-        // Also check history for any past flags
-        if (!hasFlaggedBefore) {
-          const histRaw = localStorage.getItem("cognitive-rust-history");
-          if (histRaw) {
-            const hist = JSON.parse(histRaw);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if (hist.some((h: any) => (h.flaggedIds?.length ?? 0) > 0)) setHasFlaggedBefore(true);
           }
         }
       } catch {
@@ -1002,40 +943,7 @@ export function useTestState() {
     submitAnswer(selected);
   }
 
-  // Persist flags to localStorage + KV before leaving result page
-  function persistFlagsAndSync() {
-    try {
-      // Update localStorage entries with latest flags
-      const saved = localStorage.getItem("cognitive-rust-result");
-      if (saved) {
-        const entry = JSON.parse(saved);
-        entry.flaggedIds = [...flaggedIds];
-        localStorage.setItem("cognitive-rust-result", JSON.stringify(entry));
-      }
-      const fullRaw = localStorage.getItem("cognitive-rust-full-result");
-      if (fullRaw) {
-        const full = JSON.parse(fullRaw);
-        if (full.result) full.result.flaggedIds = [...flaggedIds];
-        localStorage.setItem("cognitive-rust-full-result", JSON.stringify(full));
-      }
-      // Also update the last history entry
-      const histRaw = localStorage.getItem("cognitive-rust-history");
-      if (histRaw) {
-        const hist = JSON.parse(histRaw);
-        if (hist.length > 0) {
-          hist[hist.length - 1].flaggedIds = [...flaggedIds];
-          localStorage.setItem("cognitive-rust-history", JSON.stringify(hist));
-        }
-      }
-      // Sync to cloud for premium users
-      if (isPremium) syncNow().catch(() => {});
-    } catch {
-      /* ignore */
-    }
-  }
-
   async function handleRestart() {
-    persistFlagsAndSync();
     stopTimer();
     clearProgress();
     setSavedProgress(null);
@@ -1268,10 +1176,6 @@ export function useTestState() {
     cooldownEndsAt,
     cooldownVersion,
     freeTestUsedCount,
-    flaggedIds,
-    hasFlaggedBefore,
-    toggleFlag,
-
     // Refs
     questionMarkRef,
 

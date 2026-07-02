@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Flag } from "lucide-react";
+
 import {
   normalCDF,
   abilityToDegradationIndex,
@@ -51,9 +51,7 @@ interface ResultPhaseProps {
   handleSetReminder: () => void;
   handleRestart: () => void;
   handleDownloadImage: () => void;
-  flaggedIds: Set<number>;
-  hasFlaggedBefore: boolean;
-  onToggleFlag: (qId: number) => void;
+
 }
 
 export function ResultPhase({
@@ -67,9 +65,7 @@ export function ResultPhase({
   handleSetReminder,
   handleRestart,
   handleDownloadImage,
-  flaggedIds,
-  hasFlaggedBefore,
-  onToggleFlag,
+
 }: ResultPhaseProps) {
   const n = useTranslations();
   const [showScoringInfo, setShowScoringInfo] = useState(false);
@@ -108,14 +104,6 @@ export function ResultPhase({
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* Flagged count */}
-        {flaggedIds.size > 0 && (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-center text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
-            <Flag className="mr-1 inline h-4 w-4" />
-            {n("result.flaggedCount", { count: flaggedIds.size })}
-          </div>
-        )}
-
         {/* Gauge + Tier — hidden on first test */}
         {!isFirstTest && (
           <div className="text-center">
@@ -499,20 +487,6 @@ export function ResultPhase({
                         })}
                       </span>
                       <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          title={n("testing.flagTip")}
-                          onClick={() => onToggleFlag(q.id)}
-                          className={`shrink-0 rounded px-1.5 py-0.5 text-xs transition-colors ${
-                            flaggedIds.has(q.id)
-                              ? "text-amber-600 bg-amber-50 dark:bg-amber-950 dark:text-amber-400"
-                              : "text-muted-foreground/30 hover:text-amber-500 hover:bg-muted"
-                          }`}
-                        >
-                          <Flag
-                            className={`h-3 w-3 ${flaggedIds.has(q.id) ? "fill-amber-400" : ""}`}
-                          />
-                        </button>
                         <span
                           className={`text-xs font-medium ${
                             timedOut
