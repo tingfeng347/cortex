@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 
+export const dynamic = "force-static"
+
 const manifest = {
   name: "认知防锈 · Cognitive Anti-Rust",
   short_name: "认知防锈",
